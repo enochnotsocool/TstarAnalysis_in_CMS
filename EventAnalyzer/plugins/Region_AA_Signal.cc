@@ -28,7 +28,7 @@ void AA_Signal::processEvent( const MiniEvent* )
    
 }
 
-void AA_Signal::process( const MiniEvent* ) 
+void AA_Signal::process( ) 
 {
    
 }

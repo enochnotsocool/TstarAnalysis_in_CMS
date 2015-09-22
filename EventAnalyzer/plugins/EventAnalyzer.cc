@@ -3,7 +3,6 @@
 EventAnalyzer::EventAnalyzer( const edm::ParameterSet& iConfig )
 {
    usesResource( "TFileService" );
-   _regionList.pushback( new 
 }
 
 
@@ -20,12 +19,17 @@ void
 EventAnalyzer::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
    // Constructing a clean event, for construction process seed the code in MiniEvent.cc
-   MiniEvent cleanEvent( iEvent , iSetup ) ; 
-   
-   // Looping over defined regions
+   getHandlers( iEvent , iSetup ) ;
+   getCleanMuons();
+   getCleanElectrons();
+   getCleanPhotons();
+   getCleanJets();
+
+   MiniEvent* cleanEvent = new MiniEvent;
+   makeEvent( cleanEvent , iEvent, iSetup );
    for( auto& region : _regionList ) {
-      if( region->isRegionEvent( cleanEvent ) ){
-         region->pushback( &cleanEvent ) ;
+      if( region->isRegionEvent( cleanEvent )  ){
+         region->pushback( cleanEvent ) ;
          region->processEvent( cleanEvent ) ;
       }
    } 
@@ -54,6 +58,12 @@ EventAnalyzer::fillDescriptions( edm::ConfigurationDescriptions& descriptions )
    edm::ParameterSetDescription desc;
    desc.setUnknown();
    descriptions.addDefault( desc );
+}
+
+
+void EventAnalyzer::makeEvent( MiniEvent* ,const edm::Event& , const edm::EventSetup&  ) const
+{
+
 }
 
 //define this as a plug-in

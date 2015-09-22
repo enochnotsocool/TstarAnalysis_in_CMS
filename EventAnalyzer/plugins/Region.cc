@@ -23,4 +23,4 @@ Region::~Region(){}
 //------------------------------------------------------------------------------ 
 //   Data member interaction functions
 //------------------------------------------------------------------------------
-Region::pushback( const MiniEvent* x ){ _eventList.push_back( x ); } 
+void Region::pushback( const MiniEvent* x ){ _eventList.push_back( x ); } 

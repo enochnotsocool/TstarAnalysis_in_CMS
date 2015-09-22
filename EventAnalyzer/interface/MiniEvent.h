@@ -37,10 +37,6 @@ public:
    ULong64_t eventNumber() const ;
    ULong64_t lumiNumber()  const ; 
 
-   // Event Selection specific methods
-#ifdef __EVENTANALYZER_H__
-   MiniEvent ( const edm:Event& , const edm::EvetSetup& ):
-#endif
 
 private:
    // Physical object list
@@ -51,30 +47,9 @@ private:
    std::vector<pat::MET>      _metList;
 
    // Event specific objects list
-   ULong64_t    _runNumber;
-   ULong64_t    _eventNumber;
-   ULong64_t    _lumiNumber;
-
-#ifdef __EVENTANALYZER_H__
-   // Raw interaction data members
-   edm::Handle<edm::View<pat::Jet>>      _rawJetList;
-   edm::Handle<edm::View<pat::Muon>>     _rawMuonList;
-   edm::Handle<edm::View<pat::Electron>> _rawElectronList;
-   edm::Handle<edm::View<pat::Photon>>   _rawPhotonList;
-   edm::Handle<edm::View<pat::MET>>      _rawMETList;
-
-   void getHandlers( const edm::Event& , const edm::EvetnSetup );
-   // Cleaning algorithm helper functions
-   void getCleanMuons();
-   void getCleanElectrons();
-   void getCleanPhotons() ;
-   void getCleanJets();
-
-   bool isCleanMuon( const pat::Muon& ) const ;
-   bool isCleanElectron( const pat::Electron& );
-   bool isCleanPhoton( const pat::Photon& ) ;
-   bool isCleanJet( const pat::Jet& );
-#endif
+   ULong64_t _runNumber;
+   ULong64_t _eventNumber;
+   ULong64_t _lumiNumber;
 };
 
 #endif // __MINIEVENT_H__

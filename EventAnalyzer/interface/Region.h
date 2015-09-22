@@ -20,8 +20,8 @@ public:
    Region ();
    virtual ~Region ();
    virtual bool isRegionEvent( const MiniEvent* ) const = 0 ;
-   virtual void processEvent( const MiniEvent* ) const = 0 ; 
-   virtual void process() const = 0; 
+   virtual void processEvent( const MiniEvent* ) = 0 ; 
+   virtual void process()  = 0; 
 
    void pushback( const MiniEvent* ) ;
 private:
@@ -33,11 +33,11 @@ private:
 //   Macros shorthand for inheritance class virtual functions
 //-------------------------------------------------------------------------------------------------- 
 #define REGION_VIRTUALS( REGION_NAME )                    \
-   virtual ~ # REGION_NAME ();                            \
+   REGION_NAME();                                         \
+   virtual ~REGION_NAME ();                               \
    virtual bool isRegionEvent( const MiniEvent* ) const ; \
    virtual void processEvent( const MiniEvent* ) ;        \
    virtual void process() ;                               \
-};
 
 //-------------------------------------------------------------------------------------------------- 
 //   Region definitions
