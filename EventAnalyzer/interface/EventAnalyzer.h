@@ -32,7 +32,7 @@
 #include "TstarAnalysis/EventAnalyzer/interface/MiniEvent.h"
 #include "TstarAnalysis/EventAnalyzer/interface/Region.h"
 
-class EventAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
+class EventAnalyzer : public edm::EDAnalyzer  {
 public:
    explicit EventAnalyzer( const edm::ParameterSet& );
    ~EventAnalyzer();
@@ -42,31 +42,28 @@ private:
    virtual void beginJob() override;
    virtual void analyze( const edm::Event&, const edm::EventSetup& ) override;
    virtual void endJob() override;
+   
+   std::vector<Region*>   _regionList;
 
    void makeEvent( MiniEvent* , const edm::Event& , const edm::EventSetup& ) const ;
    //----- Private data members  -----------------------------------------------
-   std::vector<pat::Jet>&      _jetList()     ;
-   std::vector<pat::Muon>&     _muonList()    ;
-   std::vector<pat::Electron>& _electronList();
-   std::vector<pat::Photon>&   _photonList()  ;
-   std::vector<pat::MET>&      _metList()     ;
+   reco::Vertex    _primaryVertex  ;
+   std::vector<pat::Jet>      _jetList     ;
+   std::vector<pat::Muon>     _muonList    ;
+   std::vector<pat::Electron> _electronList;
+   std::vector<pat::Photon>   _photonList  ;
    
-   std::vector<Region*>   _regionList;
    
    // Raw interaction data members
    edm::Handle<edm::View<pat::Jet>>      _rawJetList;
    edm::Handle<edm::View<pat::Muon>>     _rawMuonList;
    edm::Handle<edm::View<pat::Electron>> _rawElectronList;
    edm::Handle<edm::View<pat::Photon>>   _rawPhotonList;
-   edm::Handle<edm::View<pat::MET>>      _rawMETList;
 
-   void getHandlers( const edm::Event& , const edm::EventSetup& );
+   void getPrimaryVertex( const edm::Event& , const edm::EventSetup& ) ;
+   void getCleanParticles( const edm::Event& , const edm::EventSetup& );
    // Cleaning algorithm helper functions
-   void getCleanMuons();
-   void getCleanElectrons();
-   void getCleanPhotons() ;
-   void getCleanJets();
-
+   bool isGoodPV( const reco::Vertex& ) const ;
    bool isCleanMuon( const pat::Muon& ) const ;
    bool isCleanElectron( const pat::Electron& ) const ;
    bool isCleanPhoton( const pat::Photon& ) const ;
