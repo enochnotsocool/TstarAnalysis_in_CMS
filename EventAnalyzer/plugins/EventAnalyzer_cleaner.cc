@@ -9,14 +9,21 @@
 ***************************************************************************************************/
 
 #include "TstarAnalysis/EventAnalyzer/interface/EventAnalyzer.h"
-void EventAnalyzer::getHandlers( const edm::Event& , const edm::EventSetup& )
+void EventAnalyzer::getHandlers( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-   
+   iEvent.getByLabel( "slimmedJets"      , _rawJetList      ) ;
+   iEvent.getByLabel( "slimmedMuons"     , _rawMuonList     ) ;
+   iEvent.getByLabel( "slimmedElectrons" , _rawElectronList ) ;
+   iEvent.getByLabel( "slimmedPhotons"   , _rawPhotonList   ) ;
 }
 
 void EventAnalyzer::getCleanMuons()
 {
-
+   for( const auto& muon : _rawMuonList ) {
+      if( isCleanMuon( *muon ) ) {
+         _muonList.push_back( *muon ) ;
+      } 
+   }
 }
 
 void EventAnalyzer::getCleanElectrons()

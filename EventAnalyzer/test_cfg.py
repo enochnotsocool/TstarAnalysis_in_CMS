@@ -13,8 +13,7 @@ process.source = cms.Source("PoolSource",
             )
         )
 
-process.demo = cms.EDAnalyzer('DemoAnalyzer'
-        )
+process.demo = cms.EDAnalyzer('EventAnalyzer')
 
 
 process.p = cms.Path(process.demo)
