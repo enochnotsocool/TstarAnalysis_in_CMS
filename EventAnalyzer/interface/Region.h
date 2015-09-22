@@ -13,6 +13,8 @@
 #ifndef __REGION_H__
 #define __REGION_H__
 
+#include "TstarAnalysis/EventAnalyzer/interface/MiniEvent.h"
+
 class Region {
 public:
    Region ();

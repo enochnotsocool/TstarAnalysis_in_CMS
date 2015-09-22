@@ -7,7 +7,7 @@
  *
 ***************************************************************************************************/
 
-#include "TstarAnalysis/EventAnalyzer/interface/Region.cc"
+#include "TstarAnalysis/EventAnalyzer/interface/Region.h"
 
 //-------------------------------------------------------------------------------------------------- 
 //   Constructor and destructor

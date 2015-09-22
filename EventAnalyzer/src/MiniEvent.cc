@@ -10,7 +10,7 @@
  *
 ***************************************************************************************************/
 
-#include "TstarAnalysis/interface/MiniEvent.h"
+#include "TstarAnalysis/EventAnalyzer/interface/MiniEvent.h"
 
 //-------------------------------------------------------------------------------------------------- 
 //   Constructor and destructor
