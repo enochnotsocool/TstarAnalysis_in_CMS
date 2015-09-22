@@ -21,7 +21,7 @@ public:
    virtual void processEvent( const MiniEvent* ) const = 0 ; 
    virtual void process() const = 0; 
 
-   void pushback( const MiniEvent* ) {};
+   void pushback( const MiniEvent* ) ;
 private:
    std::vector<const MiniEvent*>    _eventList;
 };
@@ -30,19 +30,19 @@ private:
 //-------------------------------------------------------------------------------------------------- 
 //   Macros shorthand for inheritance class virtual functions
 //-------------------------------------------------------------------------------------------------- 
-#define NEW_REGION( REGION_NAME )                        \
-   virtual ~ # REGION_NAME ();                           \
-   virtual isRegionEvent( const MiniEvent* ) const ;     \
-   virtual void processEvent( const MiniEvent* ) const ; \
-   virtual void process() ;                              \
+#define REGION_VIRTUALS( REGION_NAME )                    \
+   virtual ~ # REGION_NAME ();                            \
+   virtual bool isRegionEvent( const MiniEvent* ) const ; \
+   virtual void processEvent( const MiniEvent* ) ;        \
+   virtual void process() ;                               \
 };
-
 
 //-------------------------------------------------------------------------------------------------- 
 //   Region definitions
 //--------------------------------------------------------------------------------------------------
-class AA_Signal;
-class AA_Control; 
+class AA_Signal : public Region {
+   REGION_VIRTUALS( AA_Signal ) ;
+};
 
 #endif // __REGION_H__
 

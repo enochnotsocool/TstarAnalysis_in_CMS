@@ -3,8 +3,7 @@
 EventAnalyzer::EventAnalyzer( const edm::ParameterSet& iConfig )
 {
    usesResource( "TFileService" );
-
-
+   _regionList.pushback( new 
 }
 
 
@@ -21,7 +20,7 @@ void
 EventAnalyzer::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
    // Constructing a clean event, for construction process seed the code in MiniEvent.cc
-   MiniEvent cleanEvent( iEvent ) ; 
+   MiniEvent cleanEvent( iEvent , iSetup ) ; 
    
    // Looping over defined regions
    for( auto& region : _regionList ) {
