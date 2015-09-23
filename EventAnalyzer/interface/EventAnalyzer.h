@@ -53,23 +53,24 @@ private:
    void makeEvent( MiniEvent* , const edm::Event& , const edm::EventSetup& ) const ;
    //----- Private data members  -----------------------------------------------
    double rho ; // Specially declared since it is used for many particle selections
-   reco::Vertex               _primaryVertex  ;
-   std::vector<reco::Vertex>  _vertexList  ;
-   std::vector<pat::Jet>      _jetList     ;
-   std::vector<pat::Muon>     _muonList    ;
-   std::vector<pat::Electron> _electronList;
-   std::vector<pat::Photon>   _photonList  ;
+   reco::Vertex                _primaryVertex ;
+   // Using pointer to save memory space during selection
+   std::vector<pat::Jet*>      _jetList       ;
+   std::vector<pat::Muon*>     _looseMuonList ;
+   std::vector<pat::Muon*>     _tightMuonList ;
+   std::vector<pat::Electron*> _looseElecList ;
+   std::vector<pat::Electron*> _tightElecList ;
    
    void getCleanParticles( const edm::Event& , const edm::EventSetup& );
    // Cleaning algorithm helper functions
    bool isGoodPV( const reco::Vertex& ) const ;
-   bool isCleanMuon( const pat::Muon& ) const ;
-   bool isCleanElectron( const pat::Electron& ) const ;
-   bool isCleanPhoton( const pat::Photon& ) const ;
-   bool isCleanJet( const pat::Jet& ) const ;
+   bool isLooseMuon( const pat::Muon& ) const ;
+   bool isTightMuon( const pat::Muon& ) const ;
+   bool isLooseElec( const pat::Electron& ) const ;
+   bool isTightElec( const pat::Electron& ) const ;
+   bool isLooseJet( const pat::Jet& ) const ;
 
    double el_CRpfIso( const pat::Electron& ) const ;
-   double el_EffArea( const pat::Electron& ) const ;
    double mu_CRpfIso( const pat::Muon& ) const ;
 
    //-------------------------------------------------------------------------------------------------- 
