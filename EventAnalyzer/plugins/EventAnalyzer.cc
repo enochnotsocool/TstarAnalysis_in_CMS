@@ -10,16 +10,18 @@
  *
 ***************************************************************************************************/
 
-#include "TFile.h"
 #include "TstarAnalysis/EventAnalyzer/interface/EventAnalyzer.h"
 
+#include "TFile.h"
+
+#include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-
+   
+static edm::Service<TFileService> fs;
 EventAnalyzer::EventAnalyzer( const edm::ParameterSet& iConfig )
 {
-   edm::Service<TFileService> fs;
-   jetSelection = new TH1F( "Jet Selection" , "Jet Selection" , 5 , 0 , 5 ) ;
+   jetSelection = fs->make<TH1F>( "Jet Selection" , "Jet Selection" , 5 , 0 , 5 ) ;
 }
 
 
@@ -62,7 +64,6 @@ void EventAnalyzer::endJob()
    for( auto* region: _regionList ){
       region->process();
    }
-   jetSelection->Draw();
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

@@ -19,7 +19,7 @@ options.register('globalTag',
       'Global Tag')
 
 options.register('sample',
-      '/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root',
+      '/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/F884E560-CE09-E511-95DB-00266CF3DE70.root',
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.string,
       'Sample to analyze')
@@ -34,11 +34,10 @@ options.register('Debug',
 #   Process definitions
 #------------------------------------------------------------------------------- 
 process = cms.Process("EventAnalyzer")
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 1000 ) )
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.options=cms.untracked.PSet( wantSummary = cms.untracked.bool( True )) 
-
-
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( options.maxEvts ) )
+process.options.allowUnscheduled = cms.untracked.bool(True)
 
 process.source = cms.Source("PoolSource",
       fileNames = cms.untracked.vstring( options.sample )
@@ -46,8 +45,6 @@ process.source = cms.Source("PoolSource",
 
 process.demo = cms.EDAnalyzer('EventAnalyzer')
 
-process.TFileService = cms.Service("TFileService",
-      fileName = cms.string( "results.root" )
-      )
+process.TFileService = cms.Service("TFileService", fileName = cms.string( "results.root" ) )
 
 process.p = cms.Path(process.demo)

@@ -34,9 +34,10 @@ void EventAnalyzer::getCleanParticles( const edm::Event& iEvent , const edm::Eve
    MAKELIST( pat  , Electron , "slimmedElectrons"              ) ;
    MAKELIST( pat  , Jet      , "slimmedJets"                   ) ;
    
-   _vertexList.clear();
-   _muonList.clear() ;
-   _electronList.clear();
+   _looseMuonList.clear() ;
+   _looseElecList.clear();
+   _tightMuonList.clear();
+   _tightElecList.clear() ;
    _jetList.clear();
    bool hasPV = false;
    //-------------------------------------------------------------------------------------------------- 
@@ -58,19 +59,18 @@ void EventAnalyzer::getCleanParticles( const edm::Event& iEvent , const edm::Eve
    }
    for( const auto& elec : rawElectronList ) {
       if( isTightElec( elec ) ) {
-         _tightElecList.push_back( elec ) ; 
-      } else if( isLooseMuon( elec ) ){
-         _looseElecList.push_back( elec ) ;
+         _tightElecList.push_back( &elec ) ; 
+      } else if( isLooseElec( elec ) ){
+         _looseElecList.push_back( &elec ) ;
       }
    }
    for( const auto& jet : rawJetList ) {
       if( isLooseJet( jet ) ) {
-         _jetList.push_back( jet ) ; }
+         _jetList.push_back( &jet ) ; }
    }
-   std::cout << "Muons: "   << _muonList.size()-rawMuonList.size() << " "
-      << "electrons: " << _electronList.size()-rawElectronList.size() << " "
-      << "Photons: " << _photonList.size()-rawPhotonList.size() << " "
-      << "jets: " << _jetList.size()-rawJetList.size() << std::endl;
+   std::cout << "Muons: "   << _tightMuonList.size() << " "
+      << "electrons: " << _tightElecList.size() << " "
+      << "jets: " << _jetList.size() << std::endl;
 }
 
 bool EventAnalyzer::isGoodPV( const reco::Vertex& v ) const 
@@ -84,7 +84,7 @@ bool EventAnalyzer::isGoodPV( const reco::Vertex& v ) const
 //----- Muon Selection  ----------------------------------------------------------------------------
 bool EventAnalyzer::isLooseMuon( const pat::Muon& mu ) const 
 {
-   if( !muon::isLooseMuon( mu , _primaryVertex ) ){ return false; } 
+   if( !muon::isLooseMuon( mu ) ){ return false; } 
    if( mu.pt() < 10 ) { return false; }
    if( abs( mu.eta() ) < 2.5 ) { return false; } 
    if( mu_CRpfIso( mu ) > 0.2 ) { return false; }
@@ -102,7 +102,7 @@ bool EventAnalyzer::isTightMuon( const pat::Muon& mu ) const
 
 
 //----- Electron selection  ------------------------------------------------------------------------
-bool EventAnalyzer::sTightElec( const pat::Electron& el ) const 
+bool EventAnalyzer::isLooseElec( const pat::Electron& el ) const 
 {
    if( el.pt() < 20 ) { return false; }
    if( abs(el.eta()) > 2.5) { return false; } 
@@ -126,7 +126,6 @@ bool EventAnalyzer::isTightElec( const pat::Electron& el )  const
 //----- Jet Selection  -----------------------------------------------------------------------------
 bool EventAnalyzer::isLooseJet( const pat::Jet& jet ) const
 {
-   std::cout << "Enter clean jet Sub routine" << std::endl;
    jetSelection->Fill(0.);
    if( jet.pt() < 30.0 ) { return false; }
    jetSelection->Fill(1.);
@@ -145,8 +144,8 @@ bool EventAnalyzer::isLooseJet( const pat::Jet& jet ) const
    jetSelection->Fill(3);
 
    // Cleaning against primary electrons
-   for( const auto& el : _electronList ){
-      TLorentzVector elecVec( el.px() , el.py() , el.pz() , el.energy() );
+   for( const auto& el : _tightElecList ){
+      TLorentzVector elecVec( el->px() , el->py() , el->pz() , el->energy() );
       TLorentzVector jetVec( jet.px() , jet.py() , jet.pz() , jet.energy() );
       if( elecVec.DeltaR( jetVec ) < 0.5 ) { return false; }
    }

@@ -16,15 +16,9 @@
 //------------------------------------------------------------------------------
 #include <memory>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+#include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/Electron.h"
-#include "DataFormats/PatCandidates/interface/Photon.h"
-#include "DataFormats/PatCandidates/interface/MET.h"
 
 //-------------------------------------------------------------------------------------------------- 
 //   Helper ROOT Libraries
@@ -34,6 +28,11 @@
 //------------------------------------------------------------------------------ 
 //   Self written helper classes
 //------------------------------------------------------------------------------
+#include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
+#include "DataFormats/PatCandidates/interface/MET.h"
 #include "TstarAnalysis/EventAnalyzer/interface/MiniEvent.h"
 #include "TstarAnalysis/EventAnalyzer/interface/Region.h"
 
@@ -55,11 +54,11 @@ private:
    double rho ; // Specially declared since it is used for many particle selections
    reco::Vertex                _primaryVertex ;
    // Using pointer to save memory space during selection
-   std::vector<pat::Jet*>      _jetList       ;
-   std::vector<pat::Muon*>     _looseMuonList ;
-   std::vector<pat::Muon*>     _tightMuonList ;
-   std::vector<pat::Electron*> _looseElecList ;
-   std::vector<pat::Electron*> _tightElecList ;
+   std::vector<const pat::Jet*>      _jetList       ;
+   std::vector<const pat::Muon*>     _looseMuonList ;
+   std::vector<const pat::Muon*>     _tightMuonList ;
+   std::vector<const pat::Electron*> _looseElecList ;
+   std::vector<const pat::Electron*> _tightElecList ;
    
    void getCleanParticles( const edm::Event& , const edm::EventSetup& );
    // Cleaning algorithm helper functions
