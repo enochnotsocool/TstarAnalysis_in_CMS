@@ -1,16 +1,35 @@
+/***************************************************************************************************
+ *
+ *  Filename    : EventAnalyzer.cc
+ *  Description : Generic functions for EDAnlysier
+ *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+ *  
+ *  Details     : This files includes the virtual functions and explicit functions required 
+ *                for the standard EDAnalyzer. For details of function implementation
+ *                read the varius plugins/ _*.cc files
+ *
+***************************************************************************************************/
+
+#include "TFile.h"
 #include "TstarAnalysis/EventAnalyzer/interface/EventAnalyzer.h"
+
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 EventAnalyzer::EventAnalyzer( const edm::ParameterSet& iConfig )
 {
+   edm::Service<TFileService> fs;
+   jetSelection = new TH1F( "Jet Selection" , "Jet Selection" , 5 , 0 , 5 ) ;
 }
 
 
 EventAnalyzer::~EventAnalyzer()
 {
-   //----- Clearing pointer variables  ----------------------------------------------------------------
+   //----- Clearing pointer variables  ------------------------------------------
    for( size_t i = 0 ; i < _regionList.size() ; ++i ){
       delete _regionList[i];
    }
+   delete jetSelection ; 
 }
 
 // ------------ method called for each event  ------------
@@ -18,7 +37,6 @@ void
 EventAnalyzer::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
    // Constructing a clean event, for construction process seed the code in MiniEvent.cc
-   getPrimaryVertex( iEvent , iSetup ) ;
    getCleanParticles( iEvent , iSetup ) ;
 
    MiniEvent* cleanEvent = new MiniEvent;
@@ -44,6 +62,7 @@ void EventAnalyzer::endJob()
    for( auto* region: _regionList ){
       region->process();
    }
+   jetSelection->Draw();
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

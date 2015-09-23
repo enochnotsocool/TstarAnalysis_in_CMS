@@ -33,8 +33,9 @@ options.register('Debug',
 #------------------------------------------------------------------------------- 
 #   Process definitions
 #------------------------------------------------------------------------------- 
-process = cms.Process("Demo")
+process = cms.Process("EventAnalyzer")
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.options=cms.untracked.PSet( wantSummary = cms.untracked.bool( True )) 
 
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( options.maxEvts ) )
@@ -46,8 +47,7 @@ process.source = cms.Source("PoolSource",
 process.demo = cms.EDAnalyzer('EventAnalyzer')
 
 process.TFileService = cms.Service("TFileService",
-      fileName = cms.string( "test.root" )
+      fileName = cms.string( "results.root" )
       )
-
 
 process.p = cms.Path(process.demo)
