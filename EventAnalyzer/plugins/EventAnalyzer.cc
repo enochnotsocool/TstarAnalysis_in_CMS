@@ -9,19 +9,19 @@
  *                read the varius plugins/ _*.cc files
  *
 ***************************************************************************************************/
-
 #include "TstarAnalysis/EventAnalyzer/interface/EventAnalyzer.h"
-
-#include "TFile.h"
 
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
    
-static edm::Service<TFileService> fs;
 EventAnalyzer::EventAnalyzer( const edm::ParameterSet& iConfig )
 {
-   jetSelection = fs->make<TH1F>( "Jet Selection" , "Jet Selection" , 5 , 0 , 5 ) ;
+   edm::Service<TFileService> fs;
+   jetSelection = fs->make<TH1F>( "JetSelection" , "JetSelection" , 5 , 0 , 5 ) ;
+   for( int i = 0 ; i < 1000 ; ++i ){
+      jetSelection->Fill(0.5);
+   }
 }
 
 
