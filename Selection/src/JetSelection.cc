@@ -8,19 +8,24 @@
  *                Loose jet ID could be found at:
  *
 *******************************************************************************/
+
+#include "TLorentzVector.h"
+#include "TstarAnalysis/Selection/interface/Counting.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
-#include "TLorentzVector.h"
 
 typedef std::vector<const reco::GsfElectron*>  ElecList ;
 typedef std::vector<const pat::Muon*> MuonList;
 
-bool isSelcJet( const pat::Jet& jet , const ElecList& els , const MuonList& mus )
+bool isSelcJet( const pat::Jet& jet , const ElecList& els , const MuonList& mus, TH1F* hist )
 {
+   HIST_COUNT(0);
    if( jet.pt() < 25.0 ) { return false; }
+   HIST_COUNT(1);
    if( abs( jet.eta() ) > 2.4 ) { return false; }
 
+   HIST_COUNT(2);
    //----- Loose Jet ID  ------------------------------------------------------------------------------
    if( jet.neutralHadronEnergyFraction() > 0.99 ) { return false; }
    if( jet.neutralEmEnergyFraction()     > 0.99 ) { return false; }
@@ -31,6 +36,7 @@ bool isSelcJet( const pat::Jet& jet , const ElecList& els , const MuonList& mus 
       if( jet.chargedEmEnergyFraction() > 0.99  ) { return false; }
    }
 
+   HIST_COUNT(3);
    //----- Cleaning against selected leptons  ---------------------------------------------------------
    TLorentzVector jetVec( jet.px() , jet.py() , jet.pz() , jet.energy() );
    for( const auto& el : els ){
@@ -41,6 +47,6 @@ bool isSelcJet( const pat::Jet& jet , const ElecList& els , const MuonList& mus 
       TLorentzVector muVec( mu->px() , mu->py() , mu->pz() , mu->energy() ) ;
       if( muVec.DeltaR( jetVec ) < 0.4 ) { return false; }  
    }
-
+   HIST_COUNT(4);
    return true;
 }
