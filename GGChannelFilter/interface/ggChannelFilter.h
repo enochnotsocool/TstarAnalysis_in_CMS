@@ -47,29 +47,37 @@ private:
    bool passJetCleaning(const edm::Event&, const edm::EventSetup&);
    bool passEventSelection(const edm::Event&, const edm::EventSetup&);
 
-   bool isGoodPV( const reco::Vertex* ) const ;
-   bool isLooseMuon( const pat::Muon* ) const ;
-   bool isTightMuon( const pat::Muon* ) const ;
-   bool isLooseElec( const pat::Electron* ) const ;
-   bool isTightElec( const pat::Electron* ) const ;
-   bool isLooseJet( const pat::Jet* ) const ;
-
    //----- MiniAOD interaction members  ---------------------------------------------------------------
    edm::InputTag _muonsrc ;
    edm::InputTag _elecsrc ;
    edm::InputTag _jetsrc  ;
    edm::InputTag _metsrc  ;
    edm::InputTag _vertexsrc ;
+   edm::InputTag _convsrc ;
+   edm::InputTag _rhosrc ;
+   edm::InputTag _beamspotsrc ;
+
+   edm::Handle<double>                       _rawRho; 
+   edm::Handle<reco::BeamSpot>               _rawBeamSpot;
+   edm::Handle<reco::VertexCollection>       _rawVertexList;
+   edm::Handle<edm::View<reco::GsfElectron>> _rawElectronList;
+   edm::Handle<edm::View<pat::Muon>>         _rawMuonList;
+   edm::Handle<edm::View<pat::Jet>>          _rawJetList;
+   edm::Handle<reco::ConversionCollection>   _rawConversionList; 
 
    //----- Temporary storage members  -----------------------------------------------------------------
-   reco::Vertex  _primaryVertex ; 
-   std::vector<const pat::Muon*>      _looseMuonList;
-   std::vector<const pat::Muon*>      _tightMuonList;
-   std::vector<const pat::Electron*>  _looseElecList;
-   std::vector<const pat::Electron*>  _tightElecList;
-   std::vector<const pat::Jet*>       _looseJetList;
+   reco::Vertex                           _primaryVertex ; 
+   std::vector<const pat::Muon*>          _vetoMuonList;
+   std::vector<const pat::Muon*>          _selcMuonList;
+   std::vector<const reco::GsfElectron*>  _vetoElecList;
+   std::vector<const reco::GsfElectron*>  _selcElecList;
+   std::vector<const pat::Jet*>           _jetList;
 
    size_t totalEvent;
+   size_t muonEvents;
+   size_t elecEvents;
+   mutable size_t muonCount[10];
+   mutable size_t elecCount[10];
    size_t passedEvent;
 };
 
