@@ -71,7 +71,8 @@ private:
    std::vector<const pat::Muon*>          _selcMuonList;
    std::vector<const reco::GsfElectron*>  _vetoElecList;
    std::vector<const reco::GsfElectron*>  _selcElecList;
-   std::vector<const pat::Jet*>           _jetList;
+   std::vector<const pat::Jet*>           _ljetList;
+   std::vector<const pat::Jet*>           _bjetList;
 
    size_t totalEvent;
    size_t muonEvents;

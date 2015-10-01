@@ -9,6 +9,9 @@
 #include "TstarAnalysis/Selection/interface/Selection.h"
 #include <iostream>
 
+//------------------------------------------------------------------------------ 
+//   EDM plugin initializing functions
+//------------------------------------------------------------------------------
 ggChannelFilter::ggChannelFilter( const edm::ParameterSet& iConfig )
 {
    _muonsrc   = iConfig.getParameter<edm::InputTag>( "muonsrc"   ) ;
@@ -24,12 +27,48 @@ ggChannelFilter::ggChannelFilter( const edm::ParameterSet& iConfig )
 ggChannelFilter::~ggChannelFilter()
 { }
 
+void ggChannelFilter::beginStream( edm::StreamID )
+{
+   totalEvent = 0 ;
+   passedEvent = 0;
+   muonEvents = 0;
+   elecEvents = 0;
+   for( int i = 0 ;  i < 10 ; ++i ){
+      muonCount[i] = 0;
+      elecCount[i] = 0 ;
+   }
+}
 
-// ------------ method called on each new Event  ------------
-bool
-ggChannelFilter::filter( edm::Event& iEvent, const edm::EventSetup& iSetup )
+void ggChannelFilter::endStream()
+{
+   std::cout << "Total Events:" << totalEvent << std::endl;
+   std::cout << "Muon Events: " << muonEvents << ";  Electron Events: " << elecEvents << std::endl;
+   for( int i = 0 ; i< 10 ; ++i ){
+      std::cout << muonCount[i] << "  " ;
+   } 
+   std::cout << std::endl;
+   for( int i = 0 ; i < 10 ; ++i ) {
+      std::cout << elecCount[i] << "  " ;  
+   }
+   std::cout << std::endl;
+   std::cout << "Passed Events:" << passedEvent << std::endl ; 
+}
+
+void ggChannelFilter::fillDescriptions( edm::ConfigurationDescriptions& descriptions )
+{
+   edm::ParameterSetDescription desc;
+   desc.setUnknown();
+   descriptions.addDefault( desc );
+}
+DEFINE_FWK_MODULE( ggChannelFilter );
+
+//------------------------------------------------------------------------------ 
+//   Main control flow
+//------------------------------------------------------------------------------
+bool ggChannelFilter::filter( edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
    _jetList.clear();
+   _bjetList.clear();
    _vetoMuonList.clear();
    _vetoElecList.clear();
    _selcElecList.clear();
@@ -57,53 +96,6 @@ ggChannelFilter::filter( edm::Event& iEvent, const edm::EventSetup& iSetup )
    passedEvent++;
    return true;
 }
-
-// ------------ method called once each stream before processing any runs, lumis or events  ------------
-void ggChannelFilter::beginStream( edm::StreamID )
-{
-   totalEvent = 0 ;
-   passedEvent = 0;
-   muonEvents = 0;
-   elecEvents = 0;
-   for( int i = 0 ;  i < 10 ; ++i ){
-      muonCount[i] = 0;
-      elecCount[i] = 0 ;
-   }
-}
-
-// ------------ method called once each stream after processing all runs, lumis and events  ------------
-void
-ggChannelFilter::endStream()
-{
-   std::cout << "Total Events:" << totalEvent << std::endl;
-   std::cout << "Muon Events: " << muonEvents << ";  Electron Events: " << elecEvents << std::endl;
-   for( int i = 0 ; i< 10 ; ++i ){
-      std::cout << muonCount[i] << "  " ;
-   } 
-   std::cout << std::endl;
-   for( int i = 0 ; i < 10 ; ++i ) {
-      std::cout << elecCount[i] << "  " ;  
-   }
-   std::cout << std::endl;
-   std::cout << "Passed Events:" << passedEvent << std::endl ; 
-}
-
-void
-ggChannelFilter::fillDescriptions( edm::ConfigurationDescriptions& descriptions )
-{
-   //The following says we do not know what parameters are allowed so do no validation
-   // Please change this to state exactly what you do use, even if it is no parameters
-   edm::ParameterSetDescription desc;
-   desc.setUnknown();
-   descriptions.addDefault( desc );
-}
-//define this as a plug-in
-DEFINE_FWK_MODULE( ggChannelFilter );
-
-
-//------------------------------------------------------------------------------ 
-//   Help functions for filter function
-//------------------------------------------------------------------------------
 
 bool ggChannelFilter::getPrimaryVertex( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
@@ -160,7 +152,6 @@ bool ggChannelFilter::passElectronCleaning( const edm::Event& iEvent , const edm
          _vetoElecList.push_back( &elec ) ;
       }
    }
-
    return true;
 }
 
@@ -169,9 +160,26 @@ bool ggChannelFilter::passJetCleaning( const edm::Event& iEvent , const edm::Eve
    const auto& JetList = *(_rawJetList.product());
    for( const auto& jet : JetList ){
       if( isSelcJet( jet ) ){
-         _jetList.push_back( &jet );
+         if( jet.bDiscriminator( "pfCombinedSecondaryVertexV2BTags" ) > 0.89 ) {
+            _bjetList.push_back( &jet );
+         }else{
+            _ljetList.push_back( &jet );
+         }
       }
    }
+   if( _bjetList.size() < 1 ) { return false ; } 
+   if( _ljetList.size() + _bjetList.size() < 6 ) { return false; }
+
+   bool bjetPassPt = false; 
+   bool ljetPassPt = false; 
+   for( const auto& jet : _bjetList ){
+      if( jet->pt() > 35. ) { bjetPassPt=true; }  
+   }
+   for( const auto& jet : _ljetList ){
+      if( jet->pt() > 3.5 ) { ljetPassPt=true; } 
+   }
+   if( !bjetPassPt ){ return false; }
+   if( !ljetPassPt ){ return false; }
    return true;
 }
 
@@ -192,12 +200,9 @@ bool ggChannelFilter::passEventSelection( const edm::Event& iEvent , const edm::
    if( _jetList.size() < 6 ) {
       return false;
    } else {
-      if( _jetList[0]->pt() < 45. ) { return false; }
-      if( _jetList[1]->pt() < 45. ) { return false; }
-      if( _jetList[2]->pt() < 45. ) { return false; }
       unsigned int btag_count = 0 ;
       for( const auto jet : _jetList ){
-         if( jet->bDiscriminator("combinedSecondaryVertexBJetTags") > 0.679 ){
+         if( jet->bDiscriminator("pfCombinedSecondaryVertexV2BJetTags") > 0.89 ){
             btag_count++; }
       }
       if( btag_count < 1 ) { return false; }

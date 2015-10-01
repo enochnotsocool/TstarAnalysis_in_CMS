@@ -1,3 +1,17 @@
+/*******************************************************************************
+ *
+ *  Filename    : ElectronSelection.cc
+ *  Description : Selection criteria for electons
+ *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+ *  Details     : 
+ *                For implementations of the Cut based IDs, see 
+ *                 [1] Twiki       : https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2
+ *                 [2] Source Code : https://github.com/cms-analysis/EgammaAnalysis-ElectronTools/blob/master/src/EGammaCutBasedEleId.cc
+ *                Selection criteria follow those in:
+ *                 [1] TOP-15-005
+ *
+*******************************************************************************/
+
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaCutBasedEleId.h"
 #include "EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h"
@@ -49,55 +63,6 @@ bool isSelcElectron(
          rho,
          EAtarget) ; 
 }
-
-
-////----- Helper extended variables  ---------------------------------------------
-//float CRpfIso( const pat::Muon* );
-//float CRpfIso( const pat::Electron* );
-//
-////----- filter functions  ------------------------------------------------------
-//
-//bool isLooseMuon( const pat::Muon* mu ) const 
-//{
-//   if( !muon::isLooseMuon( *mu ) ){ return false; } 
-//   if( mu->pt() < 15 ) { return false; }
-//   if( abs( mu->eta() ) < 2.4 ) { return false; } 
-//   if( CRpfIso( mu ) > 0.1 ) { return false; }
-//   return true;
-//}
-//
-//bool isTightMuon( const pat::Muon* mu ) const 
-//{
-//   muonCount[0]++;
-//   if( !muon::isTightMuon( *mu, _primaryVertex ) ) { return false; }
-//   muonCount[1]++;
-//   if( mu->pt()         < 30 ) { return false ; }
-//   if( abs( mu->eta() ) > 2.1) { return false ; }
-//   muonCount[2]++;
-//   if( CRpfIso( mu )  > 0.05 ) { return false ; }
-//   muonCount[3]++;
-//   return true;
-//}
-//
-////----- Electron selection  ------------------------------------------------------------------------
-//bool isLooseElec( const edm::Ptr<reco::GsfElectron>& el ) const 
-//{
-//   return true;   
-//}
-//
-//bool isTightElec( const edm::Ptr<reco::GsfElectron>& el )  const
-//{
-//   elecCount[0]++;
-//   if( el->pt() < 30 ) { return false; }
-//   elecCount[1]++;
-//   if( abs(el->eta()) > 2.1 ) { return false; } 
-//   if( abs(el->eta()) > 1.44&& abs(el->eta()) < 1.57 ) { return false; }
-//   elecCount[2]++;
-//   if( ! (*mediumIDs)[el] ) { return false; }
-//   elecCount[4]++;
-//   return true;
-//}
-//
 //bool isLooseJet( const pat::Jet* jet ) const 
 //{
 //   if( jet->pt() < 25.0 ) { return false; }
