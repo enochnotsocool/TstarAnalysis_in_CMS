@@ -11,9 +11,9 @@
  *
 *******************************************************************************/
 #include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
 
-
-bool isVetoMuon( const pat::Muon& )
+bool isVetoMuon( const pat::Muon& mu )
 {
    if( !muon::isLooseMuon( mu ) ){ return false; } 
    if( mu.pt() < 15 ) { return false; }
@@ -22,9 +22,9 @@ bool isVetoMuon( const pat::Muon& )
    return true;
 }
 
-bool isSelcMuon( const pat::Muon& , const reco::Vertex& pv )
+bool isSelcMuon( const pat::Muon& mu , const reco::Vertex& pv )
 {
-   if( !muon::isTightMuon( *mu, pv ) ) { return false; }
+   if( !muon::isTightMuon( mu, pv ) ) { return false; }
    if( mu.pt()        < 30 ) { return false ; }
    if( abs(mu.eta())  > 2.1) { return false ; }
    if( mu.trackIso()  > 0.05 ) { return false ; }

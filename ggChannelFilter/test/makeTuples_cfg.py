@@ -163,14 +163,14 @@ process.out = cms.OutputModule(
 
 process.ggChannelFilter = cms.EDFilter(
       "ggChannelFilter",
-      muonsrc = cms.InputTag( "slimmedMuons" ) ,
-      elecsrc = cms.InputTag( "slimmedElectrons" ),
-      jetsrc  = cms.InputTag( "slimmedJets" ), 
-      metsrc  = cms.InputTag( "slimmedMETs" ) , 
-      vertexsrc = cms.InputTag( "offlineSlimmedPrimaryVertices" ),
-      conversionsrc = cms.InputTag('allConversions'),
-      elecLooseIDMap = cms.InputTag( "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose" ),
-      elecMediumIDMap = cms.InputTag( "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium" )
+      muonsrc     = cms.InputTag( "slimmedMuons" ) ,
+      elecsrc     = cms.InputTag( "slimmedElectrons" ),
+      jetsrc      = cms.InputTag( "slimmedJets" ),
+      metsrc      = cms.InputTag( "slimmedMETs" ) ,
+      vertexsrc   = cms.InputTag( "offlineSlimmedPrimaryVertices" ),
+      convsrc     = cms.InputTag("reducedEgamma","reducedConversions"),
+      rhosrc      = cms.InputTag( "fixedGridRhoFastjetAll" ),
+      beamspotsrc = cms.InputTag( "offlineBeamSpot" )
       )
 
 process.p1 = cms.Path(

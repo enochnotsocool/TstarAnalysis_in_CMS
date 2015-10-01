@@ -9,27 +9,30 @@
  *
 *******************************************************************************/
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
 #include "TLorentzVector.h"
 
-typedef std::vector<reco::GsfElectron*>  ElecList ;
-typedef std::vector<pat::Muon*> MuonList;
-bool isSelcJet( const pat::Jet& , const ElecList& els , const MuonList& mus )
-{
-   if( jet->pt() < 25.0 ) { return false; }
-   if( abs( jet->eta() ) > 2.4 ) { return false; }
+typedef std::vector<const reco::GsfElectron*>  ElecList ;
+typedef std::vector<const pat::Muon*> MuonList;
 
-   // Loose JetID 
-   if( jet->neutralHadronEnergyFraction() > 0.99 ) { return false; }
-   if( jet->neutralEmEnergyFraction()     > 0.99 ) { return false; }
-   if( jet->numberOfDaughters() <=1 ) { return false; }
-   if( abs( jet->eta() )  < 2.4 ){
-      if( jet->chargedHadronEnergyFraction() <=0 ) { return false; }
-      if( jet->chargedMultiplicity() <=0         ) { return false; }
-      if( jet->chargedEmEnergyFraction() > 0.99  ) { return false; }
+bool isSelcJet( const pat::Jet& jet , const ElecList& els , const MuonList& mus )
+{
+   if( jet.pt() < 25.0 ) { return false; }
+   if( abs( jet.eta() ) > 2.4 ) { return false; }
+
+   //----- Loose Jet ID  ------------------------------------------------------------------------------
+   if( jet.neutralHadronEnergyFraction() > 0.99 ) { return false; }
+   if( jet.neutralEmEnergyFraction()     > 0.99 ) { return false; }
+   if( jet.numberOfDaughters() <=1 ) { return false; }
+   if( abs( jet.eta() )  < 2.4 ){
+      if( jet.chargedHadronEnergyFraction() <=0 ) { return false; }
+      if( jet.chargedMultiplicity() <=0         ) { return false; }
+      if( jet.chargedEmEnergyFraction() > 0.99  ) { return false; }
    }
 
-   // Cleaning against primary electrons
-      TLorentzVector jetVec( jet.px() , jet.py() , jet.pz() , jet.energy() );
+   //----- Cleaning against selected leptons  ---------------------------------------------------------
+   TLorentzVector jetVec( jet.px() , jet.py() , jet.pz() , jet.energy() );
    for( const auto& el : els ){
       TLorentzVector elecVec( el->px() , el->py() , el->pz() , el->energy() );
       if( elecVec.DeltaR( jetVec ) < 0.4 ) { return false; }

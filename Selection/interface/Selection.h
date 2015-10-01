@@ -21,13 +21,13 @@
 #include "EgammaAnalysis/ElectronTools/interface/EGammaCutBasedEleId.h"
 #include "EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h"
 
-typedef std::vector<reco::GsfElectron*> ElecList;
-typedef std::vector<pat::Muon*> MuonList; 
+typedef std::vector<const reco::GsfElectron*> ElecList;
+typedef std::vector<const pat::Muon*> MuonList; 
 
 extern bool isGoodPV( const reco::Vertex& ) ;
 extern bool isVetoMuon( const pat::Muon& ) ;
 extern bool isSelcMuon( const pat::Muon& , const reco::Vertex& ) ;
-extern bool isSelcJet( const pat::Jet& ) ;
+extern bool isSelcJet( const pat::Jet& , const ElecList& ,const MuonList& ) ;
 
 extern bool isVetoElectron( 
       const reco::GsfElectron& , 

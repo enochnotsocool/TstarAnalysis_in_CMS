@@ -5,7 +5,7 @@
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
-#include "TstarAnalysis/GGChannelFilter/interface/ggChannelFilter.h"
+#include "TstarAnalysis/ggChannelFilter/interface/ggChannelFilter.h"
 #include "TstarAnalysis/Selection/interface/Selection.h"
 #include <iostream>
 
@@ -60,14 +60,13 @@ void ggChannelFilter::fillDescriptions( edm::ConfigurationDescriptions& descript
    desc.setUnknown();
    descriptions.addDefault( desc );
 }
-DEFINE_FWK_MODULE( ggChannelFilter );
 
 //------------------------------------------------------------------------------ 
 //   Main control flow
 //------------------------------------------------------------------------------
 bool ggChannelFilter::filter( edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-   _jetList.clear();
+   _ljetList.clear();
    _bjetList.clear();
    _vetoMuonList.clear();
    _vetoElecList.clear();
@@ -116,7 +115,7 @@ bool ggChannelFilter::passMuonCleaning( const edm::Event& iEvent , const edm::Ev
 {
    const auto& MuonList = *(_rawMuonList.product()) ;
    for( const auto& muon : MuonList ){
-      if( isSelcMuon( muon ) ){
+      if( isSelcMuon( muon , _primaryVertex ) ){
          _selcMuonList.push_back( &muon );
       }else if( isVetoMuon( muon ) ){
          _vetoMuonList.push_back( &muon ) ;
@@ -159,24 +158,27 @@ bool ggChannelFilter::passJetCleaning( const edm::Event& iEvent , const edm::Eve
 {
    const auto& JetList = *(_rawJetList.product());
    for( const auto& jet : JetList ){
-      if( isSelcJet( jet ) ){
-         if( jet.bDiscriminator( "pfCombinedSecondaryVertexV2BTags" ) > 0.89 ) {
+      if( isSelcJet( jet , _selcElecList, _selcMuonList ) ){
+         if( jet.bDiscriminator( "pfCombinedSecondaryVertexV2BJetTags" ) > 0.89 ) {
             _bjetList.push_back( &jet );
          }else{
             _ljetList.push_back( &jet );
          }
       }
    }
-   if( _bjetList.size() < 1 ) { return false ; } 
+   
+   if( _bjetList.size() < 2 ) { return false ; } 
    if( _ljetList.size() + _bjetList.size() < 6 ) { return false; }
 
    bool bjetPassPt = false; 
    bool ljetPassPt = false; 
    for( const auto& jet : _bjetList ){
-      if( jet->pt() > 35. ) { bjetPassPt=true; }  
+      if( jet->pt() > 35. ) { 
+         bjetPassPt=true; break; }  
    }
    for( const auto& jet : _ljetList ){
-      if( jet->pt() > 3.5 ) { ljetPassPt=true; } 
+      if( jet->pt() > 35. ) { 
+         ljetPassPt=true; break; } 
    }
    if( !bjetPassPt ){ return false; }
    if( !ljetPassPt ){ return false; }
@@ -196,17 +198,9 @@ bool ggChannelFilter::passEventSelection( const edm::Event& iEvent , const edm::
           !_selcMuonList.empty() ) {
          return false; }
    } else { 
-      return false; }
-   if( _jetList.size() < 6 ) {
       return false;
-   } else {
-      unsigned int btag_count = 0 ;
-      for( const auto jet : _jetList ){
-         if( jet->bDiscriminator("pfCombinedSecondaryVertexV2BJetTags") > 0.89 ){
-            btag_count++; }
-      }
-      if( btag_count < 1 ) { return false; }
-   } 
+   }
    return true;
 }
+DEFINE_FWK_MODULE( ggChannelFilter );
 
