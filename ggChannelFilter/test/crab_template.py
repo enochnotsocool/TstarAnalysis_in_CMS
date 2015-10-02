@@ -13,6 +13,6 @@ config.Data.inputDataset = 'DATASET'
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 64
-config.Data.outLFNDirBase = '/store/user/%s/' % (getUsernameFromSiteDB())
+config.Data.outLFNDirBase = '/store/user/%s/ggChannel_tuples' % (getUsernameFromSiteDB())
 
 config.Site.storageSite = "T3_TW_NTU_HEP"

@@ -13,7 +13,7 @@ process.source = cms.Source("PoolSource",
     )
 )
 
-process.demo = cms.EDAnalyzer('filterAnalyzer'
+process.demo = cms.EDAnalyzer('ggChannelAnalyzer'
 )
 
 

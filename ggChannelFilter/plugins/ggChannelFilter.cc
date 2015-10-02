@@ -5,10 +5,17 @@
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
+#include <iostream>
 #include "TstarAnalysis/ggChannelFilter/interface/ggChannelFilter.h"
 #include "TstarAnalysis/Selection/interface/Selection.h"
-#include <iostream>
-
+//----- File output  -----------------------------------------------------------
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+//------------------------------------------------------------------------------ 
+//   helper Variables
+//------------------------------------------------------------------------------
+static edm::Service<TFileService> fs;
+static TFileDirectory results ;
 //------------------------------------------------------------------------------ 
 //   EDM plugin initializing functions
 //------------------------------------------------------------------------------
@@ -21,6 +28,17 @@ ggChannelFilter::ggChannelFilter( const edm::ParameterSet& iConfig )
    _rhosrc    = iConfig.getParameter<edm::InputTag>( "rhosrc"  ) ;
    _beamspotsrc = iConfig.getParameter<edm::InputTag>( "beamspotsrc" );
    _convsrc   = iConfig.getParameter<edm::InputTag> ( "convsrc" );
+   
+   results = TFileDirectory( fs->mkdir( "results" ) );
+   _selcMuonCount = fs->make<TH1F>( "SelectionMuon"     , "SelectionMuon"     , 10 , 0 , 10 );
+   _selcElecCount = fs->make<TH1F>( "SelectionElectron" , "SelectionElectron" , 10 , 0 , 10 );
+   _selcJetCount  = fs->make<TH1F>( "SeletionJet"       , "SelectionJet"      , 10 , 0 , 10 );
+   _vetoMuonCount = fs->make<TH1F>( "VetoMuon"          , "VetoMuon"          , 10 , 0 , 10 );
+   _vetoElecCount = fs->make<TH1F>( "VetoElectron"      , "VetoElectron"      , 10 , 0 , 10 );
+   _trackIsoHist  = fs->make<TH1F>( "traskIso"          , "trackIso"          , 50 , 0 , 5  );
+   _muEventCount  = fs->make<TH1F>( "MuEvent"           , "Event"             , 10 , 0 , 10 );
+   _elEventCount  = fs->make<TH1F>( "ElecEvent"         , "ElecEvent"         , 10 , 0 , 10 );
+
 }
 
 
@@ -28,30 +46,13 @@ ggChannelFilter::~ggChannelFilter()
 { }
 
 void ggChannelFilter::beginStream( edm::StreamID )
-{
-   totalEvent = 0 ;
-   passedEvent = 0;
-   muonEvents = 0;
-   elecEvents = 0;
-   for( int i = 0 ;  i < 10 ; ++i ){
-      muonCount[i] = 0;
-      elecCount[i] = 0 ;
-   }
-}
+{ }
 
 void ggChannelFilter::endStream()
 {
-   std::cout << "Total Events:" << totalEvent << std::endl;
-   std::cout << "Muon Events: " << muonEvents << ";  Electron Events: " << elecEvents << std::endl;
-   for( int i = 0 ; i< 10 ; ++i ){
-      std::cout << muonCount[i] << "  " ;
-   } 
-   std::cout << std::endl;
-   for( int i = 0 ; i < 10 ; ++i ) {
-      std::cout << elecCount[i] << "  " ;  
-   }
-   std::cout << std::endl;
-   std::cout << "Passed Events:" << passedEvent << std::endl ; 
+   std::cout << "Total Events: " << _muEventCount->GetBinContent(1) << endl; 
+   std::cout << "Muon  Events: " << _muEventCount->GetBinContent(6) << endl; 
+   std::cout << "Electron Events: " << _elEventCount->GetBinContent(6) << endl; 
 }
 
 void ggChannelFilter::fillDescriptions( edm::ConfigurationDescriptions& descriptions )
@@ -83,17 +84,11 @@ bool ggChannelFilter::filter( edm::Event& iEvent, const edm::EventSetup& iSetup 
    iEvent.getByLabel( _convsrc     , _rawConversionList ) ;
    iEvent.getByLabel( _rhosrc      , _rawRho            ) ;
 
-   totalEvent++;
-   if( !getPrimaryVertex(iEvent, iSetup) ) { return false; }
-   if( !passMuonCleaning(iEvent, iSetup) ) { return false; }
-   if( !passElectronCleaning(iEvent, iSetup) ) { return false; }
-   if( !passJetCleaning(iEvent, iSetup) ) { return false; }
-   if( !passEventSelection(iEvent, iSetup) ) { return false; }
-
-   if( _selcMuonList.size() == 1 ) { muonEvents++; }
-   if( _selcElecList.size() == 1 ) { elecEvents++; }
-   passedEvent++;
-   return true;
+   getPrimaryVertex(iEvent, iSetup          ) ;
+   passMuonCleaning(iEvent, iSetup          );
+   passElectronCleaning(iEvent, iSetup      );
+   passJetCleaning(iEvent, iSetup           );
+   return passEventSelection(iEvent, iSetup ) ;
 }
 
 bool ggChannelFilter::getPrimaryVertex( const edm::Event& iEvent , const edm::EventSetup& iSetup )
@@ -115,9 +110,12 @@ bool ggChannelFilter::passMuonCleaning( const edm::Event& iEvent , const edm::Ev
 {
    const auto& MuonList = *(_rawMuonList.product()) ;
    for( const auto& muon : MuonList ){
-      if( isSelcMuon( muon , _primaryVertex ) ){
+      _trackIsoHist->Fill( muon.trackIso() );
+      bool selcMu = isSelcMuon( muon , _primaryVertex , _selcMuonCount ) ;
+      bool vetoMu = isVetoMuon( muon , _vetoMuonCount ) ;
+      if( selcMu ){
          _selcMuonList.push_back( &muon );
-      }else if( isVetoMuon( muon ) ){
+      }else if( vetoMu ){
          _vetoMuonList.push_back( &muon ) ;
       } 
    }
@@ -135,15 +133,17 @@ bool ggChannelFilter::passElectronCleaning( const edm::Event& iEvent , const edm
             *(_rawBeamSpot.product()) , 
             _rawVertexList , 
             *(_rawRho.product()) , 
-            EATarget  );
-      
+            EATarget , 
+            _selcElecCount );
+
       bool passVeto = isVetoElectron(
             elec,
             _rawConversionList , 
             *(_rawBeamSpot.product()) , 
             _rawVertexList , 
             *(_rawRho.product()),
-            EATarget  );
+            EATarget  ,
+            _vetoElecCount );
 
       if( passSelc ){
          _selcElecList.push_back( &elec ) ;
@@ -158,7 +158,7 @@ bool ggChannelFilter::passJetCleaning( const edm::Event& iEvent , const edm::Eve
 {
    const auto& JetList = *(_rawJetList.product());
    for( const auto& jet : JetList ){
-      if( isSelcJet( jet , _selcElecList, _selcMuonList ) ){
+      if( isSelcJet( jet , _selcElecList, _selcMuonList, _selcJetCount ) ){
          if( jet.bDiscriminator( "pfCombinedSecondaryVertexV2BJetTags" ) > 0.89 ) {
             _bjetList.push_back( &jet );
          }else{
@@ -166,9 +166,33 @@ bool ggChannelFilter::passJetCleaning( const edm::Event& iEvent , const edm::Eve
          }
       }
    }
-   
-   if( _bjetList.size() < 2 ) { return false ; } 
+
+   return true;
+}
+
+bool ggChannelFilter::passEventSelection( const edm::Event& iEvent , const edm::EventSetup& iSetup )
+{
+   _muEventCount->Fill(0);
+   _elEventCount->Fill(0);
+
+   bool isMuEvent = ( _selcMuonList.size() == 1 && _selcElecList.size() == 0 ); 
+   bool isElEvent = ( _selcMuonList.size() == 0 && _selcElecList.size() == 1 ) ;
+   if( isMuEvent ) {
+      _muEventCount->Fill(1);
+   }else if( isElEvent ) {
+      _elEventCount->Fill(1);
+   } else return false;
+
    if( _ljetList.size() + _bjetList.size() < 6 ) { return false; }
+   if( isMuEvent ) {
+      _muEventCount->Fill(2);
+   }else if( isElEvent ) {
+      _elEventCount->Fill(2); }
+   if( _bjetList.size() < 2 ) { return false ; } 
+   if( isMuEvent ) {
+      _muEventCount->Fill(3);
+   }else if( isElEvent ) {
+      _elEventCount->Fill(3); }
 
    bool bjetPassPt = false; 
    bool ljetPassPt = false; 
@@ -181,25 +205,15 @@ bool ggChannelFilter::passJetCleaning( const edm::Event& iEvent , const edm::Eve
          ljetPassPt=true; break; } 
    }
    if( !bjetPassPt ){ return false; }
+   if( isMuEvent ) {
+      _muEventCount->Fill(4);
+   }else if( isElEvent ) {
+      _elEventCount->Fill(4); }
    if( !ljetPassPt ){ return false; }
-   return true;
-}
-
-bool ggChannelFilter::passEventSelection( const edm::Event& iEvent , const edm::EventSetup& iSetup )
-{
-   if( _selcMuonList.size() == 1 ){
-      if( !_vetoMuonList.empty() || 
-          !_vetoElecList.empty() ||
-          !_selcElecList.empty() ) { 
-         return false; }
-   } else if( _selcElecList.size() == 1 ){
-      if( !_vetoMuonList.empty()  ||
-          !_vetoElecList.empty()  ||
-          !_selcMuonList.empty() ) {
-         return false; }
-   } else { 
-      return false;
-   }
+   if( isMuEvent ) {
+      _muEventCount->Fill(5);
+   }else if( isElEvent ) {
+      _elEventCount->Fill(5); }
    return true;
 }
 DEFINE_FWK_MODULE( ggChannelFilter );

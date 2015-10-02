@@ -24,6 +24,7 @@
 #include "FWCore/Utilities/interface/StreamID.h"
 
 //----- MiniAOD interaction classes  ---------------------------------------------------------------
+#include "TH1F.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -74,12 +75,15 @@ private:
    std::vector<const pat::Jet*>           _ljetList;
    std::vector<const pat::Jet*>           _bjetList;
 
-   size_t totalEvent;
-   size_t muonEvents;
-   size_t elecEvents;
-   mutable size_t muonCount[10];
-   mutable size_t elecCount[10];
-   size_t passedEvent;
+   //----- Filter analysis historgrams  -------------------------------------------
+   TH1F*  _selcMuonCount;
+   TH1F*  _selcElecCount;
+   TH1F*  _selcJetCount;
+   TH1F*  _vetoMuonCount;
+   TH1F*  _vetoElecCount;
+   TH1F*  _trackIsoHist;
+   TH1F*  _muEventCount;
+   TH1F*  _elEventCount;
 };
 
 #endif // __GGCHANNELFILTER_H__

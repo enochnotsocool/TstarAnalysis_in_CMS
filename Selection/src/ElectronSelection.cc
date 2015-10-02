@@ -27,12 +27,6 @@ bool isVetoElectron(
       TH1F* hist )
 {
    HIST_COUNT(0);
-   if( el.pt() < 15 ) { return false; }
-   HIST_COUNT(1);
-   if( abs(el.eta()) > 2.4 ) { return false; } 
-   HIST_COUNT(2);
-   if( abs(el.eta()) > 1.44 && abs(el.eta()) < 1.57 ){ return false ; }
-   HIST_COUNT(3);
    if( !EgammaCutBasedEleId::PassWP(
          EgammaCutBasedEleId::LOOSE,
          el,
@@ -44,6 +38,12 @@ bool isVetoElectron(
          el.pfIsolationVariables().sumNeutralHadronEt,
          rho,
          EAtarget) ) { return false; }
+   HIST_COUNT(1);
+   if( el.pt() < 15 ) { return false; }
+   HIST_COUNT(2);
+   if( abs(el.eta()) > 2.4 ) { return false; } 
+   HIST_COUNT(3);
+   if( abs(el.eta()) > 1.44 && abs(el.eta()) < 1.57 ){ return false ; }
    HIST_COUNT(4);
    return true;
 }
@@ -58,12 +58,6 @@ bool isSelcElectron(
       TH1F* hist )
 {
    HIST_COUNT(0);
-   if( el.pt() < 30 ) { return false; }
-   HIST_COUNT(1);
-   if( abs(el.eta()) > 2.1 ) { return false; } 
-   HIST_COUNT(2);
-   if( abs(el.eta()) > 1.44 && abs(el.eta()) < 1.57 ){ return false ; }
-   HIST_COUNT(3);
    if( !EgammaCutBasedEleId::PassWP(
          EgammaCutBasedEleId::MEDIUM,
          el,
@@ -75,6 +69,12 @@ bool isSelcElectron(
          el.pfIsolationVariables().sumNeutralHadronEt,
          rho,
          EAtarget) ) { return false; }
+   HIST_COUNT(1);
+   if( el.pt() < 30 ) { return false; }
+   HIST_COUNT(2);
+   if( abs(el.eta()) > 2.1 ) { return false; } 
+   HIST_COUNT(3);
+   if( abs(el.eta()) > 1.44 && abs(el.eta()) < 1.57 ){ return false ; }
    HIST_COUNT(4);
    return true;
 }

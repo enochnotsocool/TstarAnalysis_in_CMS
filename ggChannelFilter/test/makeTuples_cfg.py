@@ -158,7 +158,12 @@ process.out = cms.OutputModule(
          "keep *_slimmedMuons_*_*",
          "keep *_slimmedElectrons_*_*",
          "keep *_slimmedJets_*_*",
+         "keep *_reducedEgamma_reducedConversions_*",
+         "keep *_offlineBeamSpot_*_*"
          )
+      )
+process.TFileService = cms.Service("TFileService",
+      fileName = cms.string( "test.root" )
       )
 
 process.ggChannelFilter = cms.EDFilter(
