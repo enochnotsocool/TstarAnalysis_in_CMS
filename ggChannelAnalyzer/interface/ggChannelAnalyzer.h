@@ -39,7 +39,10 @@ private:
 
    //----- Helper functions  ------------------------------------------------------
    void   GetSelectionObjects();
-   float  computeChiSqMass();
+
+   //----- Specific analysis variables  -------------------------------------------
+   float computeChiSqMass();
+   void  permutatedJets();
 
    //----- Physical objects storage  ----------------------------------------------
    reco::Vertex                          _primaryVertex    ;
@@ -61,7 +64,6 @@ private:
    edm::InputTag _convsrc ;
    edm::InputTag _rhosrc ;
    edm::InputTag _beamspotsrc ;
-
    edm::Handle<double>                       _rawRho; 
    edm::Handle<reco::BeamSpot>               _rawBeamSpot;
    edm::Handle<reco::VertexCollection>       _rawVertexList;

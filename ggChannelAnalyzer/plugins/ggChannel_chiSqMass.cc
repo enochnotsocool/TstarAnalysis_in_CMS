@@ -7,6 +7,7 @@
  *
 *******************************************************************************/
 #include "TstarAnalysis/ggChannelAnalyzer/interface/ggChannelAnalyzer.h"
+#include "TstarAnalysis/ggChannelAnalyzer/interface/JetPermutator.h"
 #include "TLorentzVector.h"
 
 //------------------------------------------------------------------------------ 
@@ -26,22 +27,32 @@ static float minChiSq;
 static float trial_tstarMass;
 static float trial_ChiSq;
 
-static TLorentzVector  lepton;
-static TLorentzVector  neutrino[2]; // Two candidate solution for nu
-static std::vector<TLorentzVector> JetPermutation;
-#define t_h_bjet     JetPermutation[0]
-#define t_l_bjet     JetPermutation[1]
-#define tstar_h_gjet JetPermutation[2]
-#define tstar_l_gjet JetPermutation[3]
-#define w_qjet1      JetPermutation[4]
-#define w_qjet2      JetPermutation[5]
+static TLorentzVector w_qq;
+static TLorentzVector w_ln;
+static TLorentzVector t_qq;
+static TLorentzVector t_ln;
+static TLorentzVector tstar_qq;
+static TLorentzVector tstar_ln;
+static TLorentzVector lepton;
+static TLorentzVector neutrino[2]; // Two candidate solution for nu
+#define t_qq_bjet     JetPermutation[0]
+#define t_ln_bjet     JetPermutation[1]
+#define tstar_qq_gjet JetPermutation[2]
+#define tstar_ln_gjet JetPermutation[3]
+#define w_qjet1       JetPermutation[4]
+#define w_qjet2       JetPermutation[5]
+
+typedef std::vector<pat::Jet> JetList;
 //------------------------------------------------------------------------------ 
 //   Helper functions
 //------------------------------------------------------------------------------
-TLorentzVector solveNeutrino( const TLorentzVector& , float , float );
+bool fillJetPermutations( JetList& , JetList& );
+void solveNeutrino( const TLorentzVector& , float , float );
 
 float ggChannelAnalyzer::computeChiSqMass()
 {
+   JetPermutator p( _selectedBJetList , _selectedLJetList );
+   minChiSq = 100000000.
    if( _selectedMuonList.size() == 1 ){
       const auto& muon = _selectedMuonList[0];
       lepton = TLorentzVector( muon->px(), muon->py() , muon->pz() , muon->energy() ) ;
@@ -49,20 +60,30 @@ float ggChannelAnalyzer::computeChiSqMass()
       const auto& elec = _selectedElecList[0];
       lepton = TLorentzVector( elec->px() , elec->py() , elec->pz() , elec->energy() );
    }
+
    solveNeutrino(lepton , MET_PT, MET_PHI );
    do{
-      do{
-         JetPermutation.clear();
-         for( const auto& jet  : _selectedBJetList ){
-            JetPermutation.push_back( TLorentzVector(jet->px(), jet->py() , jet->pz() , jet->energy() ) );
+      w_qq     = w_qjet1 + w_qjet2 ;
+      t_qq     = w_qq    + t_h_bjet;
+      tstar_qq = t_qq    + tstar_qq_gjet ;
+      for( unsigned int i = 0 ; i < 2 ; ++i ){
+         w_ln     = lepton + neutrino[i] ;
+         t_ln     = w_ln   + t_ln_bjet;
+         tstar_ln = t_ln   + tstar_ln_gjet;
+
+         trial_ChiSq =  
+            (( w_qq.Mag()     - W_MASS         ) * ( w_qq.Mag()     - W_MASS         )) / ( W_WIDTH     * W_WIDTH     )
+            +(( t_qq.Mag()     - TOP_MASS       ) * ( tqq.Mag()      - TOP_MASS       )) / ( TOP_WIDTH   * TOP_WIDTH   )
+            +(( t_ln.Mag()     - TOP_MASS       ) * ( t_ln.Mag()     - TOP_MASS       )) / ( TOP_WIDTH   * TOP_WIDTH   )
+            +(( tstar_ln.Mag() - tstar_qq.Mag() ) * ( tstar_ln.Mag() - tstar_qq.Mag() )) / ( TSTAR_WIDTH * TSTAR_WIDTH ) ;
+
+         if( trial_ChiSq < minChiSq ){
+            trial_ChiSq = minChiSq ; 
+            tstarMass = (tstar_ln.Mag() + tstar_qq.Mag()) / 2.               
          }
-         for( const auto& jet : _selectedLJetList ){
-            if( JetPermutation.size() >= 6 ) { break; }
-            JetPermutation.push_back( TLorentzVector(jet->px(), jet->py() , jet->pz() , jet->energy() ) );
-         }
-      }while(next_permutation( _selectedLJetList.begin() , _selectedBJetList.end() ));
-   }while(next_permutation( _selectedBJetList.begin() , _selectedBJetList.end() ));
-   return 0.0;
+      }
+   }while( p.permutate() );
+   return tstarMass;
 }
 
 
@@ -73,7 +94,7 @@ static float _alpha_ , _beta_    , _gamma_          ;
 static float _a_     , _b_       , _c_       , _d_  ;
 static float _lx_    , _ly_      , _lz_      , _lE_ ;
 static float _npx_   , _npy_     , _npz_     , _nE_ ;
-TLorentzVector solveNeutrino( const TLorentzVector& lep , float _MET_ , float _METPhi_ ) 
+void solveNeutrino( const TLorentzVector& lep , float _MET_ , float _METPhi_ ) 
 {
    _npx_    = _MET_ * cos( _METPhi_ )    ;
    _npy_    = _MET_ * sin( _METPhi_ )    ;
@@ -82,7 +103,7 @@ TLorentzVector solveNeutrino( const TLorentzVector& lep , float _MET_ , float _M
    _ly_     = lep.py()     ;
    _lz_     = lep.pz()     ;
    _lE_     = lep.Energy() ;
-   
+
    _alpha_ = _npx_ + _lx_ ;
    _beta_  = _npy_ + _ly_ ;
    _gamma_ = W_MASS*W_MASS  - _MET_*_MET_ - _lE_*_lE_
@@ -106,3 +127,8 @@ TLorentzVector solveNeutrino( const TLorentzVector& lep , float _MET_ , float _M
       neutrino[1] = TLorentzVector( _npx_ , _npy_ , _npz_ , _nE_ ) ;
    }
 }
+
+//------------------------------------------------------------------------------ 
+//   Jet Permutation 
+//------------------------------------------------------------------------------
+fillJetPermutations( JetList& _bjetList; Jet
