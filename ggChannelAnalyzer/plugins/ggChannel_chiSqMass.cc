@@ -63,13 +63,13 @@ float ggChannelAnalyzer::computeChiSqMass()
 
    solveNeutrino(lepton , MET_PT, MET_PHI );
    do{
-      w_qq     = w_qjet1 + w_qjet2 ;
-      t_qq     = w_qq    + t_h_bjet;
-      tstar_qq = t_qq    + tstar_qq_gjet ;
+      w_qq     = p.w_h_jet1 + p.w_h_jet2 ;
+      t_qq     = w_qq    + p.t_h_bjet;
+      tstar_qq = t_qq    + p.tstar_h_gjet ;
       for( unsigned int i = 0 ; i < 2 ; ++i ){
          w_ln     = lepton + neutrino[i] ;
-         t_ln     = w_ln   + t_ln_bjet;
-         tstar_ln = t_ln   + tstar_ln_gjet;
+         t_ln     = w_ln   + p.t_l_bjet;
+         tstar_ln = t_ln   + p.tstar_l_gjet;
 
          trial_ChiSq =  
             (( w_qq.Mag()     - W_MASS         ) * ( w_qq.Mag()     - W_MASS         )) / ( W_WIDTH     * W_WIDTH     )

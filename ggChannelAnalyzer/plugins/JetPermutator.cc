@@ -16,11 +16,11 @@ JetPermutator::JetPermutator(  const JetList& inputBJetList, const JetList& inpu
 {
    //----- Getting inputs  --------------------------------------------------------
    for( const auto& jet : inputBJetList ){
-      _rwbjetList.push_back( jet ) ;
+      _rawbjetList.push_back( jet ) ;
    }
    std::sort( _rawbjetList.begin() , _rawbjetList.end() );
    for( const auto& jet : inputLJetList ){
-      _ljetList.push_back( jet ) ;
+      _rawljetList.push_back( jet ) ;
    }
    std::sort( _rawljetList.begin() , _rawljetList.end() );
 
