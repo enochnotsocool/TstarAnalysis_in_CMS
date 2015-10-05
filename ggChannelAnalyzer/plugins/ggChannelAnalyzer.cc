@@ -1,163 +1,124 @@
-// -*- C++ -*-
-//
-// Package:    TstarAnalysis/ggChannelAnalyzer
-// Class:      ggChannelAnalyzer
-// 
-/**\class ggChannelAnalyzer ggChannelAnalyzer.cc TstarAnalysis/ggChannelAnalyzer/plugins/ggChannelAnalyzer.cc
+/*******************************************************************************
+ *
+ *  Filename    : ggChannelAnalyzer.cc
+ *  Description : Implementation of channel analyzer
+ *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+ *  
+ *  The implementation will be split up into multiple files,
+ *  given the complexity of certain methods, for source of 
+ *  private methods, read the header file.
+ *
+*******************************************************************************/
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
- Description: [one line class summary]
+#include "TstarAnalysis/ggChannelAnalyzer/interface/ggChannelAnalyzer.h"
+#include "TstarAnalysis/Selection/interface/Selection.h"
+//------------------------------------------------------------------------------ 
+//   Helper variables
+//------------------------------------------------------------------------------ 
+static edm::Service<TFileService> fs;
+static TFileDirectory results ;
 
- Implementation:
-     [Notes on implementation]
-*/
-//
-// Original Author:  Yi-Mu Chen
-//         Created:  Fri, 02 Oct 2015 03:29:01 GMT
-//
-//
-
-
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
-
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-//
-// class declaration
-//
-
-class ggChannelAnalyzer : public edm::EDAnalyzer {
-   public:
-      explicit ggChannelAnalyzer(const edm::ParameterSet&);
-      ~ggChannelAnalyzer();
-
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-
-
-   private:
-      virtual void beginJob() override;
-      virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
-      virtual void endJob() override;
-
-      //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
-      //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
-      //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-      //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-
-      // ----------member data ---------------------------
-};
-
-//
-// constants, enums and typedefs
-//
-
-//
-// static data member definitions
-//
-
-//
-// constructors and destructor
-//
-ggChannelAnalyzer::ggChannelAnalyzer(const edm::ParameterSet& iConfig)
-
+//------------------------------------------------------------------------------ 
+//   Constructor and destructor
+//------------------------------------------------------------------------------
+ggChannelAnalyzer::ggChannelAnalyzer( const edm::ParameterSet& iConfig )
 {
-   //now do what ever initialization is needed
-
+   _muonsrc     = iConfig.getParameter<edm::InputTag>( "muonsrc"     ) ;
+   _elecsrc     = iConfig.getParameter<edm::InputTag>( "elecsrc"     ) ;
+   _jetsrc      = iConfig.getParameter<edm::InputTag>( "jetsrc"      ) ;
+   _vertexsrc   = iConfig.getParameter<edm::InputTag>( "vertexsrc"   ) ;
+   _rhosrc      = iConfig.getParameter<edm::InputTag>( "rhosrc"      ) ;
+   _beamspotsrc = iConfig.getParameter<edm::InputTag>( "beamspotsrc" ) ;
+   _convsrc     = iConfig.getParameter<edm::InputTag>( "convsrc"     ) ;
+   
+   results = TFileDirectory( fs->mkdir( "results" ) );
+   _EventConstructedVariables = fs->make<TTree>( "AnalysisVariables" , "AnalysisVariables" );
+   _EventConstructedVariables->Branch( "ChiSqMass" , &_chiMass , "ChiSqMass/F" );
 }
 
 
 ggChannelAnalyzer::~ggChannelAnalyzer()
-{
- 
-   // do anything here that needs to be done at desctruction time
-   // (e.g. close files, deallocate resources etc.)
+{}
 
+//------------------------------------------------------------------------------ 
+//   Main control flow
+//------------------------------------------------------------------------------
+void ggChannelAnalyzer::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
+{
+   _selectedLJetList.clear();
+   _selectedBJetList.clear();
+   _selectedMuonList.clear();
+   _selectedElecList.clear();
+   //------------------------------------------------------------------------------ 
+   //   Getting required Objects
+   //------------------------------------------------------------------------------
+   iEvent.getByLabel( _beamspotsrc , _rawBeamSpot       ) ;
+   iEvent.getByLabel( _muonsrc     , _rawMuonList       ) ;
+   iEvent.getByLabel( _elecsrc     , _rawElectronList   ) ;
+   iEvent.getByLabel( _jetsrc      , _rawJetList        ) ;
+   iEvent.getByLabel( _vertexsrc   , _rawVertexList     ) ;
+   iEvent.getByLabel( _convsrc     , _rawConversionList ) ;
+   iEvent.getByLabel( _rhosrc      , _rawRho            ) ;
+
+   GetSelectionObjects();
+   _chiMass = computeChiSqMass() ;
+
+   _EventConstructedVariables->Fill();
 }
 
-
-//
-// member functions
-//
-
-// ------------ method called for each event  ------------
-void
-ggChannelAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+void ggChannelAnalyzer::GetSelectionObjects()
 {
-   using namespace edm;
-
-
-
-#ifdef THIS_IS_AN_EVENT_EXAMPLE
-   Handle<ExampleData> pIn;
-   iEvent.getByLabel("example",pIn);
-#endif
+   const auto& VertexList = *(_rawVertexList.product());
+   for( const auto& vertex : VertexList ){
+      if( isGoodPV( vertex ) ){
+         _primaryVertex=vertex; break;
+      }
+   }
+   const auto& MuonList = *(_rawMuonList.product()) ;
+   for( const auto& muon : MuonList ){
+      bool selcMu = isSelcMuon( muon , _primaryVertex ) ;
+      if( selcMu ){
+         _selectedMuonList.push_back( &muon );
+      } 
+   }
+   const auto& ElectronList = *(_rawElectronList.product());
+   ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC ; 
+   for ( const auto& elec : ElectronList ){
+      bool passSelc = isSelcElectron(
+            elec,
+            _rawConversionList , 
+            *(_rawBeamSpot.product()) , 
+            _rawVertexList , 
+            *(_rawRho.product()) , 
+            EATarget  );
+      if( passSelc ){
+         _selectedElecList.push_back( &elec ) ;
+      }
+   }
    
-#ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
-   ESHandle<SetupData> pSetup;
-   iSetup.get<SetupRecord>().get(pSetup);
-#endif
+   const auto& JetList = *(_rawJetList.product());
+   for( const auto& jet : JetList ){
+      if( isSelcJet( jet , _selectedElecList, _selectedMuonList ) ){
+         if( jet.bDiscriminator( "pfCombinedSecondaryVertexV2BJetTags" ) > 0.89 ) {
+            _selectedBJetList.push_back( &jet );
+         }else{
+            _selectedLJetList.push_back( &jet );
+         }
+      }
+   }
 }
 
-
-// ------------ method called once each job just before starting event loop  ------------
-void 
-ggChannelAnalyzer::beginJob()
+//------------------------------------------------------------------------------ 
+//   ED Analyzer requirements
+//------------------------------------------------------------------------------
+void ggChannelAnalyzer::beginJob(){}
+void ggChannelAnalyzer::endJob() {}
+void ggChannelAnalyzer::fillDescriptions( edm::ConfigurationDescriptions& descriptions )
 {
+   edm::ParameterSetDescription desc;
+   desc.setUnknown();
+   descriptions.addDefault( desc );
 }
-
-// ------------ method called once each job just after ending the event loop  ------------
-void 
-ggChannelAnalyzer::endJob() 
-{
-}
-
-// ------------ method called when starting to processes a run  ------------
-/*
-void 
-ggChannelAnalyzer::beginRun(edm::Run const&, edm::EventSetup const&)
-{
-}
-*/
-
-// ------------ method called when ending the processing of a run  ------------
-/*
-void 
-ggChannelAnalyzer::endRun(edm::Run const&, edm::EventSetup const&)
-{
-}
-*/
-
-// ------------ method called when starting to processes a luminosity block  ------------
-/*
-void 
-ggChannelAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
-
-// ------------ method called when ending the processing of a luminosity block  ------------
-/*
-void 
-ggChannelAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
-
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-ggChannelAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
-}
-
-//define this as a plug-in
-DEFINE_FWK_MODULE(ggChannelAnalyzer);
+DEFINE_FWK_MODULE( ggChannelAnalyzer );
