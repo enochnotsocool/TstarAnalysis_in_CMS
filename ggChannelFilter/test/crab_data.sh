@@ -9,8 +9,9 @@ fi
 
 for dataset in `cat Data_dataset.txt`; do
    echo $dataset
-   name=${dataset%/*/*}
+   name=${dataset%/*}
    name=${name#/}
+   name=${name/\//_}
    echo $name 
    targetfile=config_files/${name}.py
    sed "s@DATASET@$dataset@" ./crab_template.py |
