@@ -28,7 +28,7 @@ typedef std::vector<const pat::Muon*> MuonList;
 extern bool isGoodPV( const reco::Vertex& , TH1F* = 0 ) ;
 extern bool isVetoMuon( const pat::Muon& , TH1F* = 0 ) ;
 extern bool isSelcMuon( const pat::Muon& , const reco::Vertex& , TH1F* = 0 ) ;
-extern bool isSelcJet( const pat::Jet& , const ElecList& ,const MuonList& , TH1F* = 0 ) ;
+extern bool isSelcJet( const pat::Jet& , const ElecList& ,const MuonList& , TH1F* = 0 , float pt_limit=50.0 ) ;
 
 extern bool isVetoElectron( 
       const reco::GsfElectron& , 

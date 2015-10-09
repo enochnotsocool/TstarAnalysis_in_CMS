@@ -23,7 +23,7 @@ bool isVetoMuon( const pat::Muon& mu , TH1F* hist  )
    HIST_COUNT(2);
    if( abs( mu.eta() ) < 2.4 ) { return false; } 
    HIST_COUNT(3);
-   if( mu.trackIso()  > 0.1 ) { return false; }
+   if( mu.trackIso() /mu.pt()  > 0.1 ) { return false; }
    HIST_COUNT(3);
    return true;
 }
@@ -37,7 +37,7 @@ bool isSelcMuon( const pat::Muon& mu , const reco::Vertex& pv , TH1F* hist )
    HIST_COUNT(2);
    if( abs(mu.eta())  > 2.1) { return false ; }
    HIST_COUNT(3);
-   if( mu.trackIso()  > 0.05 ) { return false ; }
+   if( mu.trackIso() / mu.pt() > 0.05 ) { return false ; }
    HIST_COUNT(4);
    return true;
 }

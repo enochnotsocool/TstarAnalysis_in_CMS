@@ -24,7 +24,6 @@
 //------------------------------------------------------------------------------
 static float tstarMass;
 static float minChiSq;
-static float trial_tstarMass;
 static float trial_ChiSq;
 
 static TLorentzVector w_qq;
@@ -42,7 +41,6 @@ static TLorentzVector neutrino[2]; // Two candidate solution for nu
 #define w_qjet1       JetPermutation[4]
 #define w_qjet2       JetPermutation[5]
 
-typedef std::vector<pat::Jet> JetList;
 //------------------------------------------------------------------------------ 
 //   Helper functions
 //------------------------------------------------------------------------------
@@ -52,7 +50,7 @@ void solveNeutrino( const TLorentzVector& , float , float );
 float ggChannelAnalyzer::computeChiSqMass()
 {
    JetPermutator p( _selectedBJetList , _selectedLJetList );
-   minChiSq = 100000000.
+   minChiSq = 100000000.;
    if( _selectedMuonList.size() == 1 ){
       const auto& muon = _selectedMuonList[0];
       lepton = TLorentzVector( muon->px(), muon->py() , muon->pz() , muon->energy() ) ;
@@ -61,25 +59,25 @@ float ggChannelAnalyzer::computeChiSqMass()
       lepton = TLorentzVector( elec->px() , elec->py() , elec->pz() , elec->energy() );
    }
 
-   solveNeutrino(lepton , MET_PT, MET_PHI );
+   solveNeutrino(lepton , 0.0 , 0.0 );
    do{
-      w_qq     = p.w_h_jet1 + p.w_h_jet2 ;
-      t_qq     = w_qq    + p.t_h_bjet;
-      tstar_qq = t_qq    + p.tstar_h_gjet ;
+      w_qq     = p.w_h_jet1() + p.w_h_jet2() ;
+      t_qq     = w_qq    + p.t_h_bjet() ;
+      tstar_qq = t_qq    + p.tstar_h_jet() ;
       for( unsigned int i = 0 ; i < 2 ; ++i ){
          w_ln     = lepton + neutrino[i] ;
-         t_ln     = w_ln   + p.t_l_bjet;
-         tstar_ln = t_ln   + p.tstar_l_gjet;
+         t_ln     = w_ln   + p.t_l_bjet();
+         tstar_ln = t_ln   + p.tstar_l_jet();
 
          trial_ChiSq =  
-            (( w_qq.Mag()     - W_MASS         ) * ( w_qq.Mag()     - W_MASS         )) / ( W_WIDTH     * W_WIDTH     )
-            +(( t_qq.Mag()     - TOP_MASS       ) * ( tqq.Mag()      - TOP_MASS       )) / ( TOP_WIDTH   * TOP_WIDTH   )
+             (( w_qq.Mag()     - W_MASS         ) * ( w_qq.Mag()     - W_MASS         )) / ( W_WIDTH     * W_WIDTH     )
+            +(( t_qq.Mag()     - TOP_MASS       ) * ( t_qq.Mag()     - TOP_MASS       )) / ( TOP_WIDTH   * TOP_WIDTH   )
             +(( t_ln.Mag()     - TOP_MASS       ) * ( t_ln.Mag()     - TOP_MASS       )) / ( TOP_WIDTH   * TOP_WIDTH   )
             +(( tstar_ln.Mag() - tstar_qq.Mag() ) * ( tstar_ln.Mag() - tstar_qq.Mag() )) / ( TSTAR_WIDTH * TSTAR_WIDTH ) ;
 
          if( trial_ChiSq < minChiSq ){
             trial_ChiSq = minChiSq ; 
-            tstarMass = (tstar_ln.Mag() + tstar_qq.Mag()) / 2.               
+            tstarMass = (tstar_ln.Mag() + tstar_qq.Mag()) / 2.; 
          }
       }
    }while( p.permutate() );
@@ -99,9 +97,9 @@ void solveNeutrino( const TLorentzVector& lep , float _MET_ , float _METPhi_ )
    _npx_    = _MET_ * cos( _METPhi_ )    ;
    _npy_    = _MET_ * sin( _METPhi_ )    ;
 
-   _lx_     = lep.px()     ;
-   _ly_     = lep.py()     ;
-   _lz_     = lep.pz()     ;
+   _lx_     = lep.Px()     ;
+   _ly_     = lep.Py()     ;
+   _lz_     = lep.Pz()     ;
    _lE_     = lep.Energy() ;
 
    _alpha_ = _npx_ + _lx_ ;
@@ -128,7 +126,3 @@ void solveNeutrino( const TLorentzVector& lep , float _MET_ , float _METPhi_ )
    }
 }
 
-//------------------------------------------------------------------------------ 
-//   Jet Permutation 
-//------------------------------------------------------------------------------
-fillJetPermutations( JetList& _bjetList; Jet

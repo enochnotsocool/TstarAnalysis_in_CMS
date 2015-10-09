@@ -84,6 +84,9 @@ private:
    TH1F*  _trackIsoHist;
    TH1F*  _muEventCount;
    TH1F*  _elEventCount;
+
+   //----- Misc. Options  ---------------------------------------------------------
+   float  _jetLimitPt;
 };
 
 #endif // __GGCHANNELFILTER_H__

@@ -86,6 +86,18 @@ options.register('b2gPreprocess',
       opts.VarParsing.varType.bool,
       'Where to use the filters and producers defined by b2g group')
 
+options.register("histFile",
+      "myHist.root",
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.string,
+      'Histogram filename')
+
+options.register('jetLimit',
+      25.0,
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.float,
+      'Limit for pt')
+
 options.parseArguments()
 
 #------------------------------------------------------------------------------- 
@@ -163,11 +175,12 @@ process.out = cms.OutputModule(
          )
       )
 process.TFileService = cms.Service("TFileService",
-      fileName = cms.string( "test.root" )
+      fileName = cms.string( options.histFile )
       )
 
 process.ggChannelFilter = cms.EDFilter(
       "ggChannelFilter",
+      jetLimit    = cms.untracked.double( options.jetLimit ),
       muonsrc     = cms.InputTag( "slimmedMuons" ) ,
       elecsrc     = cms.InputTag( "slimmedElectrons" ),
       jetsrc      = cms.InputTag( "slimmedJets" ),

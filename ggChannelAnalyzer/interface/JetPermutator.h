@@ -24,8 +24,8 @@ public:
    virtual ~JetPermutator ();
 
    //----- Access operators  ------------------------------------------------------
-   TLorentzVector& operator[]( const size_t i ){ _returnVector[i]; }
-   const TLorentzVector& operator[](const size_t i)const{ _returnVector[i];}
+   TLorentzVector& operator[](const size_t i){ return _returnVector[i]; }
+   const TLorentzVector& operator[](const size_t i)const{ return _returnVector[i];}
 
    //----- The class is analysis specific  ----------------------------------------
    const TLorentzVector& t_h_bjet()    const { return _returnVector[0]; }

@@ -18,10 +18,10 @@
 typedef std::vector<const reco::GsfElectron*>  ElecList ;
 typedef std::vector<const pat::Muon*> MuonList;
 
-bool isSelcJet( const pat::Jet& jet , const ElecList& els , const MuonList& mus, TH1F* hist )
+bool isSelcJet( const pat::Jet& jet , const ElecList& els , const MuonList& mus, TH1F* hist, float pt_limit )
 {
    HIST_COUNT(0);
-   if( jet.pt() < 25.0 ) { return false; }
+   if( jet.pt() < pt_limit ) { return false; }
    HIST_COUNT(1);
    if( abs( jet.eta() ) > 2.4 ) { return false; }
 
