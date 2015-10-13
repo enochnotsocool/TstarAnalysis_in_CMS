@@ -14,7 +14,7 @@ for dataset in `cat Data_dataset.txt`; do
    name=${name/\//_}
    echo $name 
    targetfile=config_files/${name}.py
-   sed "s@DATASET@$dataset@" ./crab_template.py |
+   sed "s@DATASET@$dataset@" ./crab_data_template.py |
    sed "s@NAME@$name@" > $targetfile
 
    crab submit -c $targetfile
