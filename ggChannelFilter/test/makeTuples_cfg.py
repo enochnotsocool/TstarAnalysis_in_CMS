@@ -93,7 +93,7 @@ options.register("histFile",
       'Histogram filename')
 
 options.register('jetLimit',
-      25.0,
+      50.0,
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.float,
       'Limit for pt')
@@ -171,6 +171,8 @@ process.out = cms.OutputModule(
          "keep *_slimmedElectrons_*_*",
          "keep *_slimmedJets_*_*",
          "keep *_reducedEgamma_reducedConversions_*",
+         "keep *_reducedEgamma_reducedGedGsfElectronCores_*",
+         "keep *_reducedEgamma_reducedSuperClusters_*",
          "keep *_offlineBeamSpot_*_*"
          )
       )
@@ -186,7 +188,7 @@ process.ggChannelFilter = cms.EDFilter(
       jetsrc      = cms.InputTag( "slimmedJets" ),
       metsrc      = cms.InputTag( "slimmedMETs" ) ,
       vertexsrc   = cms.InputTag( "offlineSlimmedPrimaryVertices" ),
-      convsrc     = cms.InputTag("reducedEgamma","reducedConversions"),
+      convsrc     = cms.InputTag( "reducedEgamma","reducedConversions"),
       rhosrc      = cms.InputTag( "fixedGridRhoFastjetAll" ),
       beamspotsrc = cms.InputTag( "offlineBeamSpot" )
       )

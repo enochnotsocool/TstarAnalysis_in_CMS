@@ -7,7 +7,7 @@ if [[ ! -d config_files ]]; then
    mkdir -p config_files
 fi
 
-for dataset in `cat Data_dataset.txt`; do
+for dataset in `cat MC_dataset.txt`; do
    echo $dataset
    name=${dataset%/*/*}
    name=${name#/}
