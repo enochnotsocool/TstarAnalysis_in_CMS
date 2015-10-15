@@ -24,7 +24,7 @@ JetPermutator::JetPermutator(  const JetList& inputBJetList, const JetList& inpu
    }
    std::sort( _rawljetList.begin() , _rawljetList.end() );
 
-   std::cout << _rawbjetList.size() << " " << _rawljetList.size() << std::endl ;
+   //std::cout << _rawbjetList.size() << " " << _rawljetList.size() << std::endl ;
 
    makeVectorList();
    if( inputBJetList.size() > 2 ) {

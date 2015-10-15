@@ -86,8 +86,8 @@ options.register('b2gPreprocess',
       opts.VarParsing.varType.bool,
       'Where to use the filters and producers defined by b2g group')
 
-options.register("histFile",
-      "myHist.root",
+options.register("filename",
+      "ntuple.root",
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.string,
       'Histogram filename')
@@ -158,7 +158,7 @@ process.GlobalTag.globaltag = options.globalTag
 from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
 
 process.TFileService = cms.Service("TFileService",
-      fileName = cms.string( options.histFile )
+      fileName = cms.string( options.filename )
       )
 
 process.ggChannelAnalyzer = cms.EDAnalyzer(
