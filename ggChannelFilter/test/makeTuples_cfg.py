@@ -171,6 +171,7 @@ process.out = cms.OutputModule(
          "keep *_slimmedElectrons_*_*",
          "keep *_slimmedJets_*_*",
          "keep *_reducedEgamma_reducedConversions_*",
+         "keep *_reducedEgamma_reducedGedGsfElectronCores_*"
          "keep *_offlineBeamSpot_*_*"
          )
       )
