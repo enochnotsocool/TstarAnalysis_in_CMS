@@ -33,13 +33,15 @@ public:
    const TLorentzVector& w_h_jet1()    const { return _returnVector[2]; }
    const TLorentzVector& w_h_jet2()    const { return _returnVector[3]; }
    const TLorentzVector& tstar_h_jet() const { return _returnVector[4]; }
-   const TLorentzVector& tstar_l_jet() const { return _returnVector[4]; }
+   const TLorentzVector& tstar_l_jet() const { return _returnVector[5]; }
 
    bool permutate();
 private:
    std::vector<TLorentzVector>  _returnVector;
    std::vector<const pat::Jet*> _rawbjetList;
    std::vector<const pat::Jet*> _rawljetList;
+
+   void makeVectorList();
 };
 
 #endif // __JETPERMUTATOR_H__

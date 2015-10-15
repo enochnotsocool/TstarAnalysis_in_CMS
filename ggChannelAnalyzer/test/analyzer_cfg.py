@@ -15,7 +15,7 @@ options.register('maxEvts',
       'Number of events to process')
 
 options.register('sample',
-      '/store/cmst3/user/gpetrucc/miniAOD/Spring15MiniAODv2/CMSSW_7_4_12/miniAOD-TTJets_madgraphMLM_25ns-40k_PAT.root',
+      'file:/wk_cms/yichen/mini_samples/myTuple.root',
       opts.VarParsing.multiplicity.list,
       opts.VarParsing.varType.string,
       'Sample to analyze')
@@ -93,7 +93,7 @@ options.register("histFile",
       'Histogram filename')
 
 options.register('jetLimit',
-      25.0,
+      50.0,
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.float,
       'Limit for pt')
@@ -161,7 +161,7 @@ process.TFileService = cms.Service("TFileService",
       fileName = cms.string( options.histFile )
       )
 
-process.ggChannelAnalyzer = cms.EDFilter(
+process.ggChannelAnalyzer = cms.EDAnalyzer(
       "ggChannelAnalyzer",
       jetLimit    = cms.untracked.double( options.jetLimit ),
       muonsrc     = cms.InputTag( "slimmedMuons" ) ,

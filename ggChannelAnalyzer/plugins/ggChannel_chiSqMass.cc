@@ -9,6 +9,7 @@
 #include "TstarAnalysis/ggChannelAnalyzer/interface/ggChannelAnalyzer.h"
 #include "TstarAnalysis/ggChannelAnalyzer/interface/JetPermutator.h"
 #include "TLorentzVector.h"
+#include <iostream>
 
 //------------------------------------------------------------------------------ 
 //   Defining constants
@@ -34,12 +35,6 @@ static TLorentzVector tstar_qq;
 static TLorentzVector tstar_ln;
 static TLorentzVector lepton;
 static TLorentzVector neutrino[2]; // Two candidate solution for nu
-#define t_qq_bjet     JetPermutation[0]
-#define t_ln_bjet     JetPermutation[1]
-#define tstar_qq_gjet JetPermutation[2]
-#define tstar_ln_gjet JetPermutation[3]
-#define w_qjet1       JetPermutation[4]
-#define w_qjet2       JetPermutation[5]
 
 //------------------------------------------------------------------------------ 
 //   Helper functions
@@ -49,6 +44,8 @@ void solveNeutrino( const TLorentzVector& , float , float );
 
 float ggChannelAnalyzer::computeChiSqMass()
 {
+   // std::cout << "Begin mass calculation" << std::endl;
+
    JetPermutator p( _selectedBJetList , _selectedLJetList );
    minChiSq = 100000000.;
    if( _selectedMuonList.size() == 1 ){
@@ -61,10 +58,12 @@ float ggChannelAnalyzer::computeChiSqMass()
 
    solveNeutrino(lepton , 0.0 , 0.0 );
    do{
+      // std::cout << "Running permutation" << std::endl;
       w_qq     = p.w_h_jet1() + p.w_h_jet2() ;
       t_qq     = w_qq    + p.t_h_bjet() ;
       tstar_qq = t_qq    + p.tstar_h_jet() ;
       for( unsigned int i = 0 ; i < 2 ; ++i ){
+         // cout << "Looping neutrino" << std::endl;
          w_ln     = lepton + neutrino[i] ;
          t_ln     = w_ln   + p.t_l_bjet();
          tstar_ln = t_ln   + p.tstar_l_jet();

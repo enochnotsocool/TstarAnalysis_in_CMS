@@ -171,9 +171,10 @@ process.out = cms.OutputModule(
          "keep *_slimmedElectrons_*_*",
          "keep *_slimmedJets_*_*",
          "keep *_reducedEgamma_reducedConversions_*",
-         "keep *_reducedEgamma_reducedGedGsfElectronCores_*",
          "keep *_reducedEgamma_reducedSuperClusters_*",
+         "keep *_reducedEgamma_reducedGedGsfElectronCores_*"
          "keep *_offlineBeamSpot_*_*"
+         "keep *_addPileupInfo_*_*"
          )
       )
 process.TFileService = cms.Service("TFileService",

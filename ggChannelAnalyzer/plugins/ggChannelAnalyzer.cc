@@ -34,10 +34,9 @@ ggChannelAnalyzer::ggChannelAnalyzer( const edm::ParameterSet& iConfig )
    _convsrc     = iConfig.getParameter<edm::InputTag>( "convsrc"     ) ;
    
    results = TFileDirectory( fs->mkdir( "results" ) );
-   _EventConstructedVariables = fs->make<TTree>( "AnalysisVariables" , "AnalysisVariables" );
-   _EventConstructedVariables->Branch( "ChiSqMass" , &_chiMass , "ChiSqMass/F" );
+   _event_storage._eventTree =  fs->make<TTree>( "Event Variables" , "Event Variables" );
+   _event_storage.registerVariables();
 }
-
 
 ggChannelAnalyzer::~ggChannelAnalyzer()
 {}
@@ -61,15 +60,29 @@ void ggChannelAnalyzer::analyze( const edm::Event& iEvent, const edm::EventSetup
    iEvent.getByLabel( _vertexsrc   , _rawVertexList     ) ;
    iEvent.getByLabel( _convsrc     , _rawConversionList ) ;
    iEvent.getByLabel( _rhosrc      , _rawRho            ) ;
-
    GetSelectionObjects();
-   _chiMass = computeChiSqMass() ;
 
-   _EventConstructedVariables->Fill();
+   //------------------------------------------------------------------------------ 
+   //   Begin pre-event variable calculations
+   //------------------------------------------------------------------------------
+   _event_storage.set_jet_count( _selectedBJetList.size() + _selectedLJetList.size() );
+   _event_storage.set_chimass(  computeChiSqMass() );
+   for( const auto& jet : _selectedLJetList ){
+      _event_storage.addJet( jet );
+   } for ( const auto& jet: _selectedBJetList ) {
+      _event_storage.addJet( jet ); }
+
+   for( const auto& muon : _selectedMuonList ){
+      _event_storage.addMuon( muon ); }
+   for( const auto& elec : _selectedElecList ){
+      _event_storage.addElectron( elec ); }
+
+   _event_storage.writeVariables();
 }
 
 void ggChannelAnalyzer::GetSelectionObjects()
 {
+   // std::cout << "Begin object selection" << std::endl;
    const auto& VertexList = *(_rawVertexList.product());
    for( const auto& vertex : VertexList ){
       if( isGoodPV( vertex ) ){
@@ -108,7 +121,11 @@ void ggChannelAnalyzer::GetSelectionObjects()
          }
       }
    }
+   // std::cout << "Done Object selection " << std::endl;
 }
+
+bool ggChannelAnalyzer::isMuonEvent(){ return (_selectedMuonList.size()==1 && _selectedElecList.size()==0);}
+bool ggChannelAnalyzer::isElectronEvent() { return (_selectedMuonList.size()==0 && _selectedElecList.size()==1); }
 
 //------------------------------------------------------------------------------ 
 //   ED Analyzer requirements

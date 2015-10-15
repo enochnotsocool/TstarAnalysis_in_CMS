@@ -24,6 +24,9 @@ JetPermutator::JetPermutator(  const JetList& inputBJetList, const JetList& inpu
    }
    std::sort( _rawljetList.begin() , _rawljetList.end() );
 
+   std::cout << _rawbjetList.size() << " " << _rawljetList.size() << std::endl ;
+
+   makeVectorList();
    if( inputBJetList.size() > 2 ) {
       std::cout << "Warning! input b jet list (size:" << inputBJetList.size() 
          << ")is larger than required (2)! Permutation algorithm may misbehave!!" << std::endl ; 
@@ -34,8 +37,22 @@ JetPermutator::~JetPermutator(){}
 //------------------------------------------------------------------------------ 
 //   Main Functions
 //------------------------------------------------------------------------------
-
 bool JetPermutator::permutate()
+{
+   bool bretVal;
+   bool lretVal;
+   
+   makeVectorList();
+   bretVal = next_permutation( _rawbjetList.begin() , _rawbjetList.end() ) ;
+   if( _rawljetList.size() < 6 ) {
+      lretVal = next_permutation( _rawljetList.begin() , _rawljetList.end() ) ;
+   } else {
+      lretVal = next_permutation( _rawljetList.begin() , _rawljetList.begin() + 6 );
+   }
+   return ( bretVal || lretVal );
+}
+
+void JetPermutator::makeVectorList()
 {
    static TLorentzVector temp;
    _returnVector.clear();
@@ -48,7 +65,4 @@ bool JetPermutator::permutate()
       temp.SetPxPyPzE( jet->px() , jet->py() , jet->pz() , jet->energy() );
       _returnVector.push_back( temp );
    }
-   bool bretVal = next_permutation( _rawbjetList.begin() , _rawbjetList.end() ) ;
-   bool lretVal = next_permutation( _rawljetList.begin() , _rawljetList.end() ) ;
-   return ( bretVal || lretVal );
 }

@@ -19,11 +19,14 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 //----- Formats  ---------------------------------------------------------------
-#include "TstarAnalysis/Selection/interface/Selection.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+
+#include "TstarAnalysis/Selection/interface/Selection.h"
+#include "TstarAnalysis/RootFormat/interface/MiniEvent.h"
+
 #include "TTree.h"
 
 class ggChannelAnalyzer : public edm::EDAnalyzer {
@@ -38,7 +41,9 @@ private:
    virtual void endJob() override;
 
    //----- Helper functions  ------------------------------------------------------
-   void   GetSelectionObjects();
+   void  GetSelectionObjects();
+   bool  isMuonEvent();
+   bool  isElectronEvent();
 
    //----- Specific analysis variables  -------------------------------------------
    float computeChiSqMass();
@@ -51,9 +56,8 @@ private:
    std::vector<const pat::Jet*>          _selectedBJetList  ;
    std::vector<const pat::Jet*>          _selectedLJetList  ;
 
-   //----- OutputRoot objects  ----------------------------------------------------
-   TTree*  _EventConstructedVariables;
-   float   _chiMass;
+   //----- Output Root format handling  -------------------------------------------
+   MiniEvent  _event_storage;
 
    //----- MiniAOD interaction varaibles  -----------------------------------------
    edm::InputTag _muonsrc ;
