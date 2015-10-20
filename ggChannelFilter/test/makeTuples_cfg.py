@@ -32,18 +32,6 @@ options.register('outputLabel',
       opts.VarParsing.varType.string,
       'Output label')
 
-options.register('globalTag',
-      '', ## Optional, could be decided automatically
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.string,
-      'Global Tag')
-
-options.register('isData',
-      False,
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.bool,
-      'Is data?')
-
 options.register('DataProcessing',
       "MC25ns",
       opts.VarParsing.multiplicity.singleton,
@@ -67,12 +55,6 @@ options.register('forceResiduals',
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.bool,
       'Whether to force residuals to be applied')
-
-options.register('LHE',
-      False,
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.bool,
-      'Keep LHEProducts')
 
 options.register('Debug',
       0,
@@ -98,16 +80,20 @@ options.register('jetLimit',
       opts.VarParsing.varType.float,
       'Limit for pt')
 
+options.register('jsonFile',
+      '',
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.string,
+      "Golden Json file input" )
+
 options.parseArguments()
 
 #------------------------------------------------------------------------------- 
 #   Basic options parsing
 #------------------------------------------------------------------------------- 
-if(options.isData):options.LHE = False
-runOnData        = options.isData           #data/MC switch
 useHFCandidates  = not options.useNoHFMET   #create an additionnal NoHF slimmed MET collection if the option is set to false
 usePrivateSQlite = options.usePrivateSQLite #use external JECs (sqlite file)
-applyResiduals   = options.isData           #application of residual corrections. 
+##applyResiduals   = options.isData           #application of residual corrections. 
                                             #   Have to be set to True once the 13 TeV residual corrections are available. 
                                             #   False to be kept meanwhile. Can be kept to False later for private tests
                                             #   or for analysis checks and developments (not the official recommendation!).
@@ -125,10 +111,9 @@ process.MessageLogger.categories.append('HLTrigReport')
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvts) )
 process.source = cms.Source("PoolSource",
-      fileNames = cms.untracked.vstring(
-         options.sample
-         )
-      )
+      fileNames = cms.untracked.vstring( options.sample ) )
+import FWCore.PythonUtilities.LumiList as LumiList
+process.source.lumisToProcess = LumiList.LumiList(filename = options.jsonFile ).getVLuminosityBlockRange()
 
 #process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff")
 process.load("Configuration.EventContent.EventContent_cff")
@@ -138,20 +123,16 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
 
-if options.globalTag == "":
-   if options.DataProcessing=="MC50ns":
-      process.GlobalTag.globaltag="MCRUN2_74_V9A"
-   elif options.DataProcessing=="MC25ns":
-      process.GlobalTag.globaltag="MCRUN2_74_V9"
-   elif options.DataProcessing=="Data50ns":
-      process.GlobalTag.globaltag="74X_dataRun2_Prompt_v0"
-   elif options.DataProcessing=="Data25ns":
-      process.GlobalTag.globaltag="74X_dataRun2_Prompt_v1"
-   else:
-      print "Choose any of the following options for 'DataProcessing'", "MC50ns,  MC25ns, Data50ns, Data25ns" 
-else: 
-   print "You have chosen globalTag as", options.globalTag, ". Please check if this corresponds to your dataset."
-process.GlobalTag.globaltag = options.globalTag 
+if options.DataProcessing=="MC50ns":
+   process.GlobalTag.globaltag="74X_mcRun2_asymptotic50ns_v0"
+elif options.DataProcessing=="MC25ns":
+   process.GlobalTag.globaltag="74X_mcRun2_asymptotic_v2"
+elif options.DataProcessing=="Data50ns":
+   process.GlobalTag.globaltag="74X_dataRun2_reMiniAOD_v0"
+elif options.DataProcessing=="Data25ns":
+   process.GlobalTag.globaltag="74X_dataRun2_reMiniAOD_v0"
+else:
+   print "Choose any of the following options for 'DataProcessing'", "MC50ns,  MC25ns, Data50ns, Data25ns" 
 
 
 ## Output Module Configuration (expects a path 'p')
@@ -172,8 +153,8 @@ process.out = cms.OutputModule(
          "keep *_slimmedJets_*_*",
          "keep *_reducedEgamma_reducedConversions_*",
          "keep *_reducedEgamma_reducedSuperClusters_*",
-         "keep *_reducedEgamma_reducedGedGsfElectronCores_*"
-         "keep *_offlineBeamSpot_*_*"
+         "keep *_reducedEgamma_reducedGedGsfElectronCores_*",
+         "keep *_offlineBeamSpot_*_*",
          "keep *_addPileupInfo_*_*"
          )
       )
