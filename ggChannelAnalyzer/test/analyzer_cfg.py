@@ -20,32 +20,9 @@ options.register('sample',
       opts.VarParsing.varType.string,
       'Sample to analyze')
 
-options.register('lheLabel',
-      'externalLHEProducer',
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.string,
-      'LHE module label')
-
-options.register('outputLabel',
-      'myTuple.root',
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.string,
-      'Output label')
-
-options.register('globalTag',
-      '', ## Optional, could be decided automatically
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.string,
-      'Global Tag')
-
-options.register('isData',
-      False,
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.bool,
-      'Is data?')
 
 options.register('DataProcessing',
-      "MC25ns",
+      "Data25ns",
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.string,
       'Data processing type')
@@ -68,12 +45,6 @@ options.register('forceResiduals',
       opts.VarParsing.varType.bool,
       'Whether to force residuals to be applied')
 
-options.register('LHE',
-      False,
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.bool,
-      'Keep LHEProducts')
-
 options.register('Debug',
       0,
       opts.VarParsing.multiplicity.singleton,
@@ -91,12 +62,6 @@ options.register("filename",
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.string,
       'Histogram filename')
-
-options.register('jetLimit',
-      50.0,
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.float,
-      'Limit for pt')
 
 options.parseArguments()
 
@@ -138,24 +103,17 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
 
-if options.globalTag == "":
-   if options.DataProcessing=="MC50ns":
-      process.GlobalTag.globaltag="MCRUN2_74_V9A"
-   elif options.DataProcessing=="MC25ns":
-      process.GlobalTag.globaltag="MCRUN2_74_V9"
-   elif options.DataProcessing=="Data50ns":
-      process.GlobalTag.globaltag="74X_dataRun2_Prompt_v0"
-   elif options.DataProcessing=="Data25ns":
-      process.GlobalTag.globaltag="74X_dataRun2_Prompt_v1"
-   else:
-      print "Choose any of the following options for 'DataProcessing'", "MC50ns,  MC25ns, Data50ns, Data25ns" 
-else: 
-   print "You have chosen globalTag as", options.globalTag, ". Please check if this corresponds to your dataset."
-process.GlobalTag.globaltag = options.globalTag 
+if options.DataProcessing=="MC50ns":
+   process.GlobalTag.globaltag="74X_mcRun2_asymptotic50ns_v0"
+elif options.DataProcessing=="MC25ns":
+   process.GlobalTag.globaltag="74X_mcRun2_asymptotic_v2"
+elif options.DataProcessing=="Data50ns":
+   process.GlobalTag.globaltag="74X_dataRun2_reMiniAOD_v0"
+elif options.DataProcessing=="Data25ns":
+   process.GlobalTag.globaltag="74X_dataRun2_reMiniAOD_v0"
+else:
+   print "Choose any of the following options for 'DataProcessing'", "MC50ns,  MC25ns, Data50ns, Data25ns" 
 
-
-## Output Module Configuration (expects a path 'p')
-from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
 
 process.TFileService = cms.Service("TFileService",
       fileName = cms.string( options.filename )
@@ -173,7 +131,7 @@ process.ggChannelAnalyzer = cms.EDAnalyzer(
       rhosrc      = cms.InputTag( "fixedGridRhoFastjetAll" ),
       beamspotsrc = cms.InputTag( "offlineBeamSpot" ),
       pileupsrc   = cms.InputTag( "addPileupInfo" )
-      )
+   )
 
 
 process.outpath = cms.EndPath(

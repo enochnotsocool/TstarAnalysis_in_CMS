@@ -6,7 +6,7 @@ void MiniEventBranches::retrieveVariables( TTree* ){
    tree->SetBranchAddress( "EventLumiNumber" , &_LumiNumber );
    tree->SetBranchAddress( "EventEventNumber" , &_EventNumber );
    tree->SetBranchAddress( "EventBunchCrossingNumber" , &_BunchCrossingNumber );
-   tree->SetBranchAddress( "EventpileUpCount" , &_pileUpCount );
+   tree->SetBranchAddress( "EventpileUpWeight" , &_pileUpWeight );
    tree->SetBranchAddress( "EventMuonCount" , &_MuonCount );
    tree->SetBranchAddress( "EventElectronCount" , &_ElectronCount );
    tree->SetBranchAddress( "EventJetCount" , &_JetCount );

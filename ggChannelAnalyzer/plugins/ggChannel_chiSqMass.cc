@@ -55,7 +55,11 @@ float ggChannelAnalyzer::computeChiSqMass()
       lepton = TLorentzVector( elec->px() , elec->py() , elec->pz() , elec->energy() );
    }
 
-   solveNeutrino(lepton , _rawMETList->begin()->pt() , _rawMETList->begin()->phi() );
+   if( _rawMETList.isValid() ){
+      solveNeutrino( lepton , _rawMETList->begin()->pt() , _rawMETList->begin()->phi() );
+   } else {
+      solveNeutrino( lepton , 0.0 , 0.0 ) ;
+   }
    do{
       // std::cout << "Running permutation" << std::endl;
       w_qq     = p.w_h_jet1() + p.w_h_jet2() ;

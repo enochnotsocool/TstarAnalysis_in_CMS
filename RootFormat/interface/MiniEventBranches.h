@@ -18,7 +18,7 @@ public:
    ULong64_t _LumiNumber;
    UInt_t _EventNumber;
    UInt_t _BunchCrossingNumber;
-   UInt_t _pileUpCount;
+   float _pileUpWeight;
    UInt_t _MuonCount;
    UInt_t _ElectronCount;
    UInt_t _JetCount;

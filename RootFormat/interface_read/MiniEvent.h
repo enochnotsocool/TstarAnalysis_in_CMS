@@ -12,7 +12,7 @@ public:
   const ULong64_t& LumiNumber();
   const UInt_t& EventNumber();
   const UInt_t& BunchCrossingNumber();
-  const UInt_t& pileUpCount();
+  const float& pileUpWeight();
   const UInt_t& MuonCount();
   const UInt_t& ElectronCount();
   const UInt_t& JetCount();

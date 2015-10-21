@@ -7,7 +7,7 @@ void MiniEventBranches::registerVariables( TTree* tree )
    tree->Branch( "EventLumiNumber" , &_LumiNumber );
    tree->Branch( "EventEventNumber" , &_EventNumber );
    tree->Branch( "EventBunchCrossingNumber" , &_BunchCrossingNumber );
-   tree->Branch( "EventpileUpCount" , &_pileUpCount );
+   tree->Branch( "EventpileUpWeight" , &_pileUpWeight );
    tree->Branch( "EventMuonCount" , &_MuonCount );
    tree->Branch( "EventElectronCount" , &_ElectronCount );
    tree->Branch( "EventJetCount" , &_JetCount );
