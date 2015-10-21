@@ -23,9 +23,13 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 
 #include "TstarAnalysis/Selection/interface/Selection.h"
-#include "TstarAnalysis/RootFormat/interface/MiniEvent.h"
+#include "TstarAnalysis/RootFormat/interface/MiniJetBranches.h"
+#include "TstarAnalysis/RootFormat/interface/MiniElectronBranches.h"
+#include "TstarAnalysis/RootFormat/interface/MiniMuonBranches.h"
+#include "TstarAnalysis/RootFormat/interface/MiniEventBranches.h"
 
 #include "TTree.h"
 
@@ -42,6 +46,11 @@ private:
 
    //----- Helper functions  ------------------------------------------------------
    void  GetSelectionObjects();
+   void  FillTree(const edm::Event& );
+   void  addEventInfo( const edm::Event& );
+   void  addJet( const pat::Jet* );
+   void  addMuon( const pat::Muon* );
+   void  addElec( const reco::GsfElectron* );
    bool  isMuonEvent();
    bool  isElectronEvent();
 
@@ -57,7 +66,11 @@ private:
    std::vector<const pat::Jet*>          _selectedLJetList  ;
 
    //----- Output Root format handling  -------------------------------------------
-   MiniEvent  _event_storage;
+   TTree* _tree;
+   MiniEventBranches    _eventBranches;
+   MiniMuonBranches     _muonBranches;
+   MiniElectronBranches _elecBranches;
+   MiniJetBranches      _jetBranches;
 
    //----- MiniAOD interaction varaibles  -----------------------------------------
    edm::InputTag _muonsrc ;
@@ -68,13 +81,16 @@ private:
    edm::InputTag _convsrc ;
    edm::InputTag _rhosrc ;
    edm::InputTag _beamspotsrc ;
-   edm::Handle<double>                       _rawRho; 
-   edm::Handle<reco::BeamSpot>               _rawBeamSpot;
-   edm::Handle<reco::VertexCollection>       _rawVertexList;
-   edm::Handle<edm::View<reco::GsfElectron>> _rawElectronList;
-   edm::Handle<edm::View<pat::Muon>>         _rawMuonList;
-   edm::Handle<edm::View<pat::Jet>>          _rawJetList;
-   edm::Handle<reco::ConversionCollection>   _rawConversionList; 
+   edm::InputTag _pileupsrc;
+   edm::Handle<double>                         _rawRho; 
+   edm::Handle<reco::BeamSpot>                 _rawBeamSpot;
+   edm::Handle<reco::VertexCollection>         _rawVertexList;
+   edm::Handle<edm::View<reco::GsfElectron>>   _rawElectronList;
+   edm::Handle<edm::View<pat::Muon>>           _rawMuonList;
+   edm::Handle<edm::View<pat::Jet>>            _rawJetList;
+   edm::Handle<reco::ConversionCollection>     _rawConversionList;
+   edm::Handle<std::vector<pat::MET>>          _rawMETList;
+   edm::Handle<std::vector<PileupSummaryInfo>> _rawPileupList; 
 };
 
 #endif // __GGCHANNELANALYZER_H__

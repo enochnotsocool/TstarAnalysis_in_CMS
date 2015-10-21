@@ -14,6 +14,7 @@
 
 #include "TstarAnalysis/ggChannelAnalyzer/interface/ggChannelAnalyzer.h"
 #include "TstarAnalysis/Selection/interface/Selection.h"
+#include "TstarAnalysis/RootFormat/interface/MiniJetBranches.h"
 //------------------------------------------------------------------------------ 
 //   Helper variables
 //------------------------------------------------------------------------------ 
@@ -34,8 +35,11 @@ ggChannelAnalyzer::ggChannelAnalyzer( const edm::ParameterSet& iConfig )
    _convsrc     = iConfig.getParameter<edm::InputTag>( "convsrc"     ) ;
    
    results = TFileDirectory( fs->mkdir( "results" ) );
-   _event_storage._eventTree =  fs->make<TTree>( "Event Variables" , "Event Variables" );
-   _event_storage.registerVariables();
+   _tree =  fs->make<TTree>( "EventVariables" , "EventVariables" );
+   _eventBranches.registerVariables( _tree );
+   _muonBranches.registerVariables( _tree );
+   _elecBranches.registerVariables( _tree );
+   _jetBranches.registerVariables( _tree  );
 }
 
 ggChannelAnalyzer::~ggChannelAnalyzer()
@@ -60,24 +64,11 @@ void ggChannelAnalyzer::analyze( const edm::Event& iEvent, const edm::EventSetup
    iEvent.getByLabel( _vertexsrc   , _rawVertexList     ) ;
    iEvent.getByLabel( _convsrc     , _rawConversionList ) ;
    iEvent.getByLabel( _rhosrc      , _rawRho            ) ;
+   iEvent.getByLabel( _metsrc      , _rawMETList        ) ;
+   iEvent.getByLabel( _pileupsrc   , _rawPileupList     ) ;
    GetSelectionObjects();
 
-   //------------------------------------------------------------------------------ 
-   //   Begin pre-event variable calculations
-   //------------------------------------------------------------------------------
-   _event_storage.set_jet_count( _selectedBJetList.size() + _selectedLJetList.size() );
-   _event_storage.set_chimass(  computeChiSqMass() );
-   for( const auto& jet : _selectedLJetList ){
-      _event_storage.addJet( jet );
-   } for ( const auto& jet: _selectedBJetList ) {
-      _event_storage.addJet( jet ); }
-
-   for( const auto& muon : _selectedMuonList ){
-      _event_storage.addMuon( muon ); }
-   for( const auto& elec : _selectedElecList ){
-      _event_storage.addElectron( elec ); }
-
-   _event_storage.writeVariables();
+   FillTree( iEvent );   
 }
 
 void ggChannelAnalyzer::GetSelectionObjects()
@@ -123,6 +114,7 @@ void ggChannelAnalyzer::GetSelectionObjects()
    }
    // std::cout << "Done Object selection " << std::endl;
 }
+
 
 bool ggChannelAnalyzer::isMuonEvent(){ return (_selectedMuonList.size()==1 && _selectedElecList.size()==0);}
 bool ggChannelAnalyzer::isElectronEvent() { return (_selectedMuonList.size()==0 && _selectedElecList.size()==1); }

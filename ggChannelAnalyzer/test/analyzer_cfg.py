@@ -15,7 +15,7 @@ options.register('maxEvts',
       'Number of events to process')
 
 options.register('sample',
-      'file:/wk_cms/yichen/mini_samples/myTuple.root',
+      'file:/wk_cms/yichen/ggChannel_tuples/SingleElectron_Run2015D-05Oct2015-v1/Tuple_file_aa.root',
       opts.VarParsing.multiplicity.list,
       opts.VarParsing.varType.string,
       'Sample to analyze')
@@ -171,7 +171,8 @@ process.ggChannelAnalyzer = cms.EDAnalyzer(
       vertexsrc   = cms.InputTag( "offlineSlimmedPrimaryVertices" ),
       convsrc     = cms.InputTag( "reducedEgamma","reducedConversions"),
       rhosrc      = cms.InputTag( "fixedGridRhoFastjetAll" ),
-      beamspotsrc = cms.InputTag( "offlineBeamSpot" )
+      beamspotsrc = cms.InputTag( "offlineBeamSpot" ),
+      pileupsrc   = cms.InputTag( "addPileupInfo" )
       )
 
 

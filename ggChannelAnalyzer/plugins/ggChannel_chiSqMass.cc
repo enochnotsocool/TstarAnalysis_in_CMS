@@ -39,7 +39,6 @@ static TLorentzVector neutrino[2]; // Two candidate solution for nu
 //------------------------------------------------------------------------------ 
 //   Helper functions
 //------------------------------------------------------------------------------
-bool fillJetPermutations( JetList& , JetList& );
 void solveNeutrino( const TLorentzVector& , float , float );
 
 float ggChannelAnalyzer::computeChiSqMass()
@@ -56,7 +55,7 @@ float ggChannelAnalyzer::computeChiSqMass()
       lepton = TLorentzVector( elec->px() , elec->py() , elec->pz() , elec->energy() );
    }
 
-   solveNeutrino(lepton , 0.0 , 0.0 );
+   solveNeutrino(lepton , _rawMETList->begin()->pt() , _rawMETList->begin()->phi() );
    do{
       // std::cout << "Running permutation" << std::endl;
       w_qq     = p.w_h_jet1() + p.w_h_jet2() ;
@@ -103,13 +102,14 @@ void solveNeutrino( const TLorentzVector& lep , float _MET_ , float _METPhi_ )
 
    _alpha_ = _npx_ + _lx_ ;
    _beta_  = _npy_ + _ly_ ;
-   _gamma_ = W_MASS*W_MASS  - _MET_*_MET_ - _lE_*_lE_
-      + _alpha_*_alpha_ + _beta_*_beta_ + _lz_*_lz_ ;
+   _gamma_ =   W_MASS*W_MASS  - _MET_*_MET_ - _lE_*_lE_
+            + _alpha_*_alpha_ + _beta_*_beta_ + _lz_*_lz_ ;
 
-   _a_     =  4. *( _lE_*_lE_- _lz_*_lz_ ); 
-   _b_     = -4. * _gamma_ * _lz_; 
-   _c_     =  4. * _lE_*_lE_ * _MET_*_MET_ - _gamma_*_gamma_ ; 
-   _d_     = _b_ * _b_ - 4. * _a_ * _c_;
+   _a_ =  4. *( _lE_*_lE_- _lz_*_lz_ ); 
+   _b_ = -4. * _gamma_ * _lz_; 
+   _c_ =  4. * _lE_*_lE_ * _MET_*_MET_ - _gamma_*_gamma_ ; 
+   _d_ = _b_ * _b_ - 4. * _a_ * _c_;
+
    if( _d_ < 0 ) {
       _npz_ = -1. * _b_ / ( 2.*_a_ ) ;    
       _nE_  = sqrt( _npx_ * _npx_  + _npy_ * _npy_ + _npz_ * _npz_ ) ; 
