@@ -42,7 +42,7 @@ function main(){
       cmd=${cmd}" DataProcessing=$DataProcess"
       cmd=${cmd}" outputLabel=$output_tuple_file"
       cmd=${cmd}" histFile=$output_hist_file"
-      cmd=${cmd}" maxEvts=10"
+      cmd=${cmd}" maxEvts=-1"
       cmd=${cmd}" jsonFile=$jsonFile"
       cmd=${cmd}" sample="
       cat $file  |
@@ -56,7 +56,7 @@ function main(){
       mv temp.txt $file
       mv $file ${file}.sh
       chmod +x ${file}.sh
-      #bsub -q 1nd $file
+      bsub -q 1nd ${file}.sh
    done
 }
 
