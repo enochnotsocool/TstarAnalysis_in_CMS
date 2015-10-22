@@ -1,7 +1,7 @@
 #ifndef __MINIElectron_H__
 #define __MINIElectron_H__
 
-#include "Global.h"
+#include "TLorentzVector.h"
 
 class MiniElectron
 {

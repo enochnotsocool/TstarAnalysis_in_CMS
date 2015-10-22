@@ -6,5 +6,3 @@ void MiniJetBranches::retrieveVariables( TTree* tree ){
    tree->SetBranchAddress( "Jettemp" , &_tempList );
 }
 
-// Global Variable access
-MiniJetBranches JetBranches;

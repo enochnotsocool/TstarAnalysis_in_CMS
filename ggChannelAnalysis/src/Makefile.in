@@ -3,7 +3,7 @@ CHDRS  = $(wildcard *.h)
 COBJS  = $(addsuffix .o, $(basename $(CSRCS)))
 
 EXTINCDIR = ../../include
-DEPENDDIR = -I. -I$(EXTINCDIR) -I`root-config --incdir` 
+DEPENDDIR = -I. -I`root-config --incdir` -I$(EXTINCDIR)
 LIBDIR    = ../../lib
 EXTLINK   = $(PKGNAME).d
 LIBDEPEND = $(LIBDIR)/lib.d
@@ -28,6 +28,7 @@ top: $(EXTLINK) target
 
 clean:
 	@rm -f $(COBJS)
+	@rm -f *.mak
 
 ## Make dependencies
 depend: .depend.mak
@@ -43,18 +44,16 @@ extheader: .extheader.mak
 	@$(ECHO) Linking external header files...
 	@rm -f $@
 	@$(ECHO) -n "$(EXTLINK): " > $@
-	@for hdr in $(EXTHDRS); \
-		do \
+	@for hdr in $(EXTHDRS); do \
 		$(ECHO) -n "$(EXTINCDIR)/$$hdr " >> $@; \
 		rm -f $(EXTINCDIR)/$$hdr; \
 		done
 	@$(ECHO) >> $@
-	@for hdr in $(EXTHDRS); \
-		do \
+	@for hdr in $(EXTHDRS); do\
 		$(ECHO) "$(EXTINCDIR)/$$hdr: $$hdr" >> $@; \
-		$(ECHO) "       @rm -f $(EXTINCDIR)/$$hdr" >> $@; \
-		$(ECHO) "       @ln -fs ../src/$(PKGNAME)/$$hdr $(EXTINCDIR)/$$hdr" >> $@; \
-		done
+		$(ECHO) "	@rm -f $(EXTINCDIR)/$$hdr" >> $@; \
+		$(ECHO) "	@ln -fs ../src/$(PKGNAME)/$$hdr $(EXTINCDIR)/$$hdr" >> $@; \
+	done
 
 include .extheader.mak
 include .depend.mak

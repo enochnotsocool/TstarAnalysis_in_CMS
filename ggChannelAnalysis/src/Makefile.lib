@@ -5,6 +5,7 @@ target: $(TARGET)
 
 $(TARGET): $(COBJS)
 	@echo "Building $(LIBNAME)..."
+	@echo $(COBJS)
 	@$(AR) $@ $(COBJS)
 	@touch $(LIBDEPEND)
 

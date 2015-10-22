@@ -1,7 +1,7 @@
 #ifndef __MINIPARTICLE_H__
 #define __MINIPARTICLE_H__
 
-#include "Global.h"
+#include "TLorentzVector.h"
 
 class MiniPARTICLE
 {

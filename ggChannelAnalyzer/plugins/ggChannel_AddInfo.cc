@@ -48,6 +48,7 @@ void ggChannelAnalyzer::addEventInfo( const edm::Event& iEvent )
    _eventBranches._JetCount      = _selectedBJetList.size() + _selectedLJetList.size();
 
    _eventBranches._VertexCount = _rawVertexList->size();
+   _eventBranches._chiMass     = computeChiSqMass(); 
 
    if( !iEvent.isRealData() ){
       _eventBranches._pileUpWeight = pileUpWeight[ (unsigned int)_rawPileupList->begin()->getTrueNumInteractions() ] ;

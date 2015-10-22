@@ -6,5 +6,3 @@ void MiniMuonBranches::retrieveVariables( TTree* tree ){
    tree->SetBranchAddress( "MuontrackRelIso" , &_trackRelIsoList );
 }
 
-// Global Variable access
-MiniMuonBranches MuonBranches;

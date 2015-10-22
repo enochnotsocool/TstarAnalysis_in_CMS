@@ -16,5 +16,3 @@ void MiniEventBranches::retrieveVariables( TTree* tree ){
    tree->SetBranchAddress( "EventchiMass" , &_chiMass );
 }
 
-// Global Variable access
-MiniEventBranches EventBranches;

@@ -1,7 +1,7 @@
 #ifndef __MINIMuon_H__
 #define __MINIMuon_H__
 
-#include "Global.h"
+#include "TLorentzVector.h"
 
 class MiniMuon
 {

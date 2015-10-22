@@ -1,4 +1,4 @@
-SRCPKGS = RootFormat 
+SRCPKGS = SampleInfo RootFormat  
 LIBPKGS = $(REFPKGS) $(SRCPKGS)
 MAIN    = main 
 

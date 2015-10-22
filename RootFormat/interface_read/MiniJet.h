@@ -1,7 +1,7 @@
 #ifndef __MINIJet_H__
 #define __MINIJet_H__
 
-#include "Global.h"
+#include "TLorentzVector.h"
 
 class MiniJet
 {

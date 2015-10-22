@@ -1,7 +1,7 @@
 #ifndef __MINIEvent_H__
 #define __MINIEvent_H__
 
-#include "Global.h"
+#include "TLorentzVector.h"
 
 class MiniEvent
 {
