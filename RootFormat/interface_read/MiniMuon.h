@@ -1,6 +1,8 @@
 #ifndef __MINIMuon_H__
 #define __MINIMuon_H__
 
+#include "Global.h"
+
 class MiniMuon
 {
 public:
@@ -12,7 +14,7 @@ public:
   const float& trackRelIso();
 
 private:
-   size_t index ;
+   size_t _index ;
 };
 
 

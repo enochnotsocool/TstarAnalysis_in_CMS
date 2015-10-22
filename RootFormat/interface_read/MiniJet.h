@@ -1,6 +1,8 @@
 #ifndef __MINIJet_H__
 #define __MINIJet_H__
 
+#include "Global.h"
+
 class MiniJet
 {
 public:
@@ -12,7 +14,7 @@ public:
   const float& temp();
 
 private:
-   size_t index ;
+   size_t _index ;
 };
 
 

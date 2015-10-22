@@ -33,6 +33,7 @@ ggChannelAnalyzer::ggChannelAnalyzer( const edm::ParameterSet& iConfig )
    _rhosrc      = iConfig.getParameter<edm::InputTag>( "rhosrc"      ) ;
    _beamspotsrc = iConfig.getParameter<edm::InputTag>( "beamspotsrc" ) ;
    _convsrc     = iConfig.getParameter<edm::InputTag>( "convsrc"     ) ;
+   _pileupsrc   = iConfig.getParameter<edm::InputTag>( "pileupsrc"   ) ;
    
    results = TFileDirectory( fs->mkdir( "results" ) );
    _tree =  fs->make<TTree>( "EventVariables" , "EventVariables" );

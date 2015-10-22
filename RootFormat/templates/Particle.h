@@ -1,6 +1,8 @@
 #ifndef __MINIPARTICLE_H__
 #define __MINIPARTICLE_H__
 
+#include "Global.h"
+
 class MiniPARTICLE
 {
 public:
@@ -10,7 +12,7 @@ public:
    __ACCESS_FUNCTIONS__
 
 private:
-   size_t index ;
+   size_t _index ;
 };
 
 

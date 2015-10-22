@@ -1,6 +1,6 @@
 #include "MiniEventBranches.h"
 
-void MiniEventBranches::retrieveVariables( TTree* ){
+void MiniEventBranches::retrieveVariables( TTree* tree ){
    
    tree->SetBranchAddress( "EventRunNumber" , &_RunNumber );
    tree->SetBranchAddress( "EventLumiNumber" , &_LumiNumber );
@@ -17,4 +17,4 @@ void MiniEventBranches::retrieveVariables( TTree* ){
 }
 
 // Global Variable access
-MiniEventBranches PARTICLEBranches;
+MiniEventBranches EventBranches;

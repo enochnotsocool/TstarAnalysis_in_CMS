@@ -1,6 +1,8 @@
 #ifndef __MINIElectron_H__
 #define __MINIElectron_H__
 
+#include "Global.h"
+
 class MiniElectron
 {
 public:
@@ -11,7 +13,7 @@ public:
   const TLorentzVector& Vec();
 
 private:
-   size_t index ;
+   size_t _index ;
 };
 
 

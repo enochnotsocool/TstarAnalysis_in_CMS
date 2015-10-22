@@ -22,7 +22,7 @@ options.register('sample',
 
 
 options.register('DataProcessing',
-      "Data25ns",
+      "MC25ns",
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.string,
       'Data processing type')
@@ -68,11 +68,9 @@ options.parseArguments()
 #------------------------------------------------------------------------------- 
 #   Basic options parsing
 #------------------------------------------------------------------------------- 
-if(options.isData):options.LHE = False
-runOnData        = options.isData           #data/MC switch
 useHFCandidates  = not options.useNoHFMET   #create an additionnal NoHF slimmed MET collection if the option is set to false
 usePrivateSQlite = options.usePrivateSQLite #use external JECs (sqlite file)
-applyResiduals   = options.isData           #application of residual corrections. 
+#applyResiduals   = options.isData           #application of residual corrections. 
                                             #   Have to be set to True once the 13 TeV residual corrections are available. 
                                             #   False to be kept meanwhile. Can be kept to False later for private tests
                                             #   or for analysis checks and developments (not the official recommendation!).
@@ -121,7 +119,6 @@ process.TFileService = cms.Service("TFileService",
 
 process.ggChannelAnalyzer = cms.EDAnalyzer(
       "ggChannelAnalyzer",
-      jetLimit    = cms.untracked.double( options.jetLimit ),
       muonsrc     = cms.InputTag( "slimmedMuons" ) ,
       elecsrc     = cms.InputTag( "slimmedElectrons" ),
       jetsrc      = cms.InputTag( "slimmedJets" ),
@@ -130,7 +127,7 @@ process.ggChannelAnalyzer = cms.EDAnalyzer(
       convsrc     = cms.InputTag( "reducedEgamma","reducedConversions"),
       rhosrc      = cms.InputTag( "fixedGridRhoFastjetAll" ),
       beamspotsrc = cms.InputTag( "offlineBeamSpot" ),
-      pileupsrc   = cms.InputTag( "addPileupInfo" )
+      pileupsrc   = cms.InputTag( "slimmedAddPileupInfo" )
    )
 
 

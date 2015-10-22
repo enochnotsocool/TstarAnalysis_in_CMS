@@ -13,6 +13,13 @@ WRITE_IMP_DIR="./src"
 READ_IMP_DIR="./src_read"
 
 function main() {
+   makeParticle Electron
+   makeParticle Event 
+   makeParticle Muon
+   makeParticle Jet
+}
+
+function makeParticle() {
    filename=${1}.txt
    branch_headerFile="./interface/Mini${1}Branches.h"
    branch_writeFile="./src/Mini${1}Branches_write.cc"
@@ -55,7 +62,7 @@ function makeWriteFile() {
       fi
    done < ${1}.txt
    cat ./templates/ParticleBranchesWrite.h |
-      sed "s@PARTICLE@${1}@" |
+      sed "s@PARTICLE@${1}@g" |
       sed "s@__REGISTER_CMDS__@$registerCMDs@" |
       sed "s@__CLEAR_CMDS__@$clearCMDS@" > $2
 }
@@ -71,7 +78,7 @@ function makeReadFile() {
       fi
    done < ${1}.txt
    cat ./templates/ParticleBranchesRead.h | 
-      sed "s@PARTICLE@${1}@" |
+      sed "s@PARTICLE@${1}@g" |
       sed "s@__READ_CMDS__@$readCMDs@" > $2
 }
 
@@ -83,7 +90,7 @@ function makeParticleHead() {
       accessFunction=$accessFunction"\n  const $var_type\& $var_name();"
    done < ${1}.txt
    cat ./templates/Particle.h |
-      sed "s@PARTICLE@${1}@" |
+      sed "s@PARTICLE@${1}@g" |
       sed "s@__ACCESS_FUNCTIONS__@${accessFunction}@" > ${2}
 }
 
@@ -92,10 +99,10 @@ function makePartcleFile() {
    while read -r line ; do 
       var_type=$( echo $line | awk '{print $1}')
       var_name=$( echo $line | awk '{print $2}' );
-      accessFunction=$accessFunction"const $var_type\& $var_name() { return ${1}Branches._${var_name}List[index];}"
+      accessFunction=$accessFunction"const $var_type\& Mini${1}::$var_name() { return ${1}Branches._${var_name}List[ _index ]; }"
    done < ${1}.txt
    cat ./templates/Particle.cc |
-      sed "s@PARTICLE@${1}@" |
+      sed "s@PARTICLE@${1}@g" |
       sed "s@__ACCESS_FUNCTIONS__@${accessFunction}@" > ${2}
 }
 

@@ -1,3 +1,3 @@
 #include "MiniElectron.h"
 
-const TLorentzVector& Vec() { return ElectronBranches._VecList[index];}
+const TLorentzVector& MiniElectron::Vec() { return ElectronBranches._VecList[ _index ]; }

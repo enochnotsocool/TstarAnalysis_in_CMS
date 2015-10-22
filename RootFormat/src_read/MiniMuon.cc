@@ -1,3 +1,3 @@
 #include "MiniMuon.h"
 
-const TLorentzVector& Vec() { return MuonBranches._VecList[index];}const float& trackRelIso() { return MuonBranches._trackRelIsoList[index];}
+const TLorentzVector& MiniMuon::Vec() { return MuonBranches._VecList[ _index ]; }const float& MiniMuon::trackRelIso() { return MuonBranches._trackRelIsoList[ _index ]; }

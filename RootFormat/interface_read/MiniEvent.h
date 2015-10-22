@@ -1,6 +1,8 @@
 #ifndef __MINIEvent_H__
 #define __MINIEvent_H__
 
+#include "Global.h"
+
 class MiniEvent
 {
 public:
@@ -22,7 +24,7 @@ public:
   const float& chiMass();
 
 private:
-   size_t index ;
+   size_t _index ;
 };
 
 
