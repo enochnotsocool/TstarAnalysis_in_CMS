@@ -64,7 +64,7 @@ private:
    edm::Handle<edm::View<reco::GsfElectron>> _rawElectronList;
    edm::Handle<edm::View<pat::Muon>>         _rawMuonList;
    edm::Handle<edm::View<pat::Jet>>          _rawJetList;
-   edm::Handle<reco::ConversionCollection>   _rawConversionList; 
+   edm::Handle<reco::ConversionCollection>   _rawConversionList;
 
    //----- Temporary storage members  -----------------------------------------------------------------
    reco::Vertex                           _primaryVertex ; 

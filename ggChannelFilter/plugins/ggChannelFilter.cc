@@ -195,6 +195,12 @@ bool ggChannelFilter::passEventSelection( const edm::Event& iEvent , const edm::
       _muEventCount->Fill(3);
    }else if( isElEvent ) {
       _elEventCount->Fill(3); }
+   if( _ljetList[0]->pt() < 50. || _bjetList[0]->pt() < 50. ) { return false; }
+   if( isMuEvent ) {
+      _muEventCount->Fill(4);
+   }else if( isElEvent ) {
+      _elEventCount->Fill(4); }
+
 
    return true;
 }

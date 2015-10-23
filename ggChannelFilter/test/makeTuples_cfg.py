@@ -75,7 +75,7 @@ options.register("histFile",
       'Histogram filename')
 
 options.register('jetLimit',
-      50.0,
+      30.0,
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.float,
       'Limit for pt')
