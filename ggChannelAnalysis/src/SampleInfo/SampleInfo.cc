@@ -50,9 +50,4 @@ const std::string& SampleInfo::plotStyle() const
    return _plotstyle;
 }
 
-void SampleInfo::makeBasicPlots()
-{
-   makeChiMassPlot();
-}
-
 TH1F* SampleInfo::chimassHist() { return _chimass; }

@@ -7,7 +7,7 @@
  *
 *******************************************************************************/
 
-#include "TstarAnalysis/ggChannelAnalyzer/interface/ggChannelAnalyzer.h"
+#include "TstarAnalysis/ggChannelProcessor/interface/ggChannelProcessor.h"
 
 static float pileUpWeight[120] = {
    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 
@@ -22,7 +22,7 @@ static float pileUpWeight[120] = {
    1.00, 1.00, 1.00
 };
 
-void ggChannelAnalyzer::FillTree( const edm::Event& iEvent )
+void ggChannelProcessor::FillTree( const edm::Event& iEvent )
 {
    _jetBranches.clear();
    _elecBranches.clear();
@@ -36,7 +36,7 @@ void ggChannelAnalyzer::FillTree( const edm::Event& iEvent )
    _tree->Fill();
 }
 
-void ggChannelAnalyzer::addEventInfo( const edm::Event& iEvent )
+void ggChannelProcessor::addEventInfo( const edm::Event& iEvent )
 {
    _eventBranches._RunNumber           = iEvent.id().run();
    _eventBranches._EventNumber         = iEvent.id().event();
@@ -59,25 +59,26 @@ void ggChannelAnalyzer::addEventInfo( const edm::Event& iEvent )
       _eventBranches._MET    = _rawMETList->begin()->pt();
       _eventBranches._METPhi = _rawMETList->begin()->phi();
    } else {
+      std::cout << "Bad MET" << std::endl;
       _eventBranches._MET = _eventBranches._METPhi = 0 ;
    }
 }
 
 static TLorentzVector temp;
-void ggChannelAnalyzer::addJet( const pat::Jet* jet )
+void ggChannelProcessor::addJet( const pat::Jet* jet )
 {
    temp.SetPtEtaPhiE( jet->pt() , jet->eta() , jet->phi() , jet->energy() );
    _jetBranches._VecList.push_back( temp );
 }
 
-void ggChannelAnalyzer::addMuon( const pat::Muon* muon )
+void ggChannelProcessor::addMuon( const pat::Muon* muon )
 {
    temp.SetPtEtaPhiE( muon->pt() , muon->eta() , muon->phi() , muon->energy() );
    _muonBranches._VecList.push_back( temp );
    _muonBranches._trackRelIsoList.push_back( muon->trackIso()/muon->pt() );
 }
 
-void ggChannelAnalyzer::addElec( const reco::GsfElectron* elec )
+void ggChannelProcessor::addElec( const reco::GsfElectron* elec )
 {
    temp.SetPtEtaPhiE( elec->pt() , elec->eta() , elec->phi() , elec->energy() );
    _elecBranches._VecList.push_back( temp ); 

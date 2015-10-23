@@ -1,7 +1,7 @@
-main.o: main.cc ../../include/SampleDef.h ../../include/SampleInfo.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TChain.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TTree.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TBranch.h \
+main.o: main.cc \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TFile.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TDirectoryFile.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TDirectory.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TNamed.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TObject.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/Rtypes.h \
@@ -20,16 +20,44 @@ main.o: main.cc ../../include/SampleDef.h ../../include/SampleInfo.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TBuffer.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TString.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TMathBase.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TObjArray.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TList.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TSeqCollection.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TCollection.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TIterator.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TDatime.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TUUID.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TMap.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/THashTable.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TUrl.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TCanvas.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TPad.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TVirtualPad.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttPad.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TVirtualX.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttLine.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttFill.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TDataType.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttText.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttMarker.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/GuiTypes.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/Buttons.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TQObject.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TQObjectEmitVA.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TQConnection.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/Varargs.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TInterpreter.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TDictionary.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/ESTLType.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttLine.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttMarker.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TVirtualMutex.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttBBox2D.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TPoint.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttCanvas.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TCanvasImp.h \
+ ../../include/SampleDef.h ../../include/SampleInfo.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TChain.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TTree.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TBranch.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TObjArray.h \
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TDataType.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TArrayD.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TArray.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TArrayI.h \
@@ -48,31 +76,4 @@ main.o: main.cc ../../include/SampleDef.h ../../include/SampleInfo.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/Foption.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TVectorFfwd.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TVectorDfwd.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TFitResultPtr.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TFile.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TDirectoryFile.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TDirectory.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TList.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TDatime.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TUUID.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TMap.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/THashTable.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TUrl.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TCanvas.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TPad.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TVirtualPad.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttPad.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TVirtualX.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttText.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/GuiTypes.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/Buttons.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TQObject.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TQObjectEmitVA.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TQConnection.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/Varargs.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TInterpreter.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TVirtualMutex.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttBBox2D.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TPoint.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TAttCanvas.h \
- /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TCanvasImp.h
+ /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/external/slc6_amd64_gcc491/bin/../../../../../../lcg/root/6.02.00-odfocd7/include/TFitResultPtr.h

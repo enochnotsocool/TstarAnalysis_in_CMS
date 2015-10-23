@@ -27,6 +27,7 @@ public:
 
    void  makeBasicPlots();
    TH1F* chimassHist();
+   TH1F* jetPtHist();
 private:
    std::string  _name;
    std::string  _plotstyle;
@@ -34,9 +35,8 @@ private:
 
    TChain* _chain;
    TH1F*   _chimass;
+   TH1F*   _jetPt;
 
-   // Helper private variables
-   void makeChiMassPlot();
 };
 
 

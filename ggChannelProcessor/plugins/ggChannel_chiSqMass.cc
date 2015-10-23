@@ -6,8 +6,8 @@
  *  
  *
 *******************************************************************************/
-#include "TstarAnalysis/ggChannelAnalyzer/interface/ggChannelAnalyzer.h"
-#include "TstarAnalysis/ggChannelAnalyzer/interface/JetPermutator.h"
+#include "TstarAnalysis/ggChannelProcessor/interface/ggChannelProcessor.h"
+#include "TstarAnalysis/ggChannelProcessor/interface/JetPermutator.h"
 #include "TLorentzVector.h"
 #include <iostream>
 
@@ -41,7 +41,7 @@ static TLorentzVector neutrino[2]; // Two candidate solution for nu
 //------------------------------------------------------------------------------
 void solveNeutrino( const TLorentzVector& , float , float );
 
-float ggChannelAnalyzer::computeChiSqMass()
+float ggChannelProcessor::computeChiSqMass()
 {
    // std::cout << "Begin mass calculation" << std::endl;
 

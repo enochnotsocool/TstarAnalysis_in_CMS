@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- *  Filename    : ggChannelAnalyzer.cc
+ *  Filename    : ggChannelProcessor.cc
  *  Description : Implementation of channel analyzer
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
@@ -12,7 +12,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
-#include "TstarAnalysis/ggChannelAnalyzer/interface/ggChannelAnalyzer.h"
+#include "TstarAnalysis/ggChannelProcessor/interface/ggChannelProcessor.h"
 #include "TstarAnalysis/Selection/interface/Selection.h"
 #include "TstarAnalysis/RootFormat/interface/MiniJetBranches.h"
 //------------------------------------------------------------------------------ 
@@ -24,11 +24,12 @@ static TFileDirectory results ;
 //------------------------------------------------------------------------------ 
 //   Constructor and destructor
 //------------------------------------------------------------------------------
-ggChannelAnalyzer::ggChannelAnalyzer( const edm::ParameterSet& iConfig )
+ggChannelProcessor::ggChannelProcessor( const edm::ParameterSet& iConfig )
 {
    _muonsrc     = iConfig.getParameter<edm::InputTag>( "muonsrc"     ) ;
    _elecsrc     = iConfig.getParameter<edm::InputTag>( "elecsrc"     ) ;
    _jetsrc      = iConfig.getParameter<edm::InputTag>( "jetsrc"      ) ;
+   _metsrc      = iConfig.getParameter<edm::InputTag>( "metsrc"      ) ;
    _vertexsrc   = iConfig.getParameter<edm::InputTag>( "vertexsrc"   ) ;
    _rhosrc      = iConfig.getParameter<edm::InputTag>( "rhosrc"      ) ;
    _beamspotsrc = iConfig.getParameter<edm::InputTag>( "beamspotsrc" ) ;
@@ -43,13 +44,13 @@ ggChannelAnalyzer::ggChannelAnalyzer( const edm::ParameterSet& iConfig )
    _jetBranches.registerVariables( _tree  );
 }
 
-ggChannelAnalyzer::~ggChannelAnalyzer()
+ggChannelProcessor::~ggChannelProcessor()
 {}
 
 //------------------------------------------------------------------------------ 
 //   Main control flow
 //------------------------------------------------------------------------------
-void ggChannelAnalyzer::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
+void ggChannelProcessor::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
    _selectedLJetList.clear();
    _selectedBJetList.clear();
@@ -72,7 +73,7 @@ void ggChannelAnalyzer::analyze( const edm::Event& iEvent, const edm::EventSetup
    FillTree( iEvent );   
 }
 
-void ggChannelAnalyzer::GetSelectionObjects()
+void ggChannelProcessor::GetSelectionObjects()
 {
    // std::cout << "Begin object selection" << std::endl;
    const auto& VertexList = *(_rawVertexList.product());
@@ -117,18 +118,18 @@ void ggChannelAnalyzer::GetSelectionObjects()
 }
 
 
-bool ggChannelAnalyzer::isMuonEvent(){ return (_selectedMuonList.size()==1 && _selectedElecList.size()==0);}
-bool ggChannelAnalyzer::isElectronEvent() { return (_selectedMuonList.size()==0 && _selectedElecList.size()==1); }
+bool ggChannelProcessor::isMuonEvent(){ return (_selectedMuonList.size()==1 && _selectedElecList.size()==0);}
+bool ggChannelProcessor::isElectronEvent() { return (_selectedMuonList.size()==0 && _selectedElecList.size()==1); }
 
 //------------------------------------------------------------------------------ 
-//   ED Analyzer requirements
+//   ED Processor requirements
 //------------------------------------------------------------------------------
-void ggChannelAnalyzer::beginJob(){}
-void ggChannelAnalyzer::endJob() {}
-void ggChannelAnalyzer::fillDescriptions( edm::ConfigurationDescriptions& descriptions )
+void ggChannelProcessor::beginJob(){}
+void ggChannelProcessor::endJob() {}
+void ggChannelProcessor::fillDescriptions( edm::ConfigurationDescriptions& descriptions )
 {
    edm::ParameterSetDescription desc;
    desc.setUnknown();
    descriptions.addDefault( desc );
 }
-DEFINE_FWK_MODULE( ggChannelAnalyzer );
+DEFINE_FWK_MODULE( ggChannelProcessor );

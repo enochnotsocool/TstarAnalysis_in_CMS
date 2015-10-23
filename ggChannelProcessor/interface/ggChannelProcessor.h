@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- *  Filename    : ggChannelAnalyzer.h
+ *  Filename    : ggChannelProcessor.h
  *  Description : ED Analyzer for single sample analysis
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
@@ -33,10 +33,10 @@
 
 #include "TTree.h"
 
-class ggChannelAnalyzer : public edm::EDAnalyzer {
+class ggChannelProcessor : public edm::EDAnalyzer {
 public:
-   explicit ggChannelAnalyzer( const edm::ParameterSet& );
-   ~ggChannelAnalyzer();
+   explicit ggChannelProcessor( const edm::ParameterSet& );
+   ~ggChannelProcessor();
    static void fillDescriptions( edm::ConfigurationDescriptions& descriptions );
 
 private:

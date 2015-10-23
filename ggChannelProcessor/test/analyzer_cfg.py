@@ -117,8 +117,8 @@ process.TFileService = cms.Service("TFileService",
       fileName = cms.string( options.filename )
       )
 
-process.ggChannelAnalyzer = cms.EDAnalyzer(
-      "ggChannelAnalyzer",
+process.ggChannelProcessor = cms.EDAnalyzer(
+      "ggChannelProcessor",
       muonsrc     = cms.InputTag( "slimmedMuons" ) ,
       elecsrc     = cms.InputTag( "slimmedElectrons" ),
       jetsrc      = cms.InputTag( "slimmedJets" ),
@@ -132,5 +132,5 @@ process.ggChannelAnalyzer = cms.EDAnalyzer(
 
 
 process.outpath = cms.EndPath(
-      process.ggChannelAnalyzer
+      process.ggChannelProcessor
       )

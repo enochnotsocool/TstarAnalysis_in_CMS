@@ -9,12 +9,18 @@
 #include "MiniEventBranches.h"
 #include "ParticleReader.h"
 
-void SampleInfo::makeChiMassPlot()
+void SampleInfo::makeBasicPlots()
 {
-   printf( "Making chimass plot for %s\n" , _name.c_str() );
+   printf( "Making basic plots for %s\n", _name.c_str() );
+  
    SetInputTree( _chain );
-   for( size_t i = 0 ; i < _chain->GetEntries() ; ++i ){
-      _chain->GetEntry(i);
-      _chimass->Fill( EventBranches._chiMass ); 
+   for( int i = 0 ; i < _chain->GetEntries() ; ++i ){
+   void makeJetPtPlot();
+      _chimass->Fill( EventBranches._chiMass , getStatisticsWeight() );
+      for( size_t i = 0 ; i < JetBranches._VecList.size() ; ++i ){
+         _jetPt->Fill( JetBranches._VecList[i].Pt() , getStatisticsWeight() );
+      }
    }
 }
+
+
