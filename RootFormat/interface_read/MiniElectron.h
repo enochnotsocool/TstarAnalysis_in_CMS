@@ -10,7 +10,10 @@ public:
    virtual ~MiniElectron ();
 
    
-  const TLorentzVector& Vec();
+  const float& Pt();
+  const float& Eta();
+  const float& Phi();
+  const float& Energy();
 
 private:
    size_t _index ;

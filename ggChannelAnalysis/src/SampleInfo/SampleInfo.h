@@ -10,9 +10,12 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include "TChain.h"
 #include "TH1F.h"
+
 typedef std::vector<const std::string>  stringList;
+typedef std::map<const std::string, TH1F*>  HistMap; 
 
 class SampleInfo {
 public:
@@ -22,21 +25,25 @@ public:
    void  addFile( const std::string& );
    void  setTargetEventCount( const float );
    float getStatisticsWeight() const ;
-   void  setPlotStyle( const std::string& );
-   const std::string& plotStyle() const ;
 
+   TH1F* Hist( const std::string& );
+   void  HistPlot( const std::string& , const std::string& );
    void  makeBasicPlots();
-   TH1F* chimassHist();
-   TH1F* jetPtHist();
+
+   const std::string& plotStyle() const ;
+   void  setPlotStyle( const std::string& );
+   void  addPlotStyle( const std::string& );
+   void  setFillColor( const Color_t , const float=1.0 );
+   void  setLineColor( const Color_t );
 private:
    std::string  _name;
    std::string  _plotstyle;
+   HistMap      _histMap;
    float        _targetEventCount;
+   
+   TChain*      _chain;
 
-   TChain* _chain;
-   TH1F*   _chimass;
-   TH1F*   _jetPt;
-
+   void addHist( const std::string& , int ,  float , float );
 };
 
 

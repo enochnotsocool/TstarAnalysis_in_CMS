@@ -9,7 +9,7 @@ import copy
 options = opts.VarParsing ('analysis')
 
 options.register('maxEvts',
-      1000, ## For all events processing use -1
+      -1, ## For all events processing use -1
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.int,
       'Number of events to process')

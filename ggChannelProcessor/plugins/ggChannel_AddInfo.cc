@@ -62,26 +62,36 @@ void ggChannelProcessor::addEventInfo( const edm::Event& iEvent )
       std::cout << "Bad MET" << std::endl;
       _eventBranches._MET = _eventBranches._METPhi = 0 ;
    }
+
+   for( const auto& muon : _selectedMuonList ){ addMuon( muon ); }
+   for( const auto& elec : _selectedElecList ){ addElec( elec ); }
+   for( const auto& jet  : _selectedBJetList ){ addJet( jet ); }
+   for( const auto& jet  : _selectedLJetList ){ addJet( jet ); }
 }
 
 static TLorentzVector temp;
 void ggChannelProcessor::addJet( const pat::Jet* jet )
 {
-   temp.SetPtEtaPhiE( jet->pt() , jet->eta() , jet->phi() , jet->energy() );
-   _jetBranches._VecList.push_back( temp );
+   _jetBranches._PtList.push_back( jet->pt() );
+   _jetBranches._EtaList.push_back( jet->eta() );
+   _jetBranches._PhiList.push_back( jet->phi() );
+   _jetBranches._EnergyList.push_back( jet->energy() );
 }
 
 void ggChannelProcessor::addMuon( const pat::Muon* muon )
 {
-   temp.SetPtEtaPhiE( muon->pt() , muon->eta() , muon->phi() , muon->energy() );
-   _muonBranches._VecList.push_back( temp );
+   _muonBranches._PtList.push_back( muon->pt() );
+   _muonBranches._EtaList.push_back( muon->eta() );
+   _muonBranches._PhiList.push_back( muon->phi() );
+   _muonBranches._EnergyList.push_back( muon->energy() );
    _muonBranches._trackRelIsoList.push_back( muon->trackIso()/muon->pt() );
 }
 
 void ggChannelProcessor::addElec( const reco::GsfElectron* elec )
 {
-   temp.SetPtEtaPhiE( elec->pt() , elec->eta() , elec->phi() , elec->energy() );
-   _elecBranches._VecList.push_back( temp ); 
-   
+   _elecBranches._PtList.push_back( elec->pt() );
+   _elecBranches._EtaList.push_back( elec->eta() );
+   _elecBranches._PhiList.push_back( elec->phi() );
+   _elecBranches._EnergyList.push_back( elec->energy() );
 }
 

@@ -23,12 +23,17 @@ void InitSamples()
    // Data File Settings 
    Data.addFile( TupleDir+"SingleElectron.root" );
    Data.addFile( TupleDir+"SingleMuon.root" );
+   Data.setLineColor( kBlack );
 
    // Tstar Signal Settings 
    Tstar_Signal.addFile( TupleDir+"Tstar_M1000.root" );
+   Tstar_Signal.setFillColor( kRed , 0.5 );
+   Tstar_Signal.setLineColor( kBlack );
 
    // Background settings
    TTJets_background.addFile( TupleDir+"TTJets.root" );
+   TTJets_background.setFillColor( kOrange + 7 , 0.5 );
+   Tstar_Signal.setLineColor( kBlack );
 
    SingleT_s_channel.addFile( TupleDir+"ST_s-channel.root" );
    SingleT_t_channel_top.addFile( TupleDir+"ST_t-channel-top.root" );
