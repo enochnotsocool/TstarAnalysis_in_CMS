@@ -82,6 +82,7 @@ private:
    edm::InputTag _rhosrc ;
    edm::InputTag _beamspotsrc ;
    edm::InputTag _pileupsrc;
+
    edm::Handle<double>                         _rawRho; 
    edm::Handle<reco::BeamSpot>                 _rawBeamSpot;
    edm::Handle<reco::VertexCollection>         _rawVertexList;
