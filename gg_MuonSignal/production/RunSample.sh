@@ -56,7 +56,7 @@ function main(){
       mv temp.txt $file
       mv $file ${file}.sh
       chmod +x ${file}.sh
-      bsub -q 1nd ${file}.sh
+      bsub -q 2nd ${file}.sh
    done
 }
 
