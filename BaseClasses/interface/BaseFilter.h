@@ -23,20 +23,13 @@ public:
    BaseFilter( const edm::ParameterSet& );
    virtual ~BaseFilter ();
 
-   //----- Public functions accessible by analyzers  ------------------------------
-   bool isGoodPrimaryVertex( const reco::Vertex&, TH1F* );
-   bool isSelectionMuon( const pat::Muon& , const reco::Vertex& , TH1F* );
-   bool isSelectionElectron( const pat::Electron& , const edm::ValueMap<bool> , TH1F* );
-   bool isVetoMuon( const pat::Muon& , TH1F* );
-   bool isVetoElectron( const pat::Electron& , const edm::ValueMap<bool> , TH1F* );
-   bool isSelectionJet( const pat::Jet& , const MuonList& , const ElectronList& , TH1F* );
-
 protected:
-   void processVertex();
-   void processMuon();
-   void processElectron();
-   void processJet();
-   virtual bool passEventSelection( TH1F* ); // Only this function is virtual for this analysis
+   void processVertex(const edm::Event& , const edm::EventSetup&);
+   void processMuon(const edm::Event& , const edm::EventSetup& );
+   void processElectron(const edm::Event& , const edm::EventSetup& );
+   void processJet(const edm::Event& , const edm::EventSetup& );
+   // Only this function is virtual for this analysis
+   virtual bool passEventSelection(const edm::Event& , const edm::EventSetup& ); 
 
    //----- Storage classes  -------------------------------------------------------
    reco::Vertex  _primaryVertex;
@@ -45,6 +38,7 @@ protected:
    ElectronList  _selectedElectronList;
    ElectronList  _vetoElectronList;
    JetList       _selectedJetList;
+   JetList       _selectedBJetList;
 
    //----- Selection efficiency tracker  ------------------------------------------
    TH1F*  _selcMuonCount;
@@ -52,8 +46,6 @@ protected:
    TH1F*  _selcJetCount;
    TH1F*  _vetoMuonCount;
    TH1F*  _vetoElecCount;
-   TH1F*  _trackIsoHist;
-   TH1F*  _EventCount;
 
 private:
    void beginJob();

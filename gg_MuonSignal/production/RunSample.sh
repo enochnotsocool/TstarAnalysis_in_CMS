@@ -38,7 +38,7 @@ function main(){
       file_name=${file##*/}
       output_tuple_file=$Tuple_Dir/$Name/Tuple_${file_name}.root
       output_hist_file=$Hist_Dir/$Name/Hist_${file_name}.root
-      cmd="cmsRun $(pwd)/makeTuples_cfg.py"
+      cmd="cmsRun $(pwd)/runFilter.py"
       cmd=${cmd}" DataProcessing=$DataProcess"
       cmd=${cmd}" outputLabel=$output_tuple_file"
       cmd=${cmd}" histFile=$output_hist_file"
@@ -84,7 +84,7 @@ function getDataProcess(){
 
 function getJsonFile(){
    if [[ $1 == *"Run2015"* ]]; then
-      echo "$(pwd)/jsonFile.txt" 
+      echo "$(pwd)/Cert_JSON.txt" 
    else 
       echo ""
    fi
