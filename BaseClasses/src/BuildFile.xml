@@ -8,5 +8,6 @@
 <use name="DataFormats/ParticleFlowReco"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="MiniAODAnalysis/BaseFilter" />
-<use name="TstarAnalysis/Selection"/>
+<use name="MiniAODAnalysis/BaseAnalyzer" />
+<use name="TstarAnalysis/RootFormat"/>
 <export><lib name="1"/></export>

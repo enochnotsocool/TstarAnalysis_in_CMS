@@ -48,12 +48,12 @@ void ggChannelProcessor::addEventInfo( const edm::Event& iEvent )
    _eventBranches._JetCount      = _selectedBJetList.size() + _selectedLJetList.size();
 
    _eventBranches._VertexCount = _rawVertexList->size();
-   _eventBranches._chiMass     = computeChiSqMass(); 
+   //_eventBranches._chiMass     = computeChiSqMass(); 
 
    if( !iEvent.isRealData() ){
-      _eventBranches._pileUpWeight = pileUpWeight[ (unsigned int)_rawPileupList->begin()->getTrueNumInteractions() ] ;
+      _eventBranches._pileUp = pileUpWeight[ (unsigned int)_rawPileupList->begin()->getTrueNumInteractions() ] ;
    } else {
-      _eventBranches._pileUpWeight = 1.0 ; 
+      _eventBranches._pileUp = 1.0 ; 
    }
    if( _rawMETList.isValid() ){
       _eventBranches._MET    = _rawMETList->begin()->pt();

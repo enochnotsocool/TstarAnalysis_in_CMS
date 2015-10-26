@@ -9,22 +9,17 @@ import copy
 options = opts.VarParsing ('analysis')
 
 options.register('maxEvts',
-      1000, ## For all events processing use -1
+      -1, ## For all events processing use -1
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.int,
       'Number of events to process')
 
 options.register('sample',
-      'file:///wk_cms/yichen/miniAODs/MC_reMiniAOD_25ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root',
+      'file:./myTuple.root',
       opts.VarParsing.multiplicity.list,
       opts.VarParsing.varType.string,
       'Sample to analyze')
 
-options.register('outputLabel',
-      'myTuple.root',
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.string,
-      'Output label')
 
 options.register('DataProcessing',
       "MC25ns",
@@ -62,17 +57,11 @@ options.register('b2gPreprocess',
       opts.VarParsing.varType.bool,
       'Where to use the filters and producers defined by b2g group')
 
-options.register("histFile",
-      "myHist.root",
+options.register("filename",
+      "ntuple.root",
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.string,
       'Histogram filename')
-
-options.register('jsonFile',
-      '',
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.string,
-      "Golden Json file input" )
 
 options.parseArguments()
 
@@ -81,7 +70,7 @@ options.parseArguments()
 #------------------------------------------------------------------------------- 
 useHFCandidates  = not options.useNoHFMET   #create an additionnal NoHF slimmed MET collection if the option is set to false
 usePrivateSQlite = options.usePrivateSQLite #use external JECs (sqlite file)
-##applyResiduals   = options.isData           #application of residual corrections. 
+#applyResiduals   = options.isData           #application of residual corrections. 
                                             #   Have to be set to True once the 13 TeV residual corrections are available. 
                                             #   False to be kept meanwhile. Can be kept to False later for private tests
                                             #   or for analysis checks and developments (not the official recommendation!).
@@ -91,16 +80,18 @@ if not (options.forceResiduals == None):
 #------------------------------------------------------------------------------- 
 #   Setting up process
 #------------------------------------------------------------------------------- 
-process = cms.Process("ggMuonFilter")
+process = cms.Process("TstarNtuplizer")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.MessageLogger.categories.append('HLTrigReport')
 
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvts) )
-process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring( options.sample ) )
-import FWCore.PythonUtilities.LumiList as LumiList
-process.source.lumisToProcess = LumiList.LumiList(filename = options.jsonFile ).getVLuminosityBlockRange()
+process.source = cms.Source("PoolSource",
+      fileNames = cms.untracked.vstring(
+         options.sample
+         )
+      )
 
 #process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff")
 process.load("Configuration.EventContent.EventContent_cff")
@@ -148,42 +139,19 @@ elif "Data25ns" in options.DataProcessing :
 
 setupAllVIDIdsInModule(process,my_elid_modules ,setupVIDElectronSelection)
 
-#------------------------------------------------------------------------------- 
-#   Output Modules settings
-#------------------------------------------------------------------------------- 
-from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning
-process.out = cms.OutputModule(
-      "PoolOutputModule",
-      fileName = cms.untracked.string( options.outputLabel ),
-      SelectEvents = cms.untracked.PSet( SelectEvents = cms.vstring('p1') ),
-      outputCommands = cms.untracked.vstring(
-         "drop *",
-         "keep *_TriggerResults_*_*",
-         "keep *_fixedGridRhoFastjetAll_*_*",
-         "keep *_offlineSlimmedPrimaryVertices_*_*",
-         "keep *_slimmedAddPileupInfo_*_*",
-         "keep *_slimmedMETs_*_*",
-         "keep *_slimmedMuons_*_*",
-         "keep *_slimmedElectrons_*_*",
-         "keep *_slimmedJets_*_*",
-         "keep *_reducedEgamma_*_*",
-         "keep *_offlineBeamSpot_*_*",
-         "keep *_addPileupInfo_*_*"
-         )
-      )
 
 #------------------------------------------------------------------------------- 
-#   EDFilter settings
+#   ED analyzer settings
 #------------------------------------------------------------------------------- 
 process.TFileService = cms.Service("TFileService",
-      fileName = cms.string( options.histFile )
+      fileName = cms.string( options.filename )
       )
 
-process.gg_MuonSignal = cms.EDFilter(
-      "gg_MuonSignal",
+process.ntuplizer = cms.EDAnalyzer(
+      "Ntuplizer",
       hltsrc      = cms.InputTag("TriggerResults::HLT"),
       metsrc      = cms.InputTag( "slimmedMETs" ) ,
-      pileupsrc   = cms.InputTag( "slimmedAddPileupInfo" ),
+      pileupsrc   = cms.InputTag( "slimmedAddPileupInfo"),
       vertexsrc   = cms.InputTag( "offlineSlimmedPrimaryVertices" ),
       convsrc     = cms.InputTag( "reducedEgamma","reducedConversions"),
       rhosrc      = cms.InputTag( "fixedGridRhoFastjetAll" ),
@@ -193,13 +161,10 @@ process.gg_MuonSignal = cms.EDFilter(
       jetsrc      = cms.InputTag( "slimmedJets" ),
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
-      )
+   )
 
-process.p1 = cms.Path(
-      process.egmGsfElectronIDSequence * 
-      process.gg_MuonSignal
-      )
 
 process.outpath = cms.EndPath(
-      process.out
+      process.egmGsfElectronIDSequence * 
+      process.ntuplizer
       )

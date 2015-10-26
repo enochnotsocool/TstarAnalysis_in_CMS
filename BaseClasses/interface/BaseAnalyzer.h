@@ -1,48 +1,53 @@
 /*******************************************************************************
  *
- *  Filename    : BaseFilter.h
- *  Description : Base filter for all filters 
+ *  Filename    : BaseAnalyzer.h
+ *  Description : Base Analyzer class for TstarAnalysis
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
- *  Since object selection will mostly be the same, we are not going 
- *  are going to define the object selection functions here
- *
 *******************************************************************************/
-#ifndef __BASEFILTER_H__
-#define __BASEFILTER_H__
+#ifndef __BASEANALYZER_H__
+#define __BASEANALYZER_H__
 
-#include "MiniAODAnalysis/BaseFilter/interface/MiniAODFilter.h"
+#include "MiniAODAnalysis/BaseAnalyzer/interface/MiniAODAnalyzer.h"
+#include "TstarAnalysis/RootFormat/interface/MiniEventBranches.h"
+#include "TstarAnalysis/RootFormat/interface/MiniMuonBranches.h"
+#include "TstarAnalysis/RootFormat/interface/MiniElectronBranches.h"
+#include "TstarAnalysis/RootFormat/interface/MiniJetBranches.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
-#include "TH1F.h"
+#include "TTree.h"
 
-class BaseFilter : public MiniAODFilter {
+
+class BaseAnalyzer : public MiniAODAnalyzer {
 public:
-   BaseFilter( const edm::ParameterSet& );
-   virtual ~BaseFilter ();
+   BaseAnalyzer( const edm::ParameterSet& );
+   virtual ~BaseAnalyzer ();
 
 protected:
    void processVertex(const edm::Event& , const edm::EventSetup&);
    void processMuon(const edm::Event& , const edm::EventSetup& );
    void processElectron(const edm::Event& , const edm::EventSetup& );
    void processJet(const edm::Event& , const edm::EventSetup& );
-   // Only this function is virtual for this analysis
-   virtual bool passEventSelection(const edm::Event& , const edm::EventSetup& ); 
+   void processEvent(const edm::Event& , const edm::EventSetup& );
 
+   void addEventVariables(const edm::Event& );
+   void addMuonVariables();
+   void addJetVariables();
+   void addElectronVariables();
+   //Adding analysis specific variables
+   virtual void addCustomVariables(const edm::Event&);
+   
    //----- Storage classes  -------------------------------------------------------
    reco::Vertex  _primaryVertex;
    MuonList      _selectedMuonList;
-   MuonList      _vetoMuonList;
    ElectronList  _selectedElectronList;
-   ElectronList  _vetoElectronList;
-   JetList       _selectedJetList;
+   JetList       _selectedLJetList;
    JetList       _selectedBJetList;
 
-   //----- Selection efficiency tracker  ------------------------------------------
-   TH1F*  _selcMuonCount;
-   TH1F*  _selcElecCount;
-   TH1F*  _selcJetCount;
-   TH1F*  _vetoMuonCount;
-   TH1F*  _vetoElecCount;
+   TTree*               _tree;
+   MiniEventBranches    _eventBranches;
+   MiniMuonBranches     _muonBranches;
+   MiniElectronBranches _elecBranches;
+   MiniJetBranches      _jetBranches;
 
 private:
    void beginJob();
@@ -55,4 +60,4 @@ private:
    edm::Handle<edm::ValueMap<bool>>  medium_id_decisions ;
 };
 
-#endif // __BASEFILTER_H__
+#endif // __BASEANALYZER_H__
