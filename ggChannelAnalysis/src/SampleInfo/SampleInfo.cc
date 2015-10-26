@@ -18,8 +18,9 @@ SampleInfo::SampleInfo( const std::string& name )
    _targetEventCount = DONT_APPLY_WEIGHT ;
    _chain   = new TChain( "ggChannelProcessor/EventVariables" );
 
-   addHist( "ChiMass" , 50 , 0 , 2000 );
-   addHist( "JetPt"   , 50 , 0 , 600  );
+   for( int i = 0 ; i < PLOT_NAME_COUNT ; ++i ){
+      addHist( plotname[i] , binCount[i] , 0 , histMax[i] );
+   }
 }
 
 SampleInfo::~SampleInfo()
@@ -53,26 +54,18 @@ float SampleInfo::getStatisticsWeight() const
    return _targetEventCount / actualEventCount ;
 }
 
-void SampleInfo::setPlotStyle( const std::string& x )
-{
-   _plotstyle = x ;
-}
-
-const std::string& SampleInfo::plotStyle() const 
-{
-   return _plotstyle;
-}
 
 TH1F* SampleInfo::Hist( const std::string& histname )
 {
    return _histMap[histname];
 }
 
-void SampleInfo::setFillColor( const Color_t c , const float alpha )
+void SampleInfo::setFillColor( const Color_t c  )
 {
    for( auto histpair : _histMap ){
-      histpair.second->SetFillColorAlpha( c , alpha );
+      histpair.second->SetFillColor( c  );
    }
+   _fillColor = c;
 }
 
 void SampleInfo::setLineColor( const Color_t c )
@@ -80,12 +73,9 @@ void SampleInfo::setLineColor( const Color_t c )
    for( auto histpair : _histMap ){
       histpair.second->SetLineColor( c  );
    }
+   _lineColor = c ;
 }
 
-void SampleInfo::addPlotStyle( const std::string& x )
-{
-   _plotstyle += x ;
-}
 void SampleInfo::HistPlot( const std::string& name , const std::string& style )
 {
    _histMap[name]->Draw( style.c_str() );

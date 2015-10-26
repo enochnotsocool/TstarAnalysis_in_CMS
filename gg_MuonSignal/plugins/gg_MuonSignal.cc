@@ -38,23 +38,23 @@ gg_MuonSignal::~gg_MuonSignal()
 //------------------------------------------------------------------------------
 bool gg_MuonSignal::passEventSelection( const edm::Event& , const edm::EventSetup& )
 {
-   std::cout << "Testing 0 ...." << std::endl; 
+   _eventSelectionCount->Fill(0);
    if( _selectedMuonList.size() != 1 ){ return false; }
-   std::cout << "Testing 1 ...." << std::endl; 
+   _eventSelectionCount->Fill(1);
    if( ! _selectedElectronList.empty() ){ return false; }
-   std::cout << "Testing 2 ...." << std::endl; 
+   _eventSelectionCount->Fill(2);
    if( ! _vetoMuonList.empty() ) { return false; }
-   std::cout << "Testing 3 ...." << std::endl; 
+   _eventSelectionCount->Fill(3);
    if( ! _vetoElectronList.empty() ) { return false; }
-   std::cout << "Testing 4 ...." << std::endl; 
+   _eventSelectionCount->Fill(4);
    if( _selectedJetList.size() < 6 ) { return false; }
-   std::cout << "Testing 5 ...." << std::endl; 
+   _eventSelectionCount->Fill(5);
    if( _selectedBJetList.empty() ) { return false; }
-   std::cout << "Testing 6 " << _selectedBJetList.size() << "...." << std::endl; 
+   _eventSelectionCount->Fill(6);
    if( _selectedBJetList[0]->pt() < 50. ){ return false; }
-   std::cout << "Testing 7 ...." << std::endl; 
+   _eventSelectionCount->Fill(7);
    if( _selectedJetList[0]->pt() < 50. ) { return false; }
-   std::cout << "Done!" << std::endl;
+   _eventSelectionCount->Fill(8);
    return true;
 }
 

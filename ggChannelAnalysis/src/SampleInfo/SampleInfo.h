@@ -13,9 +13,9 @@
 #include <map>
 #include "TChain.h"
 #include "TH1F.h"
+#include "SampleDef.h"
 
-typedef std::vector<const std::string>  stringList;
-typedef std::map<const std::string, TH1F*>  HistMap; 
+typedef std::map<const std::string,TH1F*>  HistMap; 
 
 class SampleInfo {
 public:
@@ -31,13 +31,12 @@ public:
    void  makeBasicPlots();
 
    const std::string& plotStyle() const ;
-   void  setPlotStyle( const std::string& );
-   void  addPlotStyle( const std::string& );
-   void  setFillColor( const Color_t , const float=1.0 );
+   void  setFillColor( const Color_t );
    void  setLineColor( const Color_t );
 private:
    std::string  _name;
-   std::string  _plotstyle;
+   Color_t      _fillColor;
+   Color_t      _lineColor;
    HistMap      _histMap;
    float        _targetEventCount;
    
