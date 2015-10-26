@@ -14,12 +14,15 @@
 typedef std::vector<const reco::GsfElectron*> ElecList;
 typedef std::vector<const pat::Muon*> MuonList; 
 
-bool isSelectionJet( const pat::Jet& jet , const MuonList& mus , const ElecList& els, TH1F* )
+bool isSelectionJet( const pat::Jet& jet , const MuonList& mus , const ElecList& els, TH1F* hist )
 {
+   if( hist!=NULL ) { hist->Fill(0); }
    if( jet.pt() < 30. ) { return false; }
+   if( hist!=NULL ) { hist->Fill(1); }
    if( abs( jet.eta() ) > 2.4 ) { return false; }
 
    //----- Loose Jet ID  ------------------------------------------------------------------------------
+   if( hist!=NULL ) { hist->Fill(2); }
    if( jet.neutralHadronEnergyFraction() > 0.99 ) { return false; }
    if( jet.neutralEmEnergyFraction()     > 0.99 ) { return false; }
    if( jet.numberOfDaughters() <=1 ) { return false; }
@@ -30,6 +33,7 @@ bool isSelectionJet( const pat::Jet& jet , const MuonList& mus , const ElecList&
    }
 
    //----- Cleaning against selected leptons  ---------------------------------------------------------
+   if( hist!=NULL ) { hist->Fill(3); }
    TLorentzVector jetVec( jet.px() , jet.py() , jet.pz() , jet.energy() );
    for( const auto& el : els ){
       TLorentzVector elecVec( el->px() , el->py() , el->pz() , el->energy() );
@@ -39,6 +43,8 @@ bool isSelectionJet( const pat::Jet& jet , const MuonList& mus , const ElecList&
       TLorentzVector muVec( mu->px() , mu->py() , mu->pz() , mu->energy() ) ;
       if( muVec.DeltaR( jetVec ) < 0.4 ) { return false; }  
    }
+   
+   if( hist!=NULL ) { hist->Fill(4); }
    return true;
 }
 

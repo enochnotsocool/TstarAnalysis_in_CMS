@@ -15,7 +15,7 @@ options.register('maxEvts',
       'Number of events to process')
 
 options.register('sample',
-      '/store/cmst3/user/gpetrucc/miniAOD/Spring15MiniAODv2/CMSSW_7_4_12/miniAOD-TTJets_madgraphMLM_25ns-40k_PAT.root',
+      '/store/mc/RunIISpring15MiniAODv2/TstarTstarToTgluonTgluon_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/FE392AB2-A06D-E511-8D69-002590A2BCBC.root',
       opts.VarParsing.multiplicity.list,
       opts.VarParsing.varType.string,
       'Sample to analyze')

@@ -1,1 +1,1 @@
-../src/SampleInfo/SampleDef.h
+../src/SampleDef/SampleDef.h

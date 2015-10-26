@@ -13,19 +13,29 @@
 typedef edm::Ptr<reco::GsfElectron> ElecEDMPtr;
 bool isVetoElectron( const ElecEDMPtr el, const edm::ValueMap<bool>& looseID, TH1F* hist )
 {
+   if( hist!=NULL) { hist->Fill(0); }
    if( !looseID[el] ) { return false; }
+   if( hist!=NULL) { hist->Fill(1); }
    if( el->pt() < 15 ) { return false; }
+   if( hist!=NULL) { hist->Fill(2); }
    if( abs(el->eta()) > 2.4 ) { return false; } 
+   if( hist!=NULL) { hist->Fill(3); }
    if( abs(el->eta()) > 1.44 && abs(el->eta()) < 1.57 ){ return false ; }
+   if( hist!=NULL) { hist->Fill(4); }
    return true;
 }
 
-bool isSelectionElectron( const ElecEDMPtr el , const edm::ValueMap<bool>& mediumID, TH1F* ) 
+bool isSelectionElectron( const ElecEDMPtr el , const edm::ValueMap<bool>& mediumID, TH1F* hist ) 
 {
+   if( hist!=NULL) { hist->Fill(0); }
    if( !mediumID[el] ) { return false; }
+   if( hist!=NULL) { hist->Fill(1); }
    if( el->pt() < 30 ) { return false; }
+   if( hist!=NULL) { hist->Fill(2); }
    if( abs(el->eta()) > 2.1 ) { return false; } 
+   if( hist!=NULL) { hist->Fill(3); }
    if( abs(el->eta()) > 1.44 && abs(el->eta()) < 1.57 ){ return false ; }
+   if( hist!=NULL) { hist->Fill(4); }
    return true;
 }
 

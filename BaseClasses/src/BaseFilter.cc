@@ -53,8 +53,8 @@ void BaseFilter::processMuon(const edm::Event& , const edm::EventSetup& )
    _vetoMuonList.clear();
 
    for( ; muon != _muonList->end() ; ++muon ){
-      selcMuon = isSelectionMuon( *muon , _primaryVertex , 0 );
-      vetoMuon = isVetoMuon( *muon , 0  );
+      selcMuon = isSelectionMuon( *muon , _primaryVertex , _selcMuonCount );
+      vetoMuon = isVetoMuon( *muon , _vetoMuonCount  );
       if( selcMuon ){
          _selectedMuonList.push_back( &*muon );
       } else if( vetoMuon ) {
@@ -75,8 +75,8 @@ void BaseFilter::processElectron(const edm::Event& iEvent, const edm::EventSetup
    auto elec = _electronList->begin() ; 
    for( size_t i = 0 ; i < _electronList->size() ; ++i, ++elec ){
       auto elecPtr = _electronList->ptrAt(i);
-      selcElec = isSelectionElectron( elecPtr , (*medium_id_decisions) , 0 );
-      vetoElec = isVetoElectron( elecPtr , (*loose_id_decisions) , 0 );
+      selcElec = isSelectionElectron( elecPtr , (*medium_id_decisions) , _selcElecCount );
+      vetoElec = isVetoElectron( elecPtr , (*loose_id_decisions) , _vetoElecCount );
       if( selcElec ){
          _selectedElectronList.push_back( &*elec );
       } else if( vetoElec ){
@@ -93,7 +93,7 @@ void BaseFilter::processJet(const edm::Event& , const edm::EventSetup& )
    _selectedBJetList.clear();
 
    for( ; jet != _jetList->end() ; ++jet ){
-      selcJet = isSelectionJet( *jet , _selectedMuonList , _selectedElectronList , 0 );
+      selcJet = isSelectionJet( *jet , _selectedMuonList , _selectedElectronList , _selcJetCount );
       if( selcJet ){
          _selectedJetList.push_back( &*jet );
          if( jet->bDiscriminator( "pfCombinedSecondaryVertexV2BJetTags" ) > 0.89 ){
