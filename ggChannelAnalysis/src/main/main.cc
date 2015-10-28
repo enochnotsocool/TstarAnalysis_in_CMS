@@ -1,23 +1,69 @@
-/*******************************************************************************
- *
- *  Filename    : main.cc
- *  Description : Main control flow 
- *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
- *  
- *  As of writing, there is not yet a motivation to make program interactive
- *
-*******************************************************************************/
-#include <stdio.h>
-#include "PlotMerging.h"
+/****************************************************************************
+  FileName     [ main.cpp ]
+  PackageName  [ main ]
+  Synopsis     [ Define main() ]
+  Author       [ Chung-Yang (Ric) Huang ]
+  Copyright    [ Copyleft(c) 2007-2014 LaDs(III), GIEE, NTU, Taiwan ]
+****************************************************************************/
 
-int main( int argc, char* argv[] ) 
+#include "util.h"
+#include "cmdParser.h"
+
+using namespace std;
+
+//----------------------------------------------------------------------
+//    Global cmd Manager
+//----------------------------------------------------------------------
+CmdParser* cmdMgr = new CmdParser(">>> ");
+
+extern bool initCommonCmd();
+extern bool initPlotCmd();
+
+static void usage()
 {
-   puts( "Hello World! This is the ggAnalysis Code!" );
-
-   PlotMerging p( "output.root" );
-   p.makePlot( "ChiSquareMass" );
-
-   puts("GoodBye World! Hope I don't get segmentation fault!\n");
-   return 0;
+   cout << "Usage: cirTest [ -File < doFile > ]" << endl;
 }
 
+static void myexit()
+{
+   usage();
+   exit(-1);
+}
+
+int
+main(int argc, char** argv)
+{
+   myUsage.reset();
+
+   ifstream dof;
+
+   if (argc == 3) {  // -file <doFile>
+      if (myStrNCmp("-File", argv[1], 2) == 0) {
+         if (!cmdMgr->openDofile(argv[2])) {
+            cerr << "Error: cannot open file \"" << argv[2] << "\"!!\n";
+            myexit();
+         }
+      }
+      else {
+         cerr << "Error: unknown argument \"" << argv[1] << "\"!!\n";
+         myexit();
+      }
+   }
+   else if (argc != 1) {
+      cerr << "Error: illegal number of argument (" << argc << ")!!\n";
+      myexit();
+   }
+
+   // cout << "Initialization common commands " << endl ;
+   if (!initCommonCmd() ) { return 1; }
+   // cout << "Initializing plotting commands" << endl;
+   if( !initPlotCmd() ){ return 1;}
+
+   CmdExecStatus status = CMD_EXEC_DONE;
+   while (status != CMD_EXEC_QUIT) {  // until "quit" or command error
+      status = cmdMgr->execOneCmd();
+      cout << endl;  // a blank line between each command
+   }
+
+   return 0;
+}

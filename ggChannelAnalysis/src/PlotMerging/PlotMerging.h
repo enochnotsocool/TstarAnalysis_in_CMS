@@ -29,6 +29,8 @@ public:
    void makePlot( const std::string& );
 private:
    TFile*     _outputFile;
+   std::string  _baseDir;
+   std::string  _tupleDir;
    SampleMap  _sampleMap; 
    THStack*   _stackHist;
    TCanvas*   _canvas;

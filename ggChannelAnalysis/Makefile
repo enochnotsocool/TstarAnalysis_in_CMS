@@ -1,4 +1,5 @@
-SRCPKGS = PlotMerging SampleInfo RootFormat SampleDef 
+REFPKGS = cmd
+SRCPKGS = util PlotCmd PlotMerging SampleInfo RootFormat SampleDef 
 LIBPKGS = $(REFPKGS) $(SRCPKGS)
 MAIN    = main 
 
