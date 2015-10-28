@@ -83,11 +83,11 @@ void BaseAnalyzer::processJet(const edm::Event& , const edm::EventSetup& )
 
 void BaseAnalyzer::processEvent( const edm::Event& iEvent , const edm::EventSetup& )
 {
-   addEventVariables(iEvent );
+   addEventVariables(iEvent);
    addMuonVariables();
    addElectronVariables();
    addJetVariables();
    addCustomVariables(iEvent);
 
-   _tree->Write();
+   _tree->Fill();
 }

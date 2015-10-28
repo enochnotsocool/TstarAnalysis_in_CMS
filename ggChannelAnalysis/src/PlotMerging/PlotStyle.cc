@@ -7,7 +7,7 @@
 *******************************************************************************/
 #include "PlotMerging.h"
 
-static const std::string TupleDir = "/wk_cms/yichen/TstarAnalysis/ggChannel_stripped_ntuples/" ;
+static const std::string TupleDir = "/wk_cms/yichen/TstarAnalysis/gg_MuonSignal_ntuples/" ;
 static const Color_t SingleT_Color = kGreen ;
 void PlotMerging::InitSampleStyles() 
 {

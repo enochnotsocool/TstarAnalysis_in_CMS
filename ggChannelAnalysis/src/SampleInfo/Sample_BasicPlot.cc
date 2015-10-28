@@ -16,6 +16,8 @@ static MiniJetBranches      jetBranches;
 static MiniMuonBranches     muonBranches;
 static MiniElectronBranches elecBranches;
 
+static float chiMass ;
+
 void SetInputTree( TTree* );
 
 void SampleInfo::makeBasicPlots()
@@ -23,11 +25,12 @@ void SampleInfo::makeBasicPlots()
    printf( "Making basic plots for %s\n", _name.c_str() );
   
    SetInputTree( _chain );
+   _chain->SetBranchAddress( "ChiSqMass" , &chiMass );
    for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
       _chain->GetEntry(i);
       printf( "\r[%s] Event %lld/%lld.... " , _name.c_str() , i+1 , _chain->GetEntries() );
       
-      Hist( "ChiSquareMass" )->Fill( eventBranches._chiMass , getStatisticsWeight() );
+      Hist( "ChiSquareMass" )->Fill( chiMass , getStatisticsWeight() );
 
       //for( size_t j = 0 ; j < jetBranches._VecList.size() ; ++j ){
       //   Hist("JetPt")->Fill( jetBranches._VecList[j].Pt() , getStatisticsWeight() );
