@@ -11,8 +11,11 @@
 #include "cmdParser.h"
 
 CmdClass(SetFileBase);
+CmdClass(Print);
 CmdClass(AddType);
 CmdClass(AddFile);
+CmdClass(SetXSection);
+CmdClass(SetEff);
 CmdClass(SetColor);
 CmdClass(SetLine);
 CmdClass(MakePlot);

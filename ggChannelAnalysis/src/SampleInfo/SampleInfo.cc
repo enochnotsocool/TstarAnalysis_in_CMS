@@ -6,17 +6,18 @@
  *
 *******************************************************************************/
 #include "SampleInfo.h"
+#include <iostream>
 #include <stdio.h>
-#define DONT_APPLY_WEIGHT  -1
 
 //------------------------------------------------------------------------------ 
 //   Constructor and desctructor
 //------------------------------------------------------------------------------
-SampleInfo::SampleInfo( const std::string& name ) 
+SampleInfo::SampleInfo( const std::string& name , const std::string& ntuple ) 
 {
-   _name = name ;
-   _targetEventCount = DONT_APPLY_WEIGHT ;
-   _chain   = new TChain( "ggChannelProcessor/EventVariables" );
+   _name   = name ;
+   _chain  = new TChain( ntuple.c_str() );
+   _cross_section = 1. ;
+   _selection_eff = 1. ; 
 
    for( int i = 0 ; i < PLOT_NAME_COUNT ; ++i ){
       addHist( plotname[i] , binCount[i] , 0 , histMax[i] );
@@ -39,20 +40,6 @@ void SampleInfo::addFile( const std::string& filename )
    _chain->Add( filename.c_str() );
 }
 
-
-void SampleInfo::setTargetEventCount( const float x )
-{
-   _targetEventCount = x;
-}
-
-float SampleInfo::getStatisticsWeight() const
-{
-   static float actualEventCount; 
-   if( _targetEventCount <= DONT_APPLY_WEIGHT ) { 
-      return 1.; }
-   actualEventCount = (float)_chain->GetEntries();
-   return _targetEventCount / actualEventCount ;
-}
 
 
 TH1F* SampleInfo::Hist( const std::string& histname )
@@ -80,6 +67,24 @@ void SampleInfo::HistPlot( const std::string& name , const std::string& style )
 {
    _histMap[name]->Draw( style.c_str() );
 }
+
+void SampleInfo::Print() const 
+{
+   std::cout << "--------------------------------------------" << std::endl;
+   std::cout << "   Name: " << _name << std::endl;
+   std::cout << "   Type: " << "Data" << std::endl;
+   std::cout << "   Files:" << "MyFile.root" << std::endl;
+   std::cout << "   Color:" << _fillColor << std::endl;
+   std::cout << "   LineColor: " << _lineColor << std::endl;
+   std::cout << "--------------------------------------------\n" << std::endl;
+}
+
+
+float SampleInfo::crossSection() const { return _cross_section;}
+void  SampleInfo::setCrossSection( const float x ){ _cross_section = x ; }
+float SampleInfo::selectionEff() const { return _selection_eff;}
+void  SampleInfo::setSelectionEff( const float x ){ _selection_eff = x ; }
+
 
 //------------------------------------------------------------------------------ 
 //   Private member functions

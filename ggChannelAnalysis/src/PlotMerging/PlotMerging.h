@@ -19,6 +19,7 @@
 #include "THStack.h"
 #include "TCanvas.h"
 
+typedef std::pair<const std::string, SampleInfo*> sampleKey;
 typedef std::map<const std::string, SampleInfo*> SampleMap ; 
 
 class PlotMerging {
@@ -26,16 +27,22 @@ public:
    PlotMerging( const std::string& );
    virtual ~PlotMerging ();
 
+   void Print() const;
+   void printAllSamples() const ;
+   void printSample( const std::string& ) ;
+   void addSample( const std::string& );
+   SampleInfo* sample( const std::string& );
    void makePlot( const std::string& );
 private:
-   TFile*     _outputFile;
-   std::string  _baseDir;
-   std::string  _tupleDir;
-   SampleMap  _sampleMap; 
-   THStack*   _stackHist;
-   TCanvas*   _canvas;
+   TFile*             _outputFile;
+   const std::string  _tupleDir;
+   SampleMap          _sampleMap; 
+   float              _totalLumi;
+   THStack*           _stackHist;
+   TCanvas*           _canvas;
 
    void InitSampleStyles();
 };
+
 
 #endif // __PLOTMERGING_H__

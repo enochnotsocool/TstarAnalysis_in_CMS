@@ -19,12 +19,17 @@ typedef std::map<const std::string,TH1F*>  HistMap;
 
 class SampleInfo {
 public:
-   SampleInfo( const std::string& );
+   SampleInfo( const std::string& , const std::string& );
    virtual ~SampleInfo ();
 
+   void  Print() const;
+
    void  addFile( const std::string& );
-   void  setTargetEventCount( const float );
-   float getStatisticsWeight() const ;
+   float crossSection() const ;
+   void  setCrossSection( const float ) ;
+   float selectionEff() const ;
+   void  setSelectionEff( const float ) ;
+
 
    TH1F* Hist( const std::string& );
    void  HistPlot( const std::string& , const std::string& );
@@ -35,12 +40,13 @@ public:
    void  setLineColor( const Color_t );
 private:
    std::string  _name;
+   TChain*      _chain;
    Color_t      _fillColor;
    Color_t      _lineColor;
    HistMap      _histMap;
-   float        _targetEventCount;
+   float        _cross_section;
+   float        _selection_eff;
    
-   TChain*      _chain;
 
    void addHist( const std::string& , int ,  float , float );
 };
