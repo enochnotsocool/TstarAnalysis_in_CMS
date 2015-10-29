@@ -1,32 +1,30 @@
 /*******************************************************************************
  *
- *  Filename    : PlotMerging.cc
+ *  Filename    : AnalysisMgr.cc
  *  Description : Plot merging class implementation
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
  *  Details     :
  *
 *******************************************************************************/
-#include "PlotMerging.h"
+#include "AnalysisMgr.h"
 #include <iostream>
 //------------------------------------------------------------------------------ 
 //   Declaring global 
 //------------------------------------------------------------------------------
-PlotMerging* pltMgr = NULL;
+AnalysisMgr* pltMgr = NULL;
 
 
 //------------------------------------------------------------------------------ 
 //   Constructor and destructor
 //------------------------------------------------------------------------------
-PlotMerging::PlotMerging( const std::string& tupledir ) :
+AnalysisMgr::AnalysisMgr( const std::string& tupledir ) :
    _tupleDir(tupledir)
 {
    _outputFile = new TFile( "output.root" , "RECREATE" );
-   _stackHist  = NULL;
-   _canvas     = NULL;
 }
 
-PlotMerging::~PlotMerging()
+AnalysisMgr::~AnalysisMgr()
 {
    for( auto sample : _sampleMap  ){ delete sample.second; }
    std::cout << "Closing_File" << std::endl;
@@ -39,7 +37,7 @@ PlotMerging::~PlotMerging()
 //------------------------------------------------------------------------------ 
 //   Public method implementation
 //------------------------------------------------------------------------------
-void PlotMerging::Print() const 
+void AnalysisMgr::Print() const 
 {
    std::cout << "*****************************************************" << std::endl;
    std::cout << "  Plot Manager" << std::endl;
@@ -51,33 +49,33 @@ void PlotMerging::Print() const
    std::cout << "*****************************************************" << std::endl;
 }
 
-void PlotMerging::printSample( const std::string& name ) 
+void AnalysisMgr::printSample( const std::string& name ) 
 {
    _sampleMap[name]->Print();
 }
 
-void PlotMerging::printAllSamples() const 
+void AnalysisMgr::printAllSamples() const 
 {
    for( const auto& pair : _sampleMap ){
       pair.second->Print(); }
 }
 
-void PlotMerging::addSample( const std::string& name ) 
+void AnalysisMgr::addSample( const std::string& name ) 
 {
    _sampleMap.insert( sampleKey( name , new SampleInfo(name,_tupleDir) ) ); 
 }
 
-SampleInfo* PlotMerging::sample( const std::string& name )
+SampleInfo* AnalysisMgr::sample( const std::string& name )
 {
    SampleMap::iterator it = _sampleMap.find(name);
    if( it == _sampleMap.end() ) { return NULL; }
    else return it->second; 
 }
 
-void PlotMerging::makeBasicPlots()
+void AnalysisMgr::makeBasicPlots()
 {
    for( const auto& pair : _sampleMap ) {
       pair.second->makeBasicPlots(); }
 }
 
-void PlotMerging::setLumi( const float x ){ _totalLumi = x ; }
+void AnalysisMgr::setLumi( const float x ){ _totalLumi = x ; }

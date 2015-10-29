@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- *  Filename    : PlotMerging.h
+ *  Filename    : AnalysisMgr.h
  *  Description : Plot Merging class
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
@@ -12,8 +12,8 @@
 
 #include <map>
 #include <string>
-#include "SampleInfo.h"
-#include "SampleDef.h"
+#include "SampleMgr.h"
+#include "PlotDef.h"
 
 #include "TFile.h"
 #include "THStack.h"
@@ -22,10 +22,10 @@
 typedef std::pair<const std::string, SampleInfo*> sampleKey;
 typedef std::map<const std::string, SampleInfo*> SampleMap ; 
 
-class PlotMerging {
+class AnalysisMgr {
 public:
-   PlotMerging( const std::string& );
-   virtual ~PlotMerging ();
+   AnalysisMgr( const std::string& );
+   virtual ~AnalysisMgr ();
 
    void Print() const;
    void printAllSamples() const ;
@@ -40,8 +40,6 @@ private:
    const std::string  _tupleDir;
    SampleMap          _sampleMap; 
    float              _totalLumi;
-   THStack*           _stackHist;
-   TCanvas*           _canvas;
 
    void InitSampleStyles();
 };

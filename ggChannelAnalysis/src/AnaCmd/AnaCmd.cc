@@ -8,9 +8,9 @@
 
 #include <iostream>
 #include "util.h"
-#include "plotCmd.h"
-#include "PlotMerging.h"
-
+#include "AnaCmd.h"
+#include "AnalysisMgr.h"
+#include "TColor.h"
 using namespace std;
 
 bool initPlotCmd()
@@ -46,7 +46,7 @@ enum PlotMgrState {
 //------------------------------------------------------------------------------ 
 //   Global variables
 //------------------------------------------------------------------------------
-extern PlotMerging* pltMgr;
+extern AnalysisMgr* pltMgr;
 static PlotMgrState currentState = PLOTNONE;
 static std::vector<std::string> options;
 static std::string  singleOption;
@@ -65,7 +65,7 @@ CmdExecStatus SetFileBase::exec( const string& input )
       std::cout << "Warning! Deleting previous incidence of PlotManager" << std::endl;
       delete pltMgr ;
    }
-   pltMgr = new PlotMerging( singleOption );
+   pltMgr = new AnalysisMgr( singleOption );
    currentState = PLOTINIT ; 
    return CMD_EXEC_DONE;
 }
@@ -148,7 +148,7 @@ CmdExecStatus SetXSection::exec( const string& input )
       std::cerr << "Error! Sample " << options[0] << "not found!" << std::endl;
       return CMD_EXEC_ERROR;
    } 
-   pltMgr->sample(options[0])->setCrossSection(1.);
+   pltMgr->sample(options[0])->setCrossSection(std::stof(options[1]));
 
    return CMD_EXEC_DONE; 
 }
@@ -169,7 +169,7 @@ CmdExecStatus SetEff::exec( const string& input )
       std::cerr << "Error! Sample " << options[0] << "not found!" << std::endl;
       return CMD_EXEC_ERROR;
    } 
-   pltMgr->sample(options[0])->setSelectionEff(1.);
+   pltMgr->sample(options[0])->setSelectionEff(std::stof(options[1]));
 
    return CMD_EXEC_DONE;  
 }
@@ -189,8 +189,16 @@ CmdExecStatus SetColor::exec( const string& input )
    if( !pltMgr->sample(options[0]) ){
       std::cerr << "Error! Sample " << options[0] << "not found!" << std::endl;
       return CMD_EXEC_ERROR;
-   } 
-   pltMgr->sample(options[0])->setFillColor(1);
+   }
+   Color_t temp = 1 ; 
+   if( options[1] == "red" ){
+      temp = kRed  + 4 ;
+   } else if( options[1] == "orange" ){
+      temp = kOrange + 7 ;
+   } else if( options[1] == "cyan" ){
+      temp = kCyan -3 ; 
+   }
+   pltMgr->sample(options[0])->setFillColor(temp);
 
    return CMD_EXEC_DONE; 
 }
@@ -210,7 +218,15 @@ CmdExecStatus SetLine::exec( const string& input )
       std::cerr << "Error! Sample " << options[0] << "not found!" << std::endl;
       return CMD_EXEC_ERROR;
    } 
-   pltMgr->sample(options[0])->setLineColor(1);
+   Color_t temp = 1 ; 
+   if( options[1] == "red" ){
+      temp = kRed  + 4 ;
+   } else if( options[1] == "orange" ){
+      temp = kOrange + 7 ;
+   } else if( options[1] == "cyan" ){
+      temp = kCyan -3 ; 
+   }
+   pltMgr->sample(options[0])->setLineColor(temp);
 
    return CMD_EXEC_DONE; 
 }

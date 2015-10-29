@@ -13,7 +13,7 @@
 #include <map>
 #include "TChain.h"
 #include "TH1F.h"
-#include "SampleDef.h"
+#include "PlotDef.h"
 
 typedef std::map<const std::string,TH1F*>  HistMap; 
 

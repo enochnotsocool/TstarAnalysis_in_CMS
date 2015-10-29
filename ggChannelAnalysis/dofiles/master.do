@@ -5,7 +5,10 @@ Dofile  ./dofiles/SingleTop.do
 Dofile  ./dofiles/Data.do 
 MakeBasic
 MakeCombine  ChiSquareMass
-ClearPlot
-q -f 
-
+MakeCombine  JetPt
+MakeCombine  LeptonPt
+MakeCombine  JetCount
+print
+Clear
+Quit -f 
 

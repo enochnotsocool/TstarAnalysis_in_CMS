@@ -18,6 +18,7 @@ CmdParser* cmdMgr = new CmdParser(">>> ");
 
 extern bool initCommonCmd();
 extern bool initPlotCmd();
+extern bool initPlotList();
 
 static void usage()
 {
@@ -58,6 +59,7 @@ main(int argc, char** argv)
    if (!initCommonCmd() ) { return 1; }
    // cout << "Initializing plotting commands" << endl;
    if( !initPlotCmd() ){ return 1;}
+   if( !initPlotList()){ return 1; }
 
    CmdExecStatus status = CMD_EXEC_DONE;
    while (status != CMD_EXEC_QUIT) {  // until "quit" or command error

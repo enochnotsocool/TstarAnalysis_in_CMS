@@ -1,2 +1,2 @@
 AddType  Data
-AddFile  Data   ./samples/SingleMuon.root
+AddFile  Data   ./sample/SingleMuon.root
