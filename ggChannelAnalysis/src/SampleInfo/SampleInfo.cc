@@ -71,11 +71,12 @@ void SampleInfo::HistPlot( const std::string& name , const std::string& style )
 void SampleInfo::Print() const 
 {
    std::cout << "--------------------------------------------" << std::endl;
-   std::cout << "   Name: " << _name << std::endl;
-   std::cout << "   Type: " << "Data" << std::endl;
-   std::cout << "   Files:" << "MyFile.root" << std::endl;
-   std::cout << "   Color:" << _fillColor << std::endl;
-   std::cout << "   LineColor: " << _lineColor << std::endl;
+   std::cout << "   Name:       " << _name << std::endl;
+   std::cout << "   Files:      " << "MyFile.root" << std::endl;
+   std::cout << "   XSection:   " << _cross_section << std::endl;
+   std::cout << "   Efficiency: " << _selection_eff << std::endl;
+   std::cout << "   Color:      " << _fillColor << std::endl;
+   std::cout << "   LineColor:  " << _lineColor << std::endl;
    std::cout << "--------------------------------------------\n" << std::endl;
 }
 

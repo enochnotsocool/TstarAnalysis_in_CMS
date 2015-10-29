@@ -21,7 +21,7 @@ PlotMerging* pltMgr = NULL;
 PlotMerging::PlotMerging( const std::string& tupledir ) :
    _tupleDir(tupledir)
 {
-   _outputFile = NULL;
+   _outputFile = new TFile( "output.root" , "RECREATE" );
    _stackHist  = NULL;
    _canvas     = NULL;
 }
@@ -29,7 +29,11 @@ PlotMerging::PlotMerging( const std::string& tupledir ) :
 PlotMerging::~PlotMerging()
 {
    for( auto sample : _sampleMap  ){ delete sample.second; }
+   std::cout << "Closing_File" << std::endl;
+   _outputFile->Close();
+   std::cout << "Deleting pointer" << std::endl;
    delete _outputFile;
+   std::cout << "Done" << std::endl;
 }
 
 //------------------------------------------------------------------------------ 
@@ -41,6 +45,7 @@ void PlotMerging::Print() const
    std::cout << "  Plot Manager" << std::endl;
    std::cout << "  Tuple Dir:  " << _tupleDir << std::endl;
    std::cout << "  Output   :  " << _outputFile << std::endl;
+   std::cout << "  Luminocity: " << _totalLumi << std::endl;
    std::cout << "  Samples  :" << std::endl; 
    printAllSamples(); 
    std::cout << "*****************************************************" << std::endl;
@@ -68,3 +73,11 @@ SampleInfo* PlotMerging::sample( const std::string& name )
    if( it == _sampleMap.end() ) { return NULL; }
    else return it->second; 
 }
+
+void PlotMerging::makeBasicPlots()
+{
+   for( const auto& pair : _sampleMap ) {
+      pair.second->makeBasicPlots(); }
+}
+
+void PlotMerging::setLumi( const float x ){ _totalLumi = x ; }

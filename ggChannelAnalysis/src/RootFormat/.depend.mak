@@ -33,7 +33,7 @@ MiniJet.o: MiniJet.cc MiniJet.h /usr/include/root/TLorentzVector.h \
  /usr/include/root/TVirtualTreePlayer.h MiniJetBranches.h \
  /usr/include/root/TTree.h MiniMuonBranches.h MiniEventBranches.h \
  MiniElectronBranches.h
-MiniMuonBranches_read.o: MiniMuonBranches_read.cc MiniMuonBranches.h \
+MiniJetBranches_read.o: MiniJetBranches_read.cc MiniJetBranches.h \
  /usr/include/root/TTree.h /usr/include/root/TBranch.h \
  /usr/include/root/TNamed.h /usr/include/root/TObject.h \
  /usr/include/root/Rtypes.h /usr/include/root/RtypesCore.h \
@@ -65,7 +65,7 @@ MiniMuonBranches_read.o: MiniMuonBranches_read.cc MiniMuonBranches.h \
  /usr/include/root/TVectorDfwd.h /usr/include/root/TMatrixTUtils.h \
  /usr/include/root/TMatrixFfwd.h /usr/include/root/TMatrixFUtils.h \
  /usr/include/root/TMatrixFUtilsfwd.h /usr/include/root/TRotation.h
-MiniJetBranches_read.o: MiniJetBranches_read.cc MiniJetBranches.h \
+MiniMuonBranches_read.o: MiniMuonBranches_read.cc MiniMuonBranches.h \
  /usr/include/root/TTree.h /usr/include/root/TBranch.h \
  /usr/include/root/TNamed.h /usr/include/root/TObject.h \
  /usr/include/root/Rtypes.h /usr/include/root/RtypesCore.h \

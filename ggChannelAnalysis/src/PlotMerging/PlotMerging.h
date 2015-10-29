@@ -30,8 +30,10 @@ public:
    void Print() const;
    void printAllSamples() const ;
    void printSample( const std::string& ) ;
+   void setLumi( const float );
    void addSample( const std::string& );
    SampleInfo* sample( const std::string& );
+   void makeBasicPlots();
    void makePlot( const std::string& );
 private:
    TFile*             _outputFile;
