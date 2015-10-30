@@ -84,7 +84,7 @@ function getDataProcess(){
 
 function getJsonFile(){
    if [[ $1 == *"Run2015"* ]]; then
-      echo "$(pwd)/Cert_JSON.txt" 
+      echo "$(pwd)/./Cert_246908-258750_25ns.json" 
    else 
       echo ""
    fi

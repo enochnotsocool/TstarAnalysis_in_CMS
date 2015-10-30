@@ -1,4 +1,0 @@
-<use name="DataFormats/PatCandidates"/>
-<use name="DataFormats/VertexReco"/>
-<use name="EgammaAnalysis/ElectronTools" />
-<export><lib   name="1"/></export>
