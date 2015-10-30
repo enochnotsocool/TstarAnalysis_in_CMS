@@ -192,7 +192,7 @@ CmdExecStatus SetColor::exec( const string& input )
    }
    Color_t temp = 1 ; 
    if( options[1] == "red" ){
-      temp = kRed  + 4 ;
+      temp = kRed  ;
    } else if( options[1] == "orange" ){
       temp = kOrange + 7 ;
    } else if( options[1] == "cyan" ){

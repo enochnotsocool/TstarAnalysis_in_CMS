@@ -22,7 +22,7 @@ public:
    SampleInfo( const std::string& , const std::string& );
    virtual ~SampleInfo ();
 
-   void  Print() const;
+   void  Print(float) const;
 
    void  addFile( const std::string& );
    float crossSection() const ;

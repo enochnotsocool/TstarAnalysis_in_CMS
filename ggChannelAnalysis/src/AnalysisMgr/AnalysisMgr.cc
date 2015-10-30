@@ -51,13 +51,13 @@ void AnalysisMgr::Print() const
 
 void AnalysisMgr::printSample( const std::string& name ) 
 {
-   _sampleMap[name]->Print();
+   _sampleMap[name]->Print(_totalLumi);
 }
 
 void AnalysisMgr::printAllSamples() const 
 {
    for( const auto& pair : _sampleMap ){
-      pair.second->Print(); }
+      pair.second->Print( _totalLumi ); }
 }
 
 void AnalysisMgr::addSample( const std::string& name ) 

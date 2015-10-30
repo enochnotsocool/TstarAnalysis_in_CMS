@@ -71,6 +71,7 @@ void AnalysisMgr::makePlot( const std::string& target )
 
    //----- Setting up Legends  ----------------------------------------------------
    legend = new TLegend(0.75, 0.75, .95, .95);
+   legend->AddEntry( _sampleMap["Tstar"]->Hist(target) , "t^{*}#rightarrow tg" , "f" );
    legend->AddEntry( _sampleMap["SingleTop_Schannel"]->Hist(target) , "Single t" , "f" );
    legend->AddEntry( _sampleMap["TTJets"]->Hist(target) , "t#bar{t} production", "f");
    legend->AddEntry( _sampleMap["Data"]->Hist(target) , "Data" , "lp" ); 
