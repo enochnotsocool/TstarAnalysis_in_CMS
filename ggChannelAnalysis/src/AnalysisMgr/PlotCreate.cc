@@ -90,10 +90,8 @@ void AnalysisMgr::makePlot( const std::string& target )
 
 void makeTitle( const std::string& target )
 {
-   if( target == "ChiSquareMass" ) { 
-      title  = " #chi^{2} Mass of t+g system";
-      xtitle = " #chi^{2} Mass (GeV/c^{2})";
-   }
-   ytitle = "Events" ;
+   title  = availiableList[target].Title();
+   xtitle = availiableList[target].Xtitle();
+   ytitle = availiableList[target].Ytitle();
    title  = title +";" + xtitle + ";" + ytitle ;
 }

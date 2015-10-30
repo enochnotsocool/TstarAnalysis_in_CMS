@@ -6,5 +6,6 @@ void MiniJetBranches::retrieveVariables( TTree* tree ){
    tree->SetBranchAddress( "JetEta" , &_EtaList );
    tree->SetBranchAddress( "JetPhi" , &_PhiList );
    tree->SetBranchAddress( "JetEnergy" , &_EnergyList );
+   tree->SetBranchAddress( "Jetbtag" , &_btagList );
 }
 

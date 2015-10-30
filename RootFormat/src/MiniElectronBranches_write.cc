@@ -3,10 +3,10 @@
 void MiniElectronBranches::registerVariables( TTree* tree )
 {
    
-   tree->Branch( "ElectronPt" , &_PtList , 32000 , 0 );
-   tree->Branch( "ElectronEta" , &_EtaList , 32000 , 0 );
-   tree->Branch( "ElectronPhi" , &_PhiList , 32000 , 0 );
-   tree->Branch( "ElectronEnergy" , &_EnergyList , 32000 , 0 );
+   tree->Branch( "ElectronPt" , &_PtList );
+   tree->Branch( "ElectronEta" , &_EtaList );
+   tree->Branch( "ElectronPhi" , &_PhiList );
+   tree->Branch( "ElectronEnergy" , &_EnergyList );
 }
 
 void MiniElectronBranches::clear()

@@ -14,6 +14,7 @@ public:
   const float& Eta();
   const float& Phi();
   const float& Energy();
+  const float& btag();
 
 private:
    size_t _index ;

@@ -55,7 +55,7 @@ function makeWriteFile() {
    while read -r line ; do 
       var_name=$( echo $line | awk '{print $2}' );
       if [[ $1 != Event ]]; then
-         registerCMDs=$registerCMDs"\n   tree->Branch( \"${1}$var_name\" , \&_${var_name}List , 32000 , 0 );"
+         registerCMDs=$registerCMDs"\n   tree->Branch( \"${1}$var_name\" , \&_${var_name}List );"
          clearCMDS=$clearCMDS"\n   _${var_name}List.clear();"
       else
          registerCMDs=$registerCMDs"\n   tree->Branch( \"${1}$var_name\" , \&_${var_name} );"

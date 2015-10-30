@@ -18,6 +18,7 @@ public:
    std::vector<float> _EtaList;
    std::vector<float> _PhiList;
    std::vector<float> _EnergyList;
+   std::vector<float> _btagList;
 };
 
 #endif 

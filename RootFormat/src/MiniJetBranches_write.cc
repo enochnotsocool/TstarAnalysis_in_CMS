@@ -3,10 +3,11 @@
 void MiniJetBranches::registerVariables( TTree* tree )
 {
    
-   tree->Branch( "JetPt" , &_PtList , 32000 , 0 );
-   tree->Branch( "JetEta" , &_EtaList , 32000 , 0 );
-   tree->Branch( "JetPhi" , &_PhiList , 32000 , 0 );
-   tree->Branch( "JetEnergy" , &_EnergyList , 32000 , 0 );
+   tree->Branch( "JetPt" , &_PtList );
+   tree->Branch( "JetEta" , &_EtaList );
+   tree->Branch( "JetPhi" , &_PhiList );
+   tree->Branch( "JetEnergy" , &_EnergyList );
+   tree->Branch( "Jetbtag" , &_btagList );
 }
 
 void MiniJetBranches::clear()
@@ -16,4 +17,5 @@ void MiniJetBranches::clear()
    _EtaList.clear();
    _PhiList.clear();
    _EnergyList.clear();
+   _btagList.clear();
 }

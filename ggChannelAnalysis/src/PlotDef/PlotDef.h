@@ -23,12 +23,14 @@ public:
    void setXMax( const float );
    void setXMin( const float );
    void setBinCount( const unsigned int );
+   void setTitle( const std::string& );
    void setXtitle( const std::string& );
    void setYtitle( const std::string& );
 
    unsigned int BinCount() const ;
    float XMax() const ;
    float XMin() const ;
+   const std::string& Title() const ;
    const std::string& Xtitle() const ;
    const std::string& Ytitle() const ;
 
@@ -36,6 +38,7 @@ private:
    unsigned int _binCount;
    float _xmax ;
    float _xmin ;
+   std::string  _title;
    std::string  _xtitle;
    std::string  _ytitle;
 };

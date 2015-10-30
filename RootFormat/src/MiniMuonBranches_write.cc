@@ -3,11 +3,11 @@
 void MiniMuonBranches::registerVariables( TTree* tree )
 {
    
-   tree->Branch( "MuonPt" , &_PtList , 32000 , 0 );
-   tree->Branch( "MuonEta" , &_EtaList , 32000 , 0 );
-   tree->Branch( "MuonPhi" , &_PhiList , 32000 , 0 );
-   tree->Branch( "MuonEnergy" , &_EnergyList , 32000 , 0 );
-   tree->Branch( "MuontrackRelIso" , &_trackRelIsoList , 32000 , 0 );
+   tree->Branch( "MuonPt" , &_PtList );
+   tree->Branch( "MuonEta" , &_EtaList );
+   tree->Branch( "MuonPhi" , &_PhiList );
+   tree->Branch( "MuonEnergy" , &_EnergyList );
+   tree->Branch( "MuontrackRelIso" , &_trackRelIsoList );
 }
 
 void MiniMuonBranches::clear()
