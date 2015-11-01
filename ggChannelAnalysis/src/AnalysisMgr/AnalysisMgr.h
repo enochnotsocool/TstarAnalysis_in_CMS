@@ -7,20 +7,20 @@
  *  Details     :
  *
 *******************************************************************************/
-#ifndef __PLOTMERGING_H__
-#define __PLOTMERGING_H__
+#ifndef __ANALYSISMGR_H__
+#define __ANALYSISMGR_H__
 
 #include <map>
 #include <string>
 #include "SampleMgr.h"
 #include "PlotDef.h"
-
 #include "TFile.h"
-#include "THStack.h"
 #include "TCanvas.h"
+#include "THStack.h"
+#include "TLegend.h"
 
-typedef std::pair<const std::string, SampleInfo*> sampleKey;
-typedef std::map<const std::string, SampleInfo*> SampleMap ; 
+typedef std::pair<const std::string, SampleMgr*> SamplePair;
+typedef std::map<const std::string, SampleMgr*>  SampleMap ; 
 
 class AnalysisMgr {
 public:
@@ -31,18 +31,30 @@ public:
    void printAllSamples() const ;
    void printSample( const std::string& ) ;
    void setLumi( const float );
-   void addSample( const std::string& );
-   SampleInfo* sample( const std::string& );
+   bool setSignalMass( const std::string& );
+   SampleMgr* sample( const std::string& );
    void makeBasicPlots();
    void makePlot( const std::string& );
-private:
-   TFile*             _outputFile;
-   const std::string  _tupleDir;
-   SampleMap          _sampleMap; 
-   float              _totalLumi;
 
-   void InitSampleStyles();
+private:
+   TFile*     _outputFile;
+   SampleMap  _MCsignalMap; 
+   SampleMap  _MCbackgroundMap;
+   SampleMgr* _dataSample;
+   SampleMgr* _currentSignal;
+   //----- Variables for combined plotting  ---------------------------------------
+   TCanvas*   _canvas;
+   THStack*   _stackHist;
+   TLegend*   _combineLegend;
+   float      _totalLumi;
+
+   //----- Helper function for constructor  ---------------------------------------
+   void initSamples();
+
+   //----- Helper function for combined plotting  ---------------------------------
+   const std::string makeHistTitle( const std::string& ) const;
+   void addMCToStack( SampleMgr* , const std::string& );
 };
 
+#endif // __ANALYSISMGR_H__
 
-#endif // __PLOTMERGING_H__

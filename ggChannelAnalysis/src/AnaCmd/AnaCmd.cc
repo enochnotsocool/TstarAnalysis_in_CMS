@@ -19,16 +19,13 @@ bool initPlotCmd()
    if (!(cmdMgr->regCmd("InitBase"    , 4 , new SetFileBase ) &&
          cmdMgr->regCmd("SetLumi"     , 5 , new SetLumi     ) &&
          cmdMgr->regCmd("Print"       , 4 , new Print       ) &&
-         cmdMgr->regCmd("AddType"     , 4 , new AddType     ) &&
          cmdMgr->regCmd("AddFile"     , 4 , new AddFile     ) &&
          cmdMgr->regCmd("SetXSection" , 4 , new SetXSection ) &&
          cmdMgr->regCmd("SetEff"      , 4 , new SetEff      ) &&
-         cmdMgr->regCmd("SetColor"    , 4 , new SetColor    ) &&
-         cmdMgr->regCmd("SetLine"     , 5 , new SetLine     ) &&
+         cmdMgr->regCmd("SetSignal"   , 4 , new SetSignal   ) &&
          cmdMgr->regCmd("MakeBasic"   , 5 , new MakeBasic   ) &&
          cmdMgr->regCmd("MakeCombine" , 5 , new MakeCombine ) &&
-         cmdMgr->regCmd("ClearPlot"   , 5 , new ClearPlot   ) 
-                                                            )    ) {
+         cmdMgr->regCmd("ClearPlot"   , 5 , new ClearPlot   ) ) ) {
       cerr << "Registering \"plot\" commands fails... exiting" << endl;
       return false;
    }
@@ -99,22 +96,6 @@ void Print::usage( ostream& os ) const {}
 void Print::help() const {}
 
 //------------------------------------------------------------------------------ 
-//   AddType
-//------------------------------------------------------------------------------
-CmdExecStatus AddType::exec( const string& option )
-{
-   CHECKMGR; 
-   options.clear();
-   if(!CmdExec::lexOptions( option, options, 1  )) { return CMD_EXEC_ERROR; } 
-
-   pltMgr->addSample( options[0] );
-
-   return CMD_EXEC_DONE;
-}
-void AddType::usage( ostream& os ) const {} 
-void AddType::help() const {}
-
-//------------------------------------------------------------------------------ 
 //   AddFile
 //------------------------------------------------------------------------------
 CmdExecStatus AddFile::exec( const string& input )
@@ -178,60 +159,22 @@ void SetEff::usage( ostream& os ) const {}
 void SetEff::help() const {}
 
 //------------------------------------------------------------------------------ 
-//   SetColor
+//   SetSignal
 //------------------------------------------------------------------------------
-CmdExecStatus SetColor::exec( const string& input )
+CmdExecStatus SetSignal::exec( const string& input )
 {
-   CHECKMGR; 
+   CHECKMGR;
    options.clear();
-   if(!CmdExec::lexOptions( input , options, 2 )) { return CMD_EXEC_DONE; }
-
-   if( !pltMgr->sample(options[0]) ){
-      std::cerr << "Error! Sample " << options[0] << "not found!" << std::endl;
-      return CMD_EXEC_ERROR;
+   if(!CmdExec::lexSingleOption(input,singleOption)){ return CMD_EXEC_ERROR; }
+  
+   if( !pltMgr->setSignalMass( singleOption ) ) { 
+      std::cerr << "Error setting signal!" << std::endl;
+      return CMD_EXEC_ERROR; 
    }
-   Color_t temp = 1 ; 
-   if( options[1] == "red" ){
-      temp = kRed  ;
-   } else if( options[1] == "orange" ){
-      temp = kOrange + 7 ;
-   } else if( options[1] == "cyan" ){
-      temp = kCyan -3 ; 
-   }
-   pltMgr->sample(options[0])->setFillColor(temp);
-
-   return CMD_EXEC_DONE; 
+   return CMD_EXEC_DONE;
 }
-void SetColor::usage( ostream& os ) const {} 
-void SetColor::help() const {}
-
-//------------------------------------------------------------------------------ 
-//   SetLine
-//------------------------------------------------------------------------------
-CmdExecStatus SetLine::exec( const string& input )
-{ 
-   CHECKMGR; 
-   options.clear();
-   if(!CmdExec::lexOptions( input , options, 2 )) { return CMD_EXEC_DONE; }
-
-   if( !pltMgr->sample(options[0]) ){
-      std::cerr << "Error! Sample " << options[0] << "not found!" << std::endl;
-      return CMD_EXEC_ERROR;
-   } 
-   Color_t temp = 1 ; 
-   if( options[1] == "red" ){
-      temp = kRed  + 4 ;
-   } else if( options[1] == "orange" ){
-      temp = kOrange + 7 ;
-   } else if( options[1] == "cyan" ){
-      temp = kCyan -3 ; 
-   }
-   pltMgr->sample(options[0])->setLineColor(temp);
-
-   return CMD_EXEC_DONE; 
-}
-void SetLine::usage( ostream& os ) const {} 
-void SetLine::help() const {}
+void SetSignal::usage( ostream& os ) const {}
+void SetSignal::help() const {}
 
 //------------------------------------------------------------------------------ 
 //   MakeBasic

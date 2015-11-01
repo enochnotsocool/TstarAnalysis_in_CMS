@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- *  Filename    : SampleInfo.h
+ *  Filename    : SampleMgr.h
  *  Description : Define class of sample ntuple file class
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
@@ -17,11 +17,12 @@
 
 typedef std::map<const std::string,TH1F*>  HistMap; 
 
-class SampleInfo {
+class SampleMgr {
 public:
-   SampleInfo( const std::string& , const std::string& );
-   virtual ~SampleInfo ();
+   SampleMgr( const std::string& );
+   virtual ~SampleMgr ();
 
+   const std::string& name() const;
    void  Print(float) const;
 
    void  addFile( const std::string& );
@@ -30,14 +31,16 @@ public:
    float selectionEff() const ;
    void  setSelectionEff( const float ) ;
 
-
    TH1F* Hist( const std::string& );
    void  HistPlot( const std::string& , const std::string& );
+   float getRawEventCount() const;
+   float getWeightedEventCount() const;
    void  makeBasicPlots();
 
    const std::string& plotStyle() const ;
    void  setFillColor( const Color_t );
    void  setLineColor( const Color_t );
+
 private:
    std::string  _name;
    TChain*      _chain;
@@ -47,7 +50,6 @@ private:
    float        _cross_section;
    float        _selection_eff;
    
-
    void addHist( const std::string& , int ,  float , float );
 };
 

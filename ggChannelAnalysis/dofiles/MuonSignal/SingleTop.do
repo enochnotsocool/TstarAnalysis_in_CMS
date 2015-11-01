@@ -1,30 +1,20 @@
-AddType      SingleTop_Schannel
-AddFile      SingleTop_Schannel  ./sample/MuonSignal/ST_s-channel.root
-SetXSection  SingleTop_Schannel  14.4
-SetEff       SingleTop_Schannel  0.000101584722
-SetColor     SingleTop_Schannel  cyan
+AddFile     01_SingleT_S   ./sample/MuonSignal/ST_s-channel.root
+SetXSection 01_SingleT_S   14.4
+SetEff      01_SingleT_S   0.000101584722
 
-AddType      SingleTop_Tchannel_top
-AddFile      SingleTop_Tchannel_top  ./sample/MuonSignal/ST_t-channel_top.root
-SetXSection  SingleTop_Tchannel_top  136.02
-SetEff       SingleTop_Tchannel_top  0.000153233221
-SetColor     SingleTop_Tchannel_top  cyan
+AddFile     02_SingleT_T   ./sample/MuonSignal/ST_t-channel_top.root
+SetXSection 02_SingleT_T   136.02
+SetEff      02_SingleT_T   0.000153233221
 
-AddType      SingleTop_Tchannel_antitop 
-AddFile      SingleTop_Tchannel_antitop  ./sample/MuonSignal/ST_t-channel_antitop.root
-SetXSection  SingleTop_Tchannel_antitop  80.95
-SetEff       SingleTop_Tchannel_antitop  0.000115763362
-SetColor     SingleTop_Tchannel_antitop  cyan
+AddFile     03_SingleT_TW   ./sample/MuonSignal/ST_tW_top.root
+SetXSection 03_SingleT_TW   35.6
+SetEff      03_SingleT_TW   0.000153233221
 
-AddType      SingleTop_TWchannel_top
-AddFile      SingleTop_TWchannel_top  ./sample/MuonSignal/ST_tW_top.root
-SetXSection  SingleTop_TWchannel_top  35.6
-SetEff       SingleTop_TWchannel_top  0.000153233221
-SetColor     SingleTop_TWchannel_top  cyan
+AddFile     04_SingleTbar_T   ./sample/MuonSignal/ST_t-channel_antitop.root
+SetXSection 04_SingleTbar_T   80.95
+SetEff      04_SingleTbar_T   0.000115763362
 
-AddType      SingleTop_TWchannel_antitop
-AddFile      SingleTop_TWchannel_antitop  ./sample/MuonSignal/ST_tW_antitop.root
-SetXSection  SingleTop_TWchannel_antitop  35.6
-SetEff       SingleTop_TWchannel_antitop  0.000242000000
-SetColor     SingleTop_TWchannel_antitop  cyan
+AddFile     05_SingleTbar_TW   ./sample/MuonSignal/ST_tW_antitop.root
+SetXSection 05_SingleTbar_TW   35.6
+SetEff      05_SingleTbar_TW   0.000242000000
 

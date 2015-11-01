@@ -13,12 +13,10 @@
 CmdClass(SetFileBase);
 CmdClass(SetLumi);
 CmdClass(Print);
-CmdClass(AddType);
 CmdClass(AddFile);
 CmdClass(SetXSection);
 CmdClass(SetEff);
-CmdClass(SetColor);
-CmdClass(SetLine);
+CmdClass(SetSignal);
 CmdClass(MakeBasic);
 CmdClass(MakeCombine);
 CmdClass(ClearPlot);

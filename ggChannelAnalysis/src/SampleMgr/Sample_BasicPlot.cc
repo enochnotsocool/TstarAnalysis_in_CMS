@@ -28,7 +28,7 @@ static std::vector<float>   jetPt;
 
 void SetInputTree( TTree* );
 
-void SampleInfo::makeBasicPlots()
+void SampleMgr::makeBasicPlots()
 {
    printf( "Making basic plots for %s\n", _name.c_str() );
   
@@ -60,6 +60,20 @@ void SampleInfo::makeBasicPlots()
    }
 
    puts("Done!\n");
+}
+
+
+float SampleMgr::getRawEventCount() const {
+   return _chain->GetEntries();
+}
+
+float SampleMgr::getWeightedEventCount() const 
+{
+   float ans;
+   for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
+      ans += 1; // Should be event way event weight;
+   }
+   return ans; 
 }
 
 

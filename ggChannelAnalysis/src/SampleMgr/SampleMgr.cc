@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- *  Filename    : SampleInfo.cc
+ *  Filename    : SampleMgr.cc
  *  Description : Implementations of files
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
@@ -22,10 +22,10 @@ static float xmin;
 //------------------------------------------------------------------------------ 
 //   Constructor and desctructor
 //------------------------------------------------------------------------------
-SampleInfo::SampleInfo( const std::string& name , const std::string& ntuple ) 
+SampleMgr::SampleMgr( const std::string& name ) 
 {
    _name   = name ;
-   _chain  = new TChain( ntuple.c_str() );
+   _chain  = new TChain( "ntuplizer/TstarAnalysis" );
    _cross_section = 1. ;
    _selection_eff = 1. ; 
 
@@ -46,7 +46,7 @@ SampleInfo::SampleInfo( const std::string& name , const std::string& ntuple )
    }
 }
 
-SampleInfo::~SampleInfo()
+SampleMgr::~SampleMgr()
 {
    for( auto hist_pair : _histMap ){
       delete hist_pair.second;
@@ -56,7 +56,10 @@ SampleInfo::~SampleInfo()
 //------------------------------------------------------------------------------ 
 //   Basic access function
 //------------------------------------------------------------------------------
-void SampleInfo::addFile( const std::string& filename )
+const std::string& SampleMgr::name() const{
+   return _name ; }
+
+void SampleMgr::addFile( const std::string& filename )
 {
    printf("Adding file %s to %s\n" , filename.c_str() , _name.c_str() );
    _chain->Add( filename.c_str() );
@@ -64,12 +67,12 @@ void SampleInfo::addFile( const std::string& filename )
 
 
 
-TH1F* SampleInfo::Hist( const std::string& histname )
+TH1F* SampleMgr::Hist( const std::string& histname )
 {
    return _histMap[histname];
 }
 
-void SampleInfo::setFillColor( const Color_t c  )
+void SampleMgr::setFillColor( const Color_t c  )
 {
    for( auto histpair : _histMap ){
       histpair.second->SetFillColor( c  );
@@ -77,7 +80,7 @@ void SampleInfo::setFillColor( const Color_t c  )
    _fillColor = c;
 }
 
-void SampleInfo::setLineColor( const Color_t c )
+void SampleMgr::setLineColor( const Color_t c )
 {
    for( auto histpair : _histMap ){
       histpair.second->SetLineColor( c  );
@@ -85,7 +88,7 @@ void SampleInfo::setLineColor( const Color_t c )
    _lineColor = c ;
 }
 
-void SampleInfo::Print( float totalLumi ) const 
+void SampleMgr::Print( float totalLumi ) const 
 {
    std::cout << "--------------------------------------------" << std::endl;
    std::cout << "   Name:       " << _name << std::endl;
@@ -99,18 +102,18 @@ void SampleInfo::Print( float totalLumi ) const
 }
 
 
-float SampleInfo::crossSection() const { return _cross_section;}
-void  SampleInfo::setCrossSection( const float x ){ _cross_section = x ; }
-float SampleInfo::selectionEff() const { return _selection_eff;}
-void  SampleInfo::setSelectionEff( const float x ){ _selection_eff = x ; }
+float SampleMgr::crossSection() const { return _cross_section;}
+void  SampleMgr::setCrossSection( const float x ){ _cross_section = x ; }
+float SampleMgr::selectionEff() const { return _selection_eff;}
+void  SampleMgr::setSelectionEff( const float x ){ _selection_eff = x ; }
 
 
 //------------------------------------------------------------------------------ 
 //   Private member functions
 //------------------------------------------------------------------------------
-void SampleInfo::addHist( const std::string& histname , int nbin , float xmin , float xmax )
+void SampleMgr::addHist( const std::string& histname , int nbin , float xmin , float xmax )
 {
    TH1F* temp = new TH1F( (_name+histname).c_str() , (_name+histname).c_str() , nbin , xmin , xmax );
-   printf( "New Histogram %p\n" , temp );
+   printf( "New Histogram %s at %p\n" , histname.c_str() , temp );
    _histMap[ histname ] = temp ;
 }

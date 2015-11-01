@@ -1,5 +1,5 @@
 REFPKGS = cmd
-SRCPKGS = util AnaCmd AnalysisMgr SampleMgr RootFormat PlotDef 
+SRCPKGS = util AnaCmd AnalysisMgr SampleMgr RootFormat PlotDef
 LIBPKGS = $(REFPKGS) $(SRCPKGS)
 MAIN    = main 
 

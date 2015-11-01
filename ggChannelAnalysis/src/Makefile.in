@@ -15,7 +15,7 @@ ECHO  = /bin/echo
 ROOTFLAGS = `root-config --cflags --glibs`
 
 CFLAGS = -O2 -Wall -std=c++11 $(PKGFLAG) $(ROOTFLAGS)
-CFLAGS = -g -Wall  -std=c++11 $(PKGFLAG) $(ROOTFLAGS)
+CFLAGS = -g  -Wall -std=c++11 $(PKGFLAG) $(ROOTFLAGS)
 
 .PHONY: .depend.mak .extheader.mak
 

@@ -18,20 +18,22 @@ AnalysisMgr* pltMgr = NULL;
 //------------------------------------------------------------------------------ 
 //   Constructor and destructor
 //------------------------------------------------------------------------------
-AnalysisMgr::AnalysisMgr( const std::string& tupledir ) :
-   _tupleDir(tupledir)
+AnalysisMgr::AnalysisMgr( const std::string& filename )
 {
-   _outputFile = new TFile( "output.root" , "RECREATE" );
+   _outputFile = new TFile( filename.c_str() , "RECREATE" );
+   initSamples();
 }
 
 AnalysisMgr::~AnalysisMgr()
 {
-   for( auto sample : _sampleMap  ){ delete sample.second; }
-   std::cout << "Closing_File" << std::endl;
+   for( auto pair : _MCsignalMap     ) { delete pair.second; }
+   for( auto pair : _MCbackgroundMap ) { delete pair.second; }
+   delete _dataSample;
+   
    _outputFile->Close();
-   std::cout << "Deleting pointer" << std::endl;
    delete _outputFile;
-   std::cout << "Done" << std::endl;
+
+   delete _combineLegend;
 }
 
 //------------------------------------------------------------------------------ 
@@ -40,42 +42,57 @@ AnalysisMgr::~AnalysisMgr()
 void AnalysisMgr::Print() const 
 {
    std::cout << "*****************************************************" << std::endl;
-   std::cout << "  Plot Manager" << std::endl;
-   std::cout << "  Tuple Dir:  " << _tupleDir << std::endl;
-   std::cout << "  Output   :  " << _outputFile << std::endl;
-   std::cout << "  Luminocity: " << _totalLumi << std::endl;
-   std::cout << "  Samples  :" << std::endl; 
+   std::cout << "Plot Manager" << std::endl;
+   std::cout << "Output     : " << _outputFile << std::endl;
+   std::cout << "Luminocity : " << _totalLumi  << std::endl;
    printAllSamples(); 
    std::cout << "*****************************************************" << std::endl;
 }
 
 void AnalysisMgr::printSample( const std::string& name ) 
 {
-   _sampleMap[name]->Print(_totalLumi);
+   sample( name )->Print(_totalLumi);
 }
 
 void AnalysisMgr::printAllSamples() const 
 {
-   for( const auto& pair : _sampleMap ){
+   std::cout << "\n*** Data Samples ************************************" << std::endl;
+   _dataSample->Print( _totalLumi );
+   std::cout << "\n*** MC Signals   ************************************" << std::endl;
+   for( const auto& pair : _MCsignalMap ) {
+      pair.second->Print( _totalLumi ); }
+   std::cout << "\n*** MC Background ***********************************" << std::endl;
+   for( const auto& pair : _MCbackgroundMap ){
       pair.second->Print( _totalLumi ); }
 }
 
-void AnalysisMgr::addSample( const std::string& name ) 
+SampleMgr* AnalysisMgr::sample( const std::string& name )
 {
-   _sampleMap.insert( sampleKey( name , new SampleInfo(name,_tupleDir) ) ); 
-}
-
-SampleInfo* AnalysisMgr::sample( const std::string& name )
-{
-   SampleMap::iterator it = _sampleMap.find(name);
-   if( it == _sampleMap.end() ) { return NULL; }
-   else return it->second; 
+   static SampleMap::iterator it;
+   if( name == _dataSample->name() ) {return _dataSample;}
+   it = _MCsignalMap.find(name);
+   if( it != _MCsignalMap.end() ) { return it->second; }
+   it = _MCbackgroundMap.find(name);
+   if( it != _MCbackgroundMap.end() ) { return it->second; }
+   return NULL;
 }
 
 void AnalysisMgr::makeBasicPlots()
 {
-   for( const auto& pair : _sampleMap ) {
+   _dataSample->makeBasicPlots();
+   for( const auto& pair : _MCsignalMap ) {
+      pair.second->makeBasicPlots(); }
+   for( const auto& pair : _MCbackgroundMap ){
       pair.second->makeBasicPlots(); }
 }
 
 void AnalysisMgr::setLumi( const float x ){ _totalLumi = x ; }
+
+bool AnalysisMgr::setSignalMass( const std::string& input )
+{
+   static SampleMap::iterator it;
+   it = _MCsignalMap.find( input );
+   if( it == _MCsignalMap.end() ) return false;
+   _currentSignal = it->second ;
+   return true;
+}

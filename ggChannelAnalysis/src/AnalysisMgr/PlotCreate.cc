@@ -10,89 +10,79 @@
 #include <stdio.h>
 #include <iostream>
 #include <algorithm>
-//------------------------------------------------------------------------------ 
-//   Helper variables
-//------------------------------------------------------------------------------
-static TCanvas*  canvas;
-static THStack*  stackHist;
-static SampleInfo* tempSample;
-static TH1F*       tempHist;
-static TH1F*       dataHist;
-static TLegend*    legend;
-static float       tempScale;
-static std::string xtitle;
-static std::string ytitle;
-static std::string title;
+   
+static TH1F* dataHist;
+static TH1F* tempHist;
+static float tempScale;
 
 //------------------------------------------------------------------------------ 
-//   Helper functions
+//   Public method implementation
 //------------------------------------------------------------------------------
-void makeTitle( const std::string& );
-
 void AnalysisMgr::makePlot( const std::string& target )
 {
-   makeTitle(target);
    printf( "making plot %s\n" , target.c_str() );
-   stackHist = new THStack( (target+"sh").c_str() , title.c_str() );
-   canvas    = new TCanvas( (target+"c").c_str() , target.c_str() );
+   _stackHist = new THStack( (target+"sh").c_str() , (makeHistTitle(target)).c_str() );
+   _canvas    = new TCanvas( (target+"c").c_str() , target.c_str() );
 
-   
    //----- Preparing MC  -----------------------------------------------------------
-   for( const auto& pair : _sampleMap ) {
-      if( pair.first == "Data" ) continue;  // Skipping data
-      tempSample  = pair.second ; 
-      tempHist    = (TH1F*)(tempSample->Hist( target )->Clone());
-      if( tempHist->Integral() == 0 ){ 
-         std::cerr << "Warning Skipping over empty data set" << std::endl ;
-         continue ;
-      }
-
-      tempScale   = _totalLumi * tempSample->crossSection() ;
-      tempScale  *= tempSample->selectionEff();
-      printf( "Plotting sample %s with %f events\n", pair.first.c_str(), tempScale );
-      tempScale  /= tempHist->Integral();
-      tempHist->Scale( tempScale ) ; 
-      stackHist->Add( tempHist ); 
+   for( const auto& pair : _MCbackgroundMap ) {
+      addMCToStack( pair.second , target ); }
+   if( _currentSignal ){
+      addMCToStack( _currentSignal , target );
+   }else{
+      std::cerr << "Warning! No signal set for plotting!" << std::endl;
    }
    //----- Plotting data  ---------------------------------------------------------
-   if( ! sample("Data") ){
-      std::cerr << "Warning! Data sample not found!" << std::endl; 
-   } else {
-      dataHist = (TH1F*)sample("Data")->Hist(target)->Clone();
-      float y_max = 1.2* std::max( dataHist->GetMaximum() , stackHist->GetMaximum() );
-      dataHist->SetMaximum( y_max );
-      stackHist->SetMaximum( y_max );
-      stackHist->Draw("hist");
-      //stackHist->Draw("same axis");
-      dataHist->SetStats(0);
-      dataHist->Draw("same axis");
-      dataHist->Draw("SAME LPE1");
-   }
+   dataHist = (TH1F*)_dataSample->Hist(target)->Clone();
+   float y_max = 1.2* std::max( dataHist->GetMaximum() , _stackHist->GetMaximum() );
+   dataHist->SetMaximum( y_max );
+   _stackHist->SetMaximum( y_max );
+   _stackHist->Draw("hist");
+   dataHist->SetStats(0);
+   dataHist->Draw("same axis");
+   dataHist->Draw("SAME LPE1");
 
-   //----- Setting up Legends  ----------------------------------------------------
-   legend = new TLegend(0.75, 0.75, .95, .95);
-   legend->AddEntry( _sampleMap["Tstar"]->Hist(target) , "t^{*}#rightarrow tg" , "f" );
-   legend->AddEntry( _sampleMap["SingleTop_Schannel"]->Hist(target) , "Single t" , "f" );
-   legend->AddEntry( _sampleMap["TTJets"]->Hist(target) , "t#bar{t} production", "f");
-   legend->AddEntry( _sampleMap["Data"]->Hist(target) , "Data" , "lp" ); 
-   legend->Draw();
+   //----- Legend is previously defined  ------------------------------------------
+   _combineLegend->Draw();
 
    printf("Writing to file....");
-   canvas->Write();
-   delete legend;
-   delete stackHist;
-   delete canvas;
+   _canvas->Write();
+   delete _stackHist;
+   delete _canvas;
    printf("Done!\n");
 }
 
 //------------------------------------------------------------------------------ 
-//   Helper function implementation
+//   Private helper function implementation
 //------------------------------------------------------------------------------
-
-void makeTitle( const std::string& target )
+const std::string AnalysisMgr::makeHistTitle( const std::string& target ) const 
 {
+   std::string xtitle;
+   std::string ytitle;
+   std::string title;
+   
    title  = availiableList[target].Title();
    xtitle = availiableList[target].Xtitle();
    ytitle = availiableList[target].Ytitle();
    title  = title +";" + xtitle + ";" + ytitle ;
+   return title;
+}
+
+void AnalysisMgr::addMCToStack( SampleMgr* sample, const std::string& target )
+{
+   tempHist = (TH1F*)( sample->Hist( target )->Clone());
+   if( tempHist->Integral() == 0 ){ 
+      std::cerr << "Warning Skipping over empty data set" << std::endl ;
+      return ;
+   }
+   tempScale   = _totalLumi * sample->crossSection() ;
+   tempScale  *= sample->selectionEff();
+   tempScale  /= sample->getRawEventCount(); // Should be event by event 
+   tempHist->Scale( tempScale ) ; 
+   _stackHist->Add( tempHist ); 
+   
+   printf( "Plotting sample %s, scaling from %f to %f events\n",
+         (sample->name()).c_str() ,
+         sample->getRawEventCount() ,
+         sample->getRawEventCount()*tempScale );
 }
