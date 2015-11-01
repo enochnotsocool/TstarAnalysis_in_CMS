@@ -2,7 +2,7 @@ AddFile     01_SingleT_S   ./sample/MuonSignal/ST_s-channel.root
 SetXSection 01_SingleT_S   14.4
 SetEff      01_SingleT_S   0.000101584722
 
-AddFile     02_SingleT_T   ./sample/MuonSignal/ST_t-channel_top.root
+AddFile     02_SingleT_T   ./sample/MuonSignal/ST_t-channel-top.root
 SetXSection 02_SingleT_T   136.02
 SetEff      02_SingleT_T   0.000153233221
 

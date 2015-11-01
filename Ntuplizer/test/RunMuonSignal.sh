@@ -20,7 +20,7 @@ cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal
 
 cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/ST_tW_antitop_5f_DS_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=ST_tW_antitop.root
 
-cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/ST_tW_top_5f_DS_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filname=ST_tW_top.root
+cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/ST_tW_top_5f_DS_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=ST_tW_top.root
 
 cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/TstarTstarToTgluonTgluon_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=Tstar_M1000.root 
 cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/TstarTstarToTgluonTgluon_M-900_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=Tstar_M900.root 
