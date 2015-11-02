@@ -33,7 +33,7 @@ gg_ElectronSignal::~gg_ElectronSignal()
 }
 
 //------------------------------------------------------------------------------ 
-//   Muon Signal criteria
+//   Electron Signal criteria
 //------------------------------------------------------------------------------
 bool gg_ElectronSignal::passEventSelection( const edm::Event& , const edm::EventSetup& )
 {

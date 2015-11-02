@@ -17,7 +17,7 @@ typedef std::vector<const pat::Muon*> MuonList;
 bool isSelectionJet( const pat::Jet& jet , const MuonList& mus , const ElecList& els, TH1F* hist )
 {
    if( hist!=NULL ) { hist->Fill(0); }
-   if( jet.pt() < 50. ) { return false; }
+   if( jet.pt() < 40. ) { return false; }
    if( hist!=NULL ) { hist->Fill(1); }
    if( abs( jet.eta() ) > 2.4 ) { return false; }
 
