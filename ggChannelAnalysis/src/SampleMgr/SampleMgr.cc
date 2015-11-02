@@ -27,7 +27,7 @@ SampleMgr::SampleMgr( const std::string& name )
    _name   = name ;
    _chain  = new TChain( "ntuplizer/TstarAnalysis" );
    _cross_section = 1. ;
-   _selection_eff = 1. ; 
+   _selection_eff = 0. ; 
 
    for( const auto& pair : availiableList  ){
       plotname = pair.first;
@@ -91,13 +91,14 @@ void SampleMgr::setLineColor( const Color_t c )
 void SampleMgr::Print( float totalLumi ) const 
 {
    std::cout << "--------------------------------------------" << std::endl;
-   std::cout << "   Name:       " << _name << std::endl;
-   std::cout << "   Files:      " << "MyFile.root" << std::endl;
-   std::cout << "   XSection:   " << _cross_section << std::endl;
-   std::cout << "   Efficiency: " << _selection_eff << std::endl;
-   std::cout << "   Exp. Yield: " << totalLumi*_cross_section*_selection_eff << std::endl;
-   std::cout << "   Color:      " << _fillColor << std::endl;
-   std::cout << "   LineColor:  " << _lineColor << std::endl;
+   std::cout << "   Name:         " << _name << std::endl;
+   std::cout << "   Files:        " << "MyFile.root" << std::endl;
+   std::cout << "   Event Count:  " << getRawEventCount() << std::endl;
+   if( _name != "Data" ){
+      std::cout << "   XSection:   " << _cross_section << std::endl;
+      std::cout << "   Efficiency: " << _selection_eff << std::endl;
+      std::cout << "   Exp. Yield: " << getExpectedYield(totalLumi) << std::endl;
+   }
    std::cout << "--------------------------------------------\n" << std::endl;
 }
 

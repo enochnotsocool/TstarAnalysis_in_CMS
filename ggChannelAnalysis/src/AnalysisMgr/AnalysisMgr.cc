@@ -56,6 +56,7 @@ void AnalysisMgr::printSample( const std::string& name )
 
 void AnalysisMgr::printAllSamples() const 
 {
+   float total_background = 0;
    std::cout << "\n*** Data Samples ************************************" << std::endl;
    _dataSample->Print( _totalLumi );
    std::cout << "\n*** MC Signals   ************************************" << std::endl;
@@ -63,7 +64,10 @@ void AnalysisMgr::printAllSamples() const
       pair.second->Print( _totalLumi ); }
    std::cout << "\n*** MC Background ***********************************" << std::endl;
    for( const auto& pair : _MCbackgroundMap ){
-      pair.second->Print( _totalLumi ); }
+      pair.second->Print( _totalLumi );
+      total_background += pair.second->getExpectedYield( _totalLumi );
+   }
+   std::cout << "\n*** MC Background: " << total_background << "Events" << std::endl;
 }
 
 SampleMgr* AnalysisMgr::sample( const std::string& name )

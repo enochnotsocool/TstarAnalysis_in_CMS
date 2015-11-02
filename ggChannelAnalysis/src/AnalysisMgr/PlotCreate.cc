@@ -72,7 +72,7 @@ void AnalysisMgr::addMCToStack( SampleMgr* sample, const std::string& target )
 {
    tempHist = (TH1F*)( sample->Hist( target )->Clone());
    if( tempHist->Integral() == 0 ){ 
-      std::cerr << "Warning Skipping over empty data set" << std::endl ;
+      std::cerr << "Warning Skipping over empty data set: " << sample->name() << std::endl ;
       return ;
    }
    tempScale   = _totalLumi * sample->crossSection() ;

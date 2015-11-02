@@ -76,6 +76,8 @@ float SampleMgr::getWeightedEventCount() const
    return ans; 
 }
 
+float SampleMgr::getExpectedYield( float totalLumi ) const {
+   return totalLumi * _cross_section * _selection_eff ; }
 
 //------------------------------------------------------------------------------ 
 //   Helper function implementation

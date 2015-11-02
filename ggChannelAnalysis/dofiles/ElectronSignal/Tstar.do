@@ -1,6 +1,4 @@
-AddType     Tstar
-AddFile     Tstar   sample/ElectronSignal/Tstar_M1000.root
-SetXSection Tstar   5.
-SetEff      Tstar   0.051896551724
-SetColor    Tstar   red
+AddFile     Tstar_M1000   sample/ElectronSignal/Tstar_M1000.root
+SetXSection Tstar_M1000   5.
+SetEff      Tstar_M1000   0.061954022989
 

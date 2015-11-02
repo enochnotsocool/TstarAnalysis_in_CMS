@@ -35,6 +35,7 @@ public:
    void  HistPlot( const std::string& , const std::string& );
    float getRawEventCount() const;
    float getWeightedEventCount() const;
+   float getExpectedYield( float ) const ;
    void  makeBasicPlots();
 
    const std::string& plotStyle() const ;

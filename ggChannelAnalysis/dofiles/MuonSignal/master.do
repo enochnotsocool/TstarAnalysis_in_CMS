@@ -1,4 +1,4 @@
-InitBase output.root
+InitBase output_MuonSignal.root
 SetLumi 573.8
 Dofile  ./dofiles/MuonSignal/Data.do
 Dofile  ./dofiles/MuonSignal/TTJets.do
