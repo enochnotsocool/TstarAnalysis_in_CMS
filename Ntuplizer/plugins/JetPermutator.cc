@@ -6,7 +6,7 @@
  *
 *******************************************************************************/
 
-#include "TstarAnalysis/ggChannelProcessor/interface/JetPermutator.h"
+#include "TstarAnalysis/Ntuplizer/interface/JetPermutator.h"
 #include <algorithm>
 #include <iostream>
 //------------------------------------------------------------------------------ 
