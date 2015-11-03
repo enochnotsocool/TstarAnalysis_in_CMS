@@ -39,8 +39,8 @@ public:
    void  makeBasicPlots();
 
    const std::string& plotStyle() const ;
-   void  setFillColor( const Color_t );
-   void  setLineColor( const Color_t );
+   void  setFillColor( const Color_t& , const float=1.0 );
+   void  setLineColor( const Color_t& );
 
 private:
    std::string  _name;

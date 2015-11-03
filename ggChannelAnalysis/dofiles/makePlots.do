@@ -7,3 +7,4 @@ MakeCombine  JetCount
 MakeCombine  LeptonEta
 MakeCombine  LeptonPt
 
+MakeSignalPlot  ChiSquareMass

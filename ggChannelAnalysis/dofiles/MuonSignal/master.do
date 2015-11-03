@@ -1,10 +1,7 @@
-InitBase output_MuonSignal.root
-SetLumi 573.8
-Dofile  ./dofiles/MuonSignal/Data.do
-Dofile  ./dofiles/MuonSignal/TTJets.do
-Dofile  ./dofiles/MuonSignal/SingleTop.do
-Dofile  ./dofiles/MuonSignal/Tstar.do
-SetSignal Tstar_M1000
+InitBase MuonSignalPlots.root
+Dofile  ./dofiles/cross_section.do
+Dofile  ./dofiles/MuonSignal/setfiles.do
+Dofile  ./dofiles/MuonSignal/setselection.do
 Dofile  ./dofiles/makePlots.do
 print
 Clear

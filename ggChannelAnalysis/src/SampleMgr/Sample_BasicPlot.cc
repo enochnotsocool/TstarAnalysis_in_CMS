@@ -44,10 +44,9 @@ void SampleMgr::makeBasicPlots()
       Hist( "MET" )->Fill( eventBranches._MET );
       Hist( "JetCount" )->Fill( eventBranches._JetCount );
 
-      for( size_t j = 0 ; j < jetPt.size() ; ++j ){
-         Hist("JetPt")->Fill( jetPt[j] );
-         Hist("JetEta")->Fill( jetEta[j] );
-      }
+      Hist("JetPt")->Fill( jetPt[0] );
+      Hist("JetEta")->Fill( jetEta[0] );
+
       for( size_t j = 0 ; j < muonPt.size(); ++j ){
          Hist("LeptonPt")->Fill( muonPt[j] );
          Hist("LeptonEta")->Fill( muonEta[j] );

@@ -1,10 +1,11 @@
 /*******************************************************************************
  *
- *  Filename    : PlotCreate.cc
- *  Description : Implementation for plot merging
+ *  Filename    : DataToMCBackGround.cc
+ *  Description : Comparing Data to MC background.
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
- *  
+ *
 *******************************************************************************/
+
 #include "AnalysisMgr.h"
 #include "TLegend.h"
 #include <stdio.h>
@@ -18,7 +19,7 @@ static float tempScale;
 //------------------------------------------------------------------------------ 
 //   Public method implementation
 //------------------------------------------------------------------------------
-void AnalysisMgr::makePlot( const std::string& target )
+void AnalysisMgr::makeDataToBGPlot( const std::string& target )
 {
    printf( "making plot %s\n" , target.c_str() );
    _stackHist = new THStack( (target+"sh").c_str() , (makeHistTitle(target)).c_str() );
@@ -27,11 +28,7 @@ void AnalysisMgr::makePlot( const std::string& target )
    //----- Preparing MC  -----------------------------------------------------------
    for( const auto& pair : _MCbackgroundMap ) {
       addMCToStack( pair.second , target ); }
-   if( _currentSignal ){
-      addMCToStack( _currentSignal , target );
-   }else{
-      std::cerr << "Warning! No signal set for plotting!" << std::endl;
-   }
+   
    //----- Plotting data  ---------------------------------------------------------
    dataHist = (TH1F*)_dataSample->Hist(target)->Clone();
    float y_max = 1.2* std::max( dataHist->GetMaximum() , _stackHist->GetMaximum() );
@@ -75,9 +72,7 @@ void AnalysisMgr::addMCToStack( SampleMgr* sample, const std::string& target )
       std::cerr << "Warning Skipping over empty data set: " << sample->name() << std::endl ;
       return ;
    }
-   tempScale   = _totalLumi * sample->crossSection() ;
-   tempScale  *= sample->selectionEff();
-   tempScale  /= sample->getRawEventCount(); // Should be event by event 
+   tempScale = getHistScale( sample );
    tempHist->Scale( tempScale ) ; 
    _stackHist->Add( tempHist ); 
    
@@ -86,3 +81,13 @@ void AnalysisMgr::addMCToStack( SampleMgr* sample, const std::string& target )
          sample->getRawEventCount() ,
          sample->getRawEventCount()*tempScale );
 }
+
+float AnalysisMgr::getHistScale( SampleMgr* sample ) const 
+{
+   float ans = 1.0 ;
+   ans  = _totalLumi * sample->crossSection();
+   ans *= sample->selectionEff();
+   ans /= sample->getRawEventCount();
+   return ans;
+}
+

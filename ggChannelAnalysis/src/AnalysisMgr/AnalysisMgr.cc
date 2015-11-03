@@ -34,6 +34,7 @@ AnalysisMgr::~AnalysisMgr()
    delete _outputFile;
 
    delete _combineLegend;
+   delete _signalLegend;
 }
 
 //------------------------------------------------------------------------------ 

@@ -19,5 +19,6 @@ CmdClass(SetEff);
 CmdClass(SetSignal);
 CmdClass(MakeBasic);
 CmdClass(MakeCombine);
+CmdClass(MakeSignalPlot);
 CmdClass(ClearPlot);
 #endif // __PLOTCMD_H__

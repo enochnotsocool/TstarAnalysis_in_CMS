@@ -34,7 +34,8 @@ public:
    bool setSignalMass( const std::string& );
    SampleMgr* sample( const std::string& );
    void makeBasicPlots();
-   void makePlot( const std::string& );
+   void makeDataToBGPlot( const std::string& );
+   void makeSignalPlot( const std::string& );
 
 private:
    TFile*     _outputFile;
@@ -46,14 +47,16 @@ private:
    TCanvas*   _canvas;
    THStack*   _stackHist;
    TLegend*   _combineLegend;
+   TLegend*   _signalLegend;
    float      _totalLumi;
 
    //----- Helper function for constructor  ---------------------------------------
    void initSamples();
 
    //----- Helper function for combined plotting  ---------------------------------
-   const std::string makeHistTitle( const std::string& ) const;
-   void addMCToStack( SampleMgr* , const std::string& );
+   const  std::string makeHistTitle( const std::string& ) const;
+   void   addMCToStack( SampleMgr* , const std::string& );
+   float  getHistScale( SampleMgr* ) const;
 };
 
 #endif // __ANALYSISMGR_H__

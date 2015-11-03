@@ -25,6 +25,7 @@ public:
    void setBinCount( const unsigned int );
    void setTitle( const std::string& );
    void setXtitle( const std::string& );
+   void makeYtitle( const std::string& );
    void setYtitle( const std::string& );
 
    unsigned int BinCount() const ;

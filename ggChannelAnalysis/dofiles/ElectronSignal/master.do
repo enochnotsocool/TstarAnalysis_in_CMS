@@ -1,10 +1,7 @@
-InitBase output_ElectronSignal.root
-SetLumi 573.8
-Dofile  ./dofiles/ElectronSignal/Data.do
-Dofile  ./dofiles/ElectronSignal/TTJets.do
-Dofile  ./dofiles/ElectronSignal/SingleTop.do
-Dofile  ./dofiles/ElectronSignal/Tstar.do
-SetSignal Tstar_M1000
+InitBase ElectronSignalPlots.root
+Dofile  ./dofiles/cross_section.do
+Dofile  ./dofiles/ElectronSignal/setfiles.do
+Dofile  ./dofiles/ElectronSignal/setselection.do
 Dofile  ./dofiles/makePlots.do
 print
 Clear

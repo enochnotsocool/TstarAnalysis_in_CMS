@@ -73,15 +73,15 @@ TH1F* SampleMgr::Hist( const std::string& histname )
    return _histMap[histname];
 }
 
-void SampleMgr::setFillColor( const Color_t c  )
+void SampleMgr::setFillColor( const Color_t& c , const float alpha )
 {
    for( auto histpair : _histMap ){
-      histpair.second->SetFillColor( c  );
+      histpair.second->SetFillColorAlpha( c , alpha );
    }
    _fillColor = c;
 }
 
-void SampleMgr::setLineColor( const Color_t c )
+void SampleMgr::setLineColor( const Color_t& c )
 {
    for( auto histpair : _histMap ){
       histpair.second->SetLineColor( c  );

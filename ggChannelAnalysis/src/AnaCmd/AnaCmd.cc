@@ -25,6 +25,7 @@ bool initPlotCmd()
          cmdMgr->regCmd("SetSignal"   , 4 , new SetSignal   ) &&
          cmdMgr->regCmd("MakeBasic"   , 5 , new MakeBasic   ) &&
          cmdMgr->regCmd("MakeCombine" , 5 , new MakeCombine ) &&
+         cmdMgr->regCmd("MakeSignalPlot"  , 5 , new MakeSignalPlot  ) &&
          cmdMgr->regCmd("ClearPlot"   , 5 , new ClearPlot   ) ) ) {
       cerr << "Registering \"plot\" commands fails... exiting" << endl;
       return false;
@@ -208,12 +209,31 @@ CmdExecStatus MakeCombine::exec( const string& input )
    }
 
    if(!CmdExec::lexSingleOption( input , singleOption , 1 )) { return CMD_EXEC_ERROR; } 
-   pltMgr->makePlot( singleOption );
+   pltMgr->makeDataToBGPlot( singleOption );
 
    return CMD_EXEC_DONE; 
 }
 void MakeCombine::usage( ostream& os ) const {} 
 void MakeCombine::help() const {}
+
+//------------------------------------------------------------------------------ 
+//   MakeSignalPlot
+//------------------------------------------------------------------------------
+CmdExecStatus MakeSignalPlot::exec( const string& input )
+{
+   CHECKMGR ;
+   if( currentState < PLOTBASIC ){
+      std::cerr << "Basic Plots not Initialized! Please run MakeBasic First!" << std::endl;
+      return CMD_EXEC_ERROR ; 
+   }
+
+   if(!CmdExec::lexSingleOption( input , singleOption , 1 )) { return CMD_EXEC_ERROR; } 
+   pltMgr->makeSignalPlot( singleOption );
+
+   return CMD_EXEC_DONE; 
+}
+void MakeSignalPlot::usage( ostream& os ) const {} 
+void MakeSignalPlot::help() const {}
 
 //------------------------------------------------------------------------------ 
 //   ClearPlot
