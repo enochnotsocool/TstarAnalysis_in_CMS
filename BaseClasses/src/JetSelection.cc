@@ -7,19 +7,15 @@
 *******************************************************************************/
 #include "TH1F.h"
 #include "TLorentzVector.h"
-#include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/Electron.h"
+#include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
+#include "TstarAnalysis/BaseClasses/interface/Limits.h"
 
-typedef std::vector<const reco::GsfElectron*> ElecList;
-typedef std::vector<const pat::Muon*> MuonList; 
-
-bool isSelectionJet( const pat::Jet& jet , const MuonList& mus , const ElecList& els, TH1F* hist )
+bool isSelectionJet( const pat::Jet& jet , const MuonList& mus , const ElectronList& els, TH1F* hist )
 {
    if( hist!=NULL ) { hist->Fill(0); }
-   if( jet.pt() < 40. ) { return false; }
+   if( jet.pt() < SELECTED_JET_PT_LIM ) { return false; }
    if( hist!=NULL ) { hist->Fill(1); }
-   if( abs( jet.eta() ) > 2.4 ) { return false; }
+   if( abs( jet.eta() ) > SELECTED_JET_ETA_LIM ) { return false; }
 
    //----- Loose Jet ID  ------------------------------------------------------------------------------
    if( hist!=NULL ) { hist->Fill(2); }
@@ -37,13 +33,12 @@ bool isSelectionJet( const pat::Jet& jet , const MuonList& mus , const ElecList&
    TLorentzVector jetVec( jet.px() , jet.py() , jet.pz() , jet.energy() );
    for( const auto& el : els ){
       TLorentzVector elecVec( el->px() , el->py() , el->pz() , el->energy() );
-      if( elecVec.DeltaR( jetVec ) < 0.4 ) { return false; }
+      if( elecVec.DeltaR( jetVec ) < JET_LEPTON_DELTA_R_LIM ) { return false; }
    }
    for( const auto& mu : mus ){
       TLorentzVector muVec( mu->px() , mu->py() , mu->pz() , mu->energy() ) ;
-      if( muVec.DeltaR( jetVec ) < 0.4 ) { return false; }  
-   }
-   
+      if( muVec.DeltaR( jetVec ) < JET_LEPTON_DELTA_R_LIM ) { return false; }  
+   } 
    if( hist!=NULL ) { hist->Fill(4); }
    return true;
 }

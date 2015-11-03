@@ -6,19 +6,17 @@
  *
 *******************************************************************************/
 #include "TH1F.h"
-#include "DataFormats/PatCandidates/interface/Electron.h"
-#include "EgammaAnalysis/ElectronTools/interface/EGammaCutBasedEleId.h"
-#include "EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h"
+#include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
+#include "TstarAnalysis/BaseClasses/interface/Limits.h"
 
-typedef edm::Ptr<reco::GsfElectron> ElecEDMPtr;
 bool isVetoElectron( const ElecEDMPtr el, const edm::ValueMap<bool>& looseID, TH1F* hist )
 {
    if( hist!=NULL) { hist->Fill(0); }
    if( !looseID[el] ) { return false; }
    if( hist!=NULL) { hist->Fill(1); }
-   if( el->pt() < 15 ) { return false; }
+   if( el->pt() < VETO_ELEC_PT_LIM ) { return false; }
    if( hist!=NULL) { hist->Fill(2); }
-   if( abs(el->eta()) > 2.4 ) { return false; } 
+   if( abs(el->eta()) > VETO_ELEC_ETA_LIM ) { return false; } 
    if( hist!=NULL) { hist->Fill(3); }
    if( abs(el->eta()) > 1.44 && abs(el->eta()) < 1.57 ){ return false ; }
    if( hist!=NULL) { hist->Fill(4); }
@@ -30,9 +28,9 @@ bool isSelectionElectron( const ElecEDMPtr el , const edm::ValueMap<bool>& mediu
    if( hist!=NULL) { hist->Fill(0); }
    if( !mediumID[el] ) { return false; }
    if( hist!=NULL) { hist->Fill(1); }
-   if( el->pt() < 30 ) { return false; }
+   if( el->pt() < SELECTED_ELEC_PT_LIM ) { return false; }
    if( hist!=NULL) { hist->Fill(2); }
-   if( abs(el->eta()) > 2.1 ) { return false; } 
+   if( abs(el->eta()) > SELECTED_ELEC_ETA_LIM ) { return false; } 
    if( hist!=NULL) { hist->Fill(3); }
    if( abs(el->eta()) > 1.44 && abs(el->eta()) < 1.57 ){ return false ; }
    if( hist!=NULL) { hist->Fill(4); }

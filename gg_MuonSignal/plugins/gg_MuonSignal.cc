@@ -51,10 +51,6 @@ bool gg_MuonSignal::passEventSelection( const edm::Event& , const edm::EventSetu
    _eventSelectionCount->Fill(5);
    if( _selectedBJetList.empty() ) { return false; }
    _eventSelectionCount->Fill(6);
-   if( _selectedBJetList[0]->pt() < 50. ){ return false; }
-   _eventSelectionCount->Fill(7);
-   if( _selectedJetList[0]->pt() < 50. ) { return false; }
-   _eventSelectionCount->Fill(8);
    return true;
 }
 
