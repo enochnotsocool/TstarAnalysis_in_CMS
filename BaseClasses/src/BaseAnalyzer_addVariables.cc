@@ -12,21 +12,21 @@ void BaseAnalyzer::addMuonVariables()
 {
    _muonBranches.clear(); // Clearing previous event contents
    for( const auto& muon : _selectedMuonList ){
-      _muonBranches._PtList.push_back( muon->pt() );
-      _muonBranches._EtaList.push_back( muon->eta() );
-      _muonBranches._PhiList.push_back( muon->phi() );
-      _muonBranches._EnergyList.push_back( muon->energy() );
-      _muonBranches._trackRelIsoList.push_back( muon->trackIso() / muon->pt() );
+      _muonBranches.Pt.push_back( muon->pt() );
+      _muonBranches.Eta.push_back( muon->eta() );
+      _muonBranches.Phi.push_back( muon->phi() );
+      _muonBranches.Energy.push_back( muon->energy() );
+      _muonBranches.trackRelIso.push_back( muon->trackIso() / muon->pt() );
    }
 }
 
 //----- Jet Information  -------------------------------------------------------
 void addJet( MiniJetBranches&  b , const pat::Jet* j )
 {
-   b._PtList.push_back( j->pt() );
-   b._EtaList.push_back( j->eta() );
-   b._PhiList.push_back( j->phi() );
-   b._EnergyList.push_back( j->energy() );    
+   b.Pt.push_back( j->pt() );
+   b.Eta.push_back( j->eta() );
+   b.Phi.push_back( j->phi() );
+   b.Energy.push_back( j->energy() );    
 }
 
 void BaseAnalyzer::addJetVariables()
@@ -45,10 +45,10 @@ void BaseAnalyzer::addElectronVariables()
 {
    _elecBranches.clear();
    for( const auto elec : _selectedElectronList ){
-      _elecBranches._PtList.push_back( elec->pt() );
-      _elecBranches._EtaList.push_back( elec->eta() );
-      _elecBranches._PhiList.push_back( elec->phi() );
-      _elecBranches._EnergyList.push_back( elec->energy() );
+      _elecBranches.Pt.push_back( elec->pt() );
+      _elecBranches.Eta.push_back( elec->eta() );
+      _elecBranches.Phi.push_back( elec->phi() );
+      _elecBranches.Energy.push_back( elec->energy() );
    }
 }
 
@@ -64,7 +64,7 @@ void BaseAnalyzer::addEventVariables( const edm::Event& iEvent )
    _eventBranches._MuonCount     = _selectedMuonList.size();
    _eventBranches._ElectronCount = _selectedElectronList.size();
    _eventBranches._JetCount      = _selectedBJetList.size() + _selectedLJetList.size();
-   _eventBranches._VertexCount = _vertexList->size();
+   _eventBranches._VertexCount   = _vertexList->size();
 
    printf("Getting PileUp Info\n");
    if( !iEvent.isRealData() ){

@@ -1,1 +1,1 @@
-AddFile  Data   ./sample/ElectronSignal/SingleMuon.root
+AddFile  Data   ./sample/ElectronSignal/SingleElectron.root

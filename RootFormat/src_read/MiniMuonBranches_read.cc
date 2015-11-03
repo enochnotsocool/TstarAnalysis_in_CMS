@@ -2,10 +2,11 @@
 
 void MiniMuonBranches::retrieveVariables( TTree* tree ){
    
-   tree->SetBranchAddress( "MuonPt" , &_PtList );
-   tree->SetBranchAddress( "MuonEta" , &_EtaList );
-   tree->SetBranchAddress( "MuonPhi" , &_PhiList );
-   tree->SetBranchAddress( "MuonEnergy" , &_EnergyList );
-   tree->SetBranchAddress( "MuontrackRelIso" , &_trackRelIsoList );
+   tree->SetBranchAddress( "MuonPt" , &PtPtr );
+   tree->SetBranchAddress( "MuonEta" , &EtaPtr );
+   tree->SetBranchAddress( "MuonPhi" , &PhiPtr );
+   tree->SetBranchAddress( "MuonEnergy" , &EnergyPtr );
+   tree->SetBranchAddress( "MuontrackRelIso" , &trackRelIsoPtr );
 }
+
 

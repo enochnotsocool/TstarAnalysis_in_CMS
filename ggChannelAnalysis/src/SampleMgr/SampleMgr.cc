@@ -6,6 +6,7 @@
  *
 *******************************************************************************/
 #include "SampleMgr.h"
+#include "TChainElement.h"
 #include <iostream>
 #include <stdio.h>
 
@@ -92,7 +93,8 @@ void SampleMgr::Print( float totalLumi ) const
 {
    std::cout << "--------------------------------------------" << std::endl;
    std::cout << "   Name:         " << _name << std::endl;
-   std::cout << "   Files:        " << "MyFile.root" << std::endl;
+   std::cout << "   Files:        " << std::endl;
+   printFileList();
    std::cout << "   Event Count:  " << getRawEventCount() << std::endl;
    if( _name != "Data" ){
       std::cout << "   XSection:   " << _cross_section << std::endl;
@@ -117,4 +119,15 @@ void SampleMgr::addHist( const std::string& histname , int nbin , float xmin , f
    TH1F* temp = new TH1F( (_name+histname).c_str() , (_name+histname).c_str() , nbin , xmin , xmax );
    printf( "New Histogram %s at %p\n" , histname.c_str() , temp );
    _histMap[ histname ] = temp ;
+}
+
+void SampleMgr::printFileList() const
+{
+   TObjArray* fileElements = _chain->GetListOfFiles();
+   TIter next(fileElements);
+   TChainElement* chEl = 0;
+   while (( chEl=(TChainElement*)next() )) {
+      printf(" %s,", chEl->GetTitle());
+   }
+   printf("\n");
 }

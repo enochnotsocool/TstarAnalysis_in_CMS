@@ -39,7 +39,8 @@ function makeHeader(){
       var_type=$( echo $line | awk '{print $1}')
       var_name=$( echo $line | awk '{print $2}')
       if [[ $1 != Event ]]; then
-         DataTypeList=$DataTypeList"\n   std::vector<$var_type> _${var_name}List;"
+         DataTypeList=$DataTypeList"\n   std::vector<$var_type> ${var_name};"
+         DataTypeList=$DataTypeList"\n   std::vector<$var_type>* ${var_name}Ptr;"
       else
          DataTypeList=$DataTypeList"\n   $var_type _${var_name};"
       fi
@@ -55,8 +56,8 @@ function makeWriteFile() {
    while read -r line ; do 
       var_name=$( echo $line | awk '{print $2}' );
       if [[ $1 != Event ]]; then
-         registerCMDs=$registerCMDs"\n   tree->Branch( \"${1}$var_name\" , \&_${var_name}List );"
-         clearCMDS=$clearCMDS"\n   _${var_name}List.clear();"
+         registerCMDs=$registerCMDs"\n   tree->Branch( \"${1}$var_name\" , \&${var_name} );"
+         clearCMDS=$clearCMDS"\n   ${var_name}.clear();"
       else
          registerCMDs=$registerCMDs"\n   tree->Branch( \"${1}$var_name\" , \&_${var_name} );"
       fi
@@ -69,10 +70,11 @@ function makeWriteFile() {
 
 function makeReadFile() {
    readCMDs=""
+   loadCMDs=""
    while read -r line ; do 
       var_name=$( echo $line | awk '{print $2}' );
       if [[ $1 != Event ]]; then
-         readCMDs=$readCMDs"\n   tree->SetBranchAddress( \"${1}$var_name\" , \&_${var_name}List );"
+         readCMDs=$readCMDs"\n   tree->SetBranchAddress( \"${1}$var_name\" , \&${var_name}Ptr );"
       else
          readCMDs=$readCMDs"\n   tree->SetBranchAddress( \"${1}$var_name\" , \&_${var_name} );"
       fi

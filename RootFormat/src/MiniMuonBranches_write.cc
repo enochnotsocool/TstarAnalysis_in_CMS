@@ -3,19 +3,19 @@
 void MiniMuonBranches::registerVariables( TTree* tree )
 {
    
-   tree->Branch( "MuonPt" , &_PtList );
-   tree->Branch( "MuonEta" , &_EtaList );
-   tree->Branch( "MuonPhi" , &_PhiList );
-   tree->Branch( "MuonEnergy" , &_EnergyList );
-   tree->Branch( "MuontrackRelIso" , &_trackRelIsoList );
+   tree->Branch( "MuonPt" , &Pt );
+   tree->Branch( "MuonEta" , &Eta );
+   tree->Branch( "MuonPhi" , &Phi );
+   tree->Branch( "MuonEnergy" , &Energy );
+   tree->Branch( "MuontrackRelIso" , &trackRelIso );
 }
 
 void MiniMuonBranches::clear()
 {
    
-   _PtList.clear();
-   _EtaList.clear();
-   _PhiList.clear();
-   _EnergyList.clear();
-   _trackRelIsoList.clear();
+   Pt.clear();
+   Eta.clear();
+   Phi.clear();
+   Energy.clear();
+   trackRelIso.clear();
 }

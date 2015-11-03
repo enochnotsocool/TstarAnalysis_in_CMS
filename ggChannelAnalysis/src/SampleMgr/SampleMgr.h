@@ -52,6 +52,7 @@ private:
    float        _selection_eff;
    
    void addHist( const std::string& , int ,  float , float );
+   void printFileList() const;
 };
 
 

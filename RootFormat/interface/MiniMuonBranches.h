@@ -14,11 +14,16 @@ public:
    void clear();
 
    
-   std::vector<float> _PtList;
-   std::vector<float> _EtaList;
-   std::vector<float> _PhiList;
-   std::vector<float> _EnergyList;
-   std::vector<float> _trackRelIsoList;
+   std::vector<float> Pt;
+   std::vector<float>* PtPtr;
+   std::vector<float> Eta;
+   std::vector<float>* EtaPtr;
+   std::vector<float> Phi;
+   std::vector<float>* PhiPtr;
+   std::vector<float> Energy;
+   std::vector<float>* EnergyPtr;
+   std::vector<float> trackRelIso;
+   std::vector<float>* trackRelIsoPtr;
 };
 
 #endif 

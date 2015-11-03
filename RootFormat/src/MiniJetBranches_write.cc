@@ -3,19 +3,19 @@
 void MiniJetBranches::registerVariables( TTree* tree )
 {
    
-   tree->Branch( "JetPt" , &_PtList );
-   tree->Branch( "JetEta" , &_EtaList );
-   tree->Branch( "JetPhi" , &_PhiList );
-   tree->Branch( "JetEnergy" , &_EnergyList );
-   tree->Branch( "Jetbtag" , &_btagList );
+   tree->Branch( "JetPt" , &Pt );
+   tree->Branch( "JetEta" , &Eta );
+   tree->Branch( "JetPhi" , &Phi );
+   tree->Branch( "JetEnergy" , &Energy );
+   tree->Branch( "Jetbtag" , &btag );
 }
 
 void MiniJetBranches::clear()
 {
    
-   _PtList.clear();
-   _EtaList.clear();
-   _PhiList.clear();
-   _EnergyList.clear();
-   _btagList.clear();
+   Pt.clear();
+   Eta.clear();
+   Phi.clear();
+   Energy.clear();
+   btag.clear();
 }

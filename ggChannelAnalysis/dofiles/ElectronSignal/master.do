@@ -5,10 +5,7 @@ Dofile  ./dofiles/ElectronSignal/TTJets.do
 Dofile  ./dofiles/ElectronSignal/SingleTop.do
 Dofile  ./dofiles/ElectronSignal/Tstar.do
 SetSignal Tstar_M1000
-MakeBasic
-MakeCombine  ChiSquareMass
-MakeCombine  JetPt
-MakeCombine  LeptonPt
+Dofile  ./dofiles/makePlots.do
 print
 Clear
 Quit -f 
