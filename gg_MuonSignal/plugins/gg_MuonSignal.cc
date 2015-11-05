@@ -24,7 +24,8 @@ protected:
 gg_MuonSignal::gg_MuonSignal( const edm::ParameterSet& iConfig ):
    BaseFilter( iConfig )
 {
-   _acceptTriggers.push_back( "HLT_IsoMu27" );
+   _acceptTriggers.push_back( "HLT_IsoMu27_v1" ); // MC_reminiAOD
+   _acceptTriggers.push_back( "HLT_IsoMu27_v3" ); // Data
 }
 
 gg_MuonSignal::~gg_MuonSignal()
@@ -58,6 +59,7 @@ bool gg_MuonSignal::passEventSelection( const edm::Event& iEvent, const edm::Eve
    fillHist ;
    return true;
 }
+
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(gg_MuonSignal);
