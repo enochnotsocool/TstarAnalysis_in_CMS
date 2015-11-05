@@ -26,8 +26,8 @@ private:
    virtual void beginJob() override;
    virtual void endJob() override;
 
-   float _chiSqMass;
    float computeChiSqMass();
+   float computeEventWeight();
 };
 
 

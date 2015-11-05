@@ -14,6 +14,8 @@ void MiniEventBranches::registerVariables( TTree* tree )
    tree->Branch( "EventVertexCount" , &_VertexCount );
    tree->Branch( "EventMET" , &_MET );
    tree->Branch( "EventMETPhi" , &_METPhi );
+   tree->Branch( "EventeventWeight" , &_eventWeight );
+   tree->Branch( "EventchiSqMass" , &_chiSqMass );
 }
 
 void MiniEventBranches::clear()

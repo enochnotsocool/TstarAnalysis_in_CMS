@@ -25,6 +25,8 @@ public:
    UInt_t _VertexCount;
    float _MET;
    float _METPhi;
+   float _eventWeight;
+   float _chiSqMass;
 };
 
 #endif 

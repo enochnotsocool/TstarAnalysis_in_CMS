@@ -1,6 +1,16 @@
 import FWCore.ParameterSet.Config as cms
+import FWCore.ParameterSet.VarParsing as opts
 
-process = cms.Process("Demo")
+options = opts.VarParsing ('analysis')
+
+options.register( "binCount" ,
+      50,
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.int,
+      'bin for pileup');
+
+
+process = cms.Process("MCPileup")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
@@ -36,9 +46,10 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.demo = cms.EDAnalyzer(
-   'MCPileUp',
-   pileupSrc = cms.InputTag( "slimmedAddPileupInfo" )
-)
+   'PileUpReWeighter',
+   pileupSrc = cms.InputTag( "slimmedAddPileupInfo" ),
+   binCount  = cms.int32( options.binCount )
+) 
 
 
 process.p = cms.Path(process.demo)

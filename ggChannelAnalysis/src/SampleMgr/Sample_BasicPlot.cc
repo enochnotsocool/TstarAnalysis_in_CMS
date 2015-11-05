@@ -43,6 +43,9 @@ void SampleMgr::makeBasicPlots()
       Hist( "ChiSquareMass" )->Fill( chiMass );
       Hist( "MET" )->Fill( eventBranches._MET );
       Hist( "JetCount" )->Fill( eventBranches._JetCount );
+      Hist( "VertexCountNoWeight" )->Fill( eventBranches._VertexCount );
+      Hist( "VertexCountNoWeight" )->Fill( eventBranches._VertexCount , eventBranches._eventWeight );
+
 
       Hist("JetPt")->Fill( jetPt[0] );
       Hist("JetEta")->Fill( jetEta[0] );

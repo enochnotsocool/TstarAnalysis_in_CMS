@@ -13,6 +13,6 @@
 #ifndef __CONSTANTS_H__
 #define __CONSTANTS_H__
 
-extern const float PileUpWeight[120];
+extern const float PileUpWeight[50];
 
 #endif // __CONSTANTS_H__

@@ -66,6 +66,23 @@ bool initPlotList()
    availiableList["LeptonEta"].setTitle( "Lepton #eta"   );
    availiableList["LeptonEta"].setXtitle( "lepton #eta" );
    availiableList["LeptonEta"].makeYtitle( "" );
+  
+   availiableList.insert( PlotPair( "VertexCountNoWeight" , PlotDef() ) );
+   availiableList["VertexCountNoWeight"].setBinCount( 50 ); 
+   availiableList["VertexCountNoWeight"].setXMax( 50 );
+   availiableList["VertexCountNoWeight"].setXMin(  0 );
+   availiableList["VertexCountNoWeight"].setTitle( "Num of Vertices (No weighting)" );
+   availiableList["VertexCountNoWeight"].setXtitle( "Number of vertices" );
+   availiableList["VertexCountNoWeight"].makeYtitle( "" );
+
+   availiableList.insert( PlotPair( "VertexCount" , PlotDef() ) );
+   availiableList["VertexCount"].setBinCount( 50 ); 
+   availiableList["VertexCount"].setXMax( 50 );
+   availiableList["VertexCount"].setXMin(  0 );
+   availiableList["VertexCount"].setTitle( "Num of Vertices" );
+   availiableList["VertexCount"].setXtitle( "Number of vertices" );
+   availiableList["VertexCount"].makeYtitle( "" );
+   
    
    return true;
 }

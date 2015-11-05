@@ -21,6 +21,8 @@ public:
   const UInt_t& VertexCount();
   const float& MET();
   const float& METPhi();
+  const float& eventWeight();
+  const float& chiSqMass();
 
 private:
    size_t _index ;

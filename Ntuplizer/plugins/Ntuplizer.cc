@@ -10,8 +10,7 @@
 Ntuplizer::Ntuplizer(const edm::ParameterSet& iConfig):
    BaseAnalyzer(iConfig)
 {
-   // Adding additional variables
-   _tree->Branch( "ChiSqMass" , &_chiSqMass ); 
+
 }
 
 Ntuplizer::~Ntuplizer(){}
@@ -24,7 +23,8 @@ void Ntuplizer::endJob(){}
 //------------------------------------------------------------------------------
 void Ntuplizer::addCustomVariables( const edm::Event& )
 {
-   _chiSqMass = computeChiSqMass(); 
+   _eventBranches._chiSqMass = computeChiSqMass();
+   _eventBranches._eventWeight = computeEventWeight();
 }
 
 
