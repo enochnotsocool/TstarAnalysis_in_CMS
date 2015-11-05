@@ -9,12 +9,11 @@
 
 PlotList  availiableList;
 
-
 bool initPlotList()
 {
    availiableList.insert( PlotPair( "ChiSquareMass" , PlotDef() ));
-   availiableList["ChiSquareMass"].setBinCount( 85 );
-   availiableList["ChiSquareMass"].setXMax( 2000. );
+   availiableList["ChiSquareMass"].setBinCount( 58 );
+   availiableList["ChiSquareMass"].setXMax( 3000. );
    availiableList["ChiSquareMass"].setXMin( 100.  );
    availiableList["ChiSquareMass"].setTitle( "Mass of tg system"  );
    availiableList["ChiSquareMass"].setXtitle( "M_{tg} (GeV/c^{2})" );

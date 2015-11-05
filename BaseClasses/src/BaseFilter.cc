@@ -7,6 +7,8 @@
 *******************************************************************************/
 #include "TstarAnalysis/BaseClasses/interface/BaseFilter.h"
 #include "TstarAnalysis/BaseClasses/interface/Selection.h"
+#include <iostream>
+
 //------------------------------------------------------------------------------ 
 //   Constructor and destructor
 //------------------------------------------------------------------------------
@@ -103,13 +105,47 @@ void BaseFilter::processJet(const edm::Event& , const edm::EventSetup& )
    }
 }
 
+bool BaseFilter::passTrigger( const edm::Event& iEvent, const edm::EventSetup& )
+{
+   static unsigned int triggerindex = 0 ;
+   static std::string  fullname;
+   if( ! _triggerResults.isValid() ) { 
+      std::cerr << "Handle is invalid!" << std::endl;
+      return false; }
+   const edm::TriggerNames& triggerNames = iEvent.triggerNames( *_triggerResults );
+
+   for( const auto& trigger : _acceptTriggers ){
+
+      if( iEvent.isRealData() ){
+         fullname = trigger + "_v3" ; 
+      } else {
+         fullname = trigger + "_v1" ;
+      }
+      triggerindex = triggerNames.triggerIndex( fullname );
+      std::cerr << "Getting trigger: " << fullname << " at " << triggerindex << std::endl;
+      if( triggerindex == triggerNames.size()  ){ 
+         std::cerr << "Trigger not found" << std::endl;
+         continue ; }
+      if( ! _triggerResults->wasrun( triggerindex ) ) { 
+         std::cerr << "Trigger was not run" << std::endl;
+         continue; }
+      if( ! _triggerResults->accept( triggerindex ) ) { 
+         std::cerr << "Trigger was not accepted" << std::endl;
+         continue; }
+      if( _triggerResults->error( triggerindex ) ) { 
+         std::cerr << "Trigger has error " << std::endl;
+         continue; }
+      return true;
+   }
+   return false;
+}
+
 //------------------------------------------------------------------------------ 
-//   Selection Criteria 
+//   Selection Criteria requires over loading
 //------------------------------------------------------------------------------
 bool BaseFilter::passEventSelection( const edm::Event&, const edm::EventSetup& )
-{ 
-   return true;
-}
+{ return true; }
+
 
 DEFINE_FWK_MODULE( BaseFilter );
 

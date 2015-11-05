@@ -15,7 +15,7 @@ options.register('maxEvts',
       'Number of events to process')
 
 options.register('sample',
-      'file:///wk_cms/yichen/miniAODs/MC_reMiniAOD_25ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root',
+      'file:///wk_cms/yichen/miniAODs/Run2015_reMiniAOD/Run2015D_SingleMuon.root',
       opts.VarParsing.multiplicity.list,
       opts.VarParsing.varType.string,
       'Sample to analyze')

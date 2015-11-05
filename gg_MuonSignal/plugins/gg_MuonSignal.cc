@@ -24,8 +24,7 @@ protected:
 gg_MuonSignal::gg_MuonSignal( const edm::ParameterSet& iConfig ):
    BaseFilter( iConfig )
 {
-   std::cout << "MAKING NEW" << std::endl;
-
+   _acceptTriggers.push_back( "HLT_IsoMu27" );
 }
 
 gg_MuonSignal::~gg_MuonSignal()
@@ -36,21 +35,27 @@ gg_MuonSignal::~gg_MuonSignal()
 //------------------------------------------------------------------------------ 
 //   Muon Signal criteria
 //------------------------------------------------------------------------------
-bool gg_MuonSignal::passEventSelection( const edm::Event& , const edm::EventSetup& )
+#define fillHist \
+   _eventSelectionCount->Fill(i) ; ++i ;
+
+bool gg_MuonSignal::passEventSelection( const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   _eventSelectionCount->Fill(0);
+   unsigned int i = 0 ; 
+   fillHist;
+   if( !passTrigger( iEvent, iSetup ) ) { return false; }
+   fillHist;
    if( _selectedMuonList.size() != 1 ){ return false; }
-   _eventSelectionCount->Fill(1);
+   fillHist ; 
    if( ! _selectedElectronList.empty() ){ return false; }
-   _eventSelectionCount->Fill(2);
+   fillHist ;
    if( ! _vetoMuonList.empty() ) { return false; }
-   _eventSelectionCount->Fill(3);
+   fillHist ; 
    if( ! _vetoElectronList.empty() ) { return false; }
-   _eventSelectionCount->Fill(4);
+   fillHist ; 
    if( _selectedJetList.size() < 6 ) { return false; }
-   _eventSelectionCount->Fill(5);
+   fillHist ; 
    if( _selectedBJetList.empty() ) { return false; }
-   _eventSelectionCount->Fill(6);
+   fillHist ;
    return true;
 }
 

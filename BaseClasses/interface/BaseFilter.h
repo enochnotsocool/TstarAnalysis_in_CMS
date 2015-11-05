@@ -13,6 +13,7 @@
 
 #include "MiniAODAnalysis/BaseFilter/interface/MiniAODFilter.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
+#include "FWCore/Common/interface/TriggerNames.h"
 #include "TH1F.h"
 
 class BaseFilter : public MiniAODFilter {
@@ -25,7 +26,8 @@ protected:
    void processMuon(const edm::Event& , const edm::EventSetup& );
    void processElectron(const edm::Event& , const edm::EventSetup& );
    void processJet(const edm::Event& , const edm::EventSetup& );
-   // Only this function is virtual for this analysis
+   bool passTrigger(const edm::Event&, const edm::EventSetup& );
+   // Only these function is virtual for this analysis
    virtual bool passEventSelection(const edm::Event& , const edm::EventSetup& ); 
 
    //----- Storage classes  -------------------------------------------------------
@@ -36,6 +38,7 @@ protected:
    ElectronList  _vetoElectronList;
    JetList       _selectedJetList;
    JetList       _selectedBJetList;
+   std::vector<std::string>  _acceptTriggers;
 
    //----- Selection efficiency tracker  ------------------------------------------
    TH1F*  _selcMuonCount;

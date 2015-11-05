@@ -8,7 +8,8 @@
 #!/bin/bash
 
 TargetDir="/wk_cms/yichen/TstarAnalysis/gg_MuonSignal_ntuples/"
-cmsRun ntuplizer_cfg.py DataProcessing=Data25ns sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/SingleMuon_Run2015D-05Oct2015-v1/miniAOD.root,file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/SingleMuon_Run2015D-PromptReco-v4/miniAOD.root filename="$TargetDir"SingleMuon.root 
+cmsRun ntuplizer_cfg.py DataProcessing=Data25ns sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/SingleMuon_Run2015D-05Oct2015-v1/miniAOD.root filename="$TargetDir"SingleMuon_reMiniAOD.root 
+cmsRun ntuplizer_cfg.py DataProcessing=Data25ns sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/SingleMuon_Run2015D-PromptReco-v4/miniAOD.root filename="$TargetDir"SingleMuon_PromptReco.root 
 
 cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename="$TargetDir"TTJets.root 
 
@@ -21,6 +22,17 @@ cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal
 cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/ST_tW_antitop_5f_DS_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename="$TargetDir"ST_tW_antitop.root
 
 cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/ST_tW_top_5f_DS_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename="$TargetDir"ST_tW_top.root
+
+cmsRun ntuplizer_cfg.py sample=file:////wk_cms/yichen//TstarAnalysis/gg_MuonSignal_miniAOD/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=${TargetDir}/WJets.root
+cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen//TstarAnalysis/gg_MuonSignal_miniAOD/WW_TuneCUETP8M1_13TeV-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=${TargetDir}/WW.root
+cmsRun ntuplizer_cfg.py sample=file:////wk_cms/yichen//TstarAnalysis/gg_MuonSignal_miniAOD/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=${TargetDir}/WZ.root
+cmsRun ntuplizer_cfg.py sample=file:////wk_cms/yichen//TstarAnalysis/gg_MuonSignal_miniAOD/ZZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=${TargetDir}/ZZ.root
+
+cmsRun ntuplizer_cfg.py sample=file:////wk_cms/yichen//TstarAnalysis/gg_MuonSignal_miniAOD/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=${TargetDir}/TTW_to_lepton.root
+
+cmsRun ntuplizer_cfg.py sample=file:////wk_cms/yichen//TstarAnalysis/gg_MuonSignal_miniAOD/TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=${TargetDir}/TTW_to_quark.root
+
+cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen//TstarAnalysis/gg_MuonSignal_miniAOD/TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename=${TargetDir}/TTZ.root
 
 cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/TstarTstarToTgluonTgluon_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename="$TargetDir"Tstar_M1000.root 
 cmsRun ntuplizer_cfg.py sample=file:///wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/TstarTstarToTgluonTgluon_M-900_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root filename="$TargetDir"Tstar_M900.root 

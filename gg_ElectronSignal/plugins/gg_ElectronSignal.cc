@@ -6,6 +6,7 @@
  *
 *******************************************************************************/
 #include "TstarAnalysis/BaseClasses/interface/BaseFilter.h"
+#include "FWCore/Common/interface/TriggerNames.h"
 #include <iostream>
 
 //------------------------------------------------------------------------------ 
@@ -17,14 +18,14 @@ public:
    ~gg_ElectronSignal();
 
    virtual bool passEventSelection( const edm::Event&, const edm::EventSetup&  );
-
 protected:
+
 };
 
 gg_ElectronSignal::gg_ElectronSignal( const edm::ParameterSet& iConfig ):
    BaseFilter( iConfig )
 {
-
+   _acceptTriggers.push_back( "HLT_Ele32_eta2p1_WPTight_Gsf_v2" );
 }
 
 gg_ElectronSignal::~gg_ElectronSignal()
@@ -35,23 +36,30 @@ gg_ElectronSignal::~gg_ElectronSignal()
 //------------------------------------------------------------------------------ 
 //   Electron Signal criteria
 //------------------------------------------------------------------------------
-bool gg_ElectronSignal::passEventSelection( const edm::Event& , const edm::EventSetup& )
+#define fillHist \
+   _eventSelectionCount->Fill(i) ; ++i ;
+
+bool gg_ElectronSignal::passEventSelection( const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   _eventSelectionCount->Fill(0);
+   unsigned int i = 0 ;
+   fillHist;
+   if( !passTrigger(iEvent,iSetup) ){ return false; }
+   fillHist;
    if( _selectedElectronList.size() != 1 ){ return false; }
-   _eventSelectionCount->Fill(1);
+   fillHist;
    if( ! _selectedMuonList.empty() ){ return false; }
-   _eventSelectionCount->Fill(2);
+   fillHist;
    if( ! _vetoMuonList.empty() ) { return false; }
-   _eventSelectionCount->Fill(3);
+   fillHist;
    if( ! _vetoElectronList.empty() ) { return false; }
-   _eventSelectionCount->Fill(4);
+   fillHist;
    if( _selectedJetList.size() < 6 ) { return false; }
-   _eventSelectionCount->Fill(5);
+   fillHist;
    if( _selectedBJetList.empty() ) { return false; }
-   _eventSelectionCount->Fill(6);
+   fillHist;
    return true;
 }
+
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(gg_ElectronSignal);

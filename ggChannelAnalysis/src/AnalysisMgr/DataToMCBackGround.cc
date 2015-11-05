@@ -67,7 +67,7 @@ const std::string AnalysisMgr::makeHistTitle( const std::string& target ) const
 
 void AnalysisMgr::addMCToStack( SampleMgr* sample, const std::string& target )
 {
-   tempHist = (TH1F*)( sample->Hist( target )->Clone());
+   tempHist = (TH1F*)( sample->Hist( target )->Clone() );
    if( tempHist->Integral() == 0 ){ 
       std::cerr << "Warning Skipping over empty data set: " << sample->name() << std::endl ;
       return ;
