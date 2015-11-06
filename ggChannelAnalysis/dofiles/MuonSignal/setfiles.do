@@ -1,7 +1,6 @@
 AddFile Data             ./sample/MuonSignal/SingleMuon_PromptReco.root
 AddFile Data             ./sample/MuonSignal/SingleMuon_reMiniAOD.root
 
-
 AddFile 31_TTJets        ./sample/MuonSignal/TTJets.root
 
 AddFile 25_SingleTbar_TW ./sample/MuonSignal/ST_tW_antitop.root

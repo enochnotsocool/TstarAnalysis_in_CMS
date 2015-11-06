@@ -27,7 +27,7 @@ private:
    virtual void endJob() override;
 
    float computeChiSqMass();
-   float computeEventWeight();
+   float computeEventWeight( const edm::Event& );
 };
 
 

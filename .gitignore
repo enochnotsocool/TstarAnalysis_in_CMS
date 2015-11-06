@@ -13,6 +13,9 @@
 *.root
 *.log
 log*
+*.gz
+*.zip
+*.tgz
 
 # Specific file exclusion 
 # [relative/path/to/file]

@@ -6,5 +6,7 @@ MakeCombine  JetPt
 MakeCombine  JetCount
 MakeCombine  LeptonEta
 MakeCombine  LeptonPt
+MakeCombine  VertexCountNoWeight
+MakeCombine  VertexCount
 
 MakeSignalPlot  ChiSquareMass

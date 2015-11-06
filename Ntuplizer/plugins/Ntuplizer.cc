@@ -21,10 +21,10 @@ void Ntuplizer::endJob(){}
 //------------------------------------------------------------------------------ 
 //   Main section
 //------------------------------------------------------------------------------
-void Ntuplizer::addCustomVariables( const edm::Event& )
+void Ntuplizer::addCustomVariables( const edm::Event& iEvent )
 {
    _eventBranches._chiSqMass = computeChiSqMass();
-   _eventBranches._eventWeight = computeEventWeight();
+   _eventBranches._eventWeight = computeEventWeight( iEvent );
 }
 
 

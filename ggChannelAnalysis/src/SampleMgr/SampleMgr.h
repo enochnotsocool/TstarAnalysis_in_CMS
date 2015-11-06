@@ -36,6 +36,7 @@ public:
    float getRawEventCount() const;
    float getWeightedEventCount() const;
    float getExpectedYield( float ) const ;
+   float getAverageWeight() const;
    void  makeBasicPlots();
 
    const std::string& plotStyle() const ;

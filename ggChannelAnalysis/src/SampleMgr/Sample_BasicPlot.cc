@@ -19,7 +19,6 @@ static MiniEventBranches    eventBranches;
 static MiniJetBranches      jetBranches;
 static MiniMuonBranches     muonBranches;
 static MiniElectronBranches elecBranches;
-static float chiMass ;
 
 void SetInputTree( TTree* );
 
@@ -28,7 +27,6 @@ void SampleMgr::makeBasicPlots()
    printf( "Making basic plots for %s\n", _name.c_str() );
   
    SetInputTree( _chain );
-   _chain->SetBranchAddress( "ChiSqMass" , &chiMass );
 
    for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
       printf( "\r[%s] Event %lld/%lld.... " , _name.c_str() , i+1 , _chain->GetEntries() );
@@ -40,11 +38,11 @@ void SampleMgr::makeBasicPlots()
       const auto& elecPt = *(elecBranches.PtPtr);
       const auto& elecEta= *(elecBranches.EtaPtr);
       
-      Hist( "ChiSquareMass" )->Fill( chiMass );
+      Hist( "ChiSquareMass" )->Fill( eventBranches._chiSqMass );
       Hist( "MET" )->Fill( eventBranches._MET );
       Hist( "JetCount" )->Fill( eventBranches._JetCount );
       Hist( "VertexCountNoWeight" )->Fill( eventBranches._VertexCount );
-      Hist( "VertexCountNoWeight" )->Fill( eventBranches._VertexCount , eventBranches._eventWeight );
+      Hist( "VertexCount" )->Fill( eventBranches._VertexCount , eventBranches._eventWeight );
 
 
       Hist("JetPt")->Fill( jetPt[0] );
@@ -71,15 +69,22 @@ float SampleMgr::getRawEventCount() const {
 
 float SampleMgr::getWeightedEventCount() const 
 {
-   float ans;
+   float ans = 0;
+   SetInputTree( _chain );
    for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
-      ans += 1; // Should be event way event weight;
+      _chain->GetEntry(i);
+      ans += eventBranches._eventWeight;
    }
    return ans; 
 }
 
+float SampleMgr::getAverageWeight() const 
+{
+   return getWeightedEventCount() / getRawEventCount();
+}
+
 float SampleMgr::getExpectedYield( float totalLumi ) const {
-   return totalLumi * _cross_section * _selection_eff ; }
+   return totalLumi * _cross_section * _selection_eff * getAverageWeight() ; }
 
 //------------------------------------------------------------------------------ 
 //   Helper function implementation

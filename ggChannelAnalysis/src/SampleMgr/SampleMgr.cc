@@ -96,6 +96,7 @@ void SampleMgr::Print( float totalLumi ) const
    std::cout << "   Files:        " << std::endl;
    printFileList();
    std::cout << "   Event Count:  " << getRawEventCount() << std::endl;
+   std::cout << "   W E Count  :  " << getWeightedEventCount() << std::endl;
    if( _name != "Data" ){
       std::cout << "   XSection:   " << _cross_section << std::endl;
       std::cout << "   Efficiency: " << _selection_eff << std::endl;
