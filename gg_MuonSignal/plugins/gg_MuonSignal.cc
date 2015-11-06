@@ -25,6 +25,7 @@ gg_MuonSignal::gg_MuonSignal( const edm::ParameterSet& iConfig ):
    BaseFilter( iConfig )
 {
    _acceptTriggers.push_back( "HLT_IsoMu27_v1" ); // MC_reminiAOD
+   _acceptTriggers.push_back( "HLT_IsoMu27_v2" ); // Data
    _acceptTriggers.push_back( "HLT_IsoMu27_v3" ); // Data
 }
 
