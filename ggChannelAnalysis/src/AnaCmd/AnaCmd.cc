@@ -16,17 +16,18 @@ using namespace std;
 bool initPlotCmd()
 {
    cout << "Hello" << endl;
-   if (!(cmdMgr->regCmd("InitBase"    , 4 , new SetFileBase ) &&
-         cmdMgr->regCmd("SetLumi"     , 5 , new SetLumi     ) &&
-         cmdMgr->regCmd("Print"       , 4 , new Print       ) &&
-         cmdMgr->regCmd("AddFile"     , 4 , new AddFile     ) &&
-         cmdMgr->regCmd("SetXSection" , 4 , new SetXSection ) &&
-         cmdMgr->regCmd("SetEff"      , 4 , new SetEff      ) &&
-         cmdMgr->regCmd("SetSignal"   , 4 , new SetSignal   ) &&
-         cmdMgr->regCmd("MakeBasic"   , 5 , new MakeBasic   ) &&
-         cmdMgr->regCmd("MakeCombine" , 5 , new MakeCombine ) &&
-         cmdMgr->regCmd("MakeSignalPlot"  , 5 , new MakeSignalPlot  ) &&
-         cmdMgr->regCmd("ClearPlot"   , 5 , new ClearPlot   ) ) ) {
+   if (!(cmdMgr->regCmd("InitBase"       , 4 , new SetFileBase ) &&
+         cmdMgr->regCmd("SetLumi"        , 5 , new SetLumi     ) &&
+         cmdMgr->regCmd("Print"          , 4 , new Print       ) &&
+         cmdMgr->regCmd("AddFile"        , 4 , new AddFile     ) &&
+         cmdMgr->regCmd("SetXSection"    , 4 , new SetXSection ) &&
+         cmdMgr->regCmd("SetEff"         , 4 , new SetEff      ) &&
+         cmdMgr->regCmd("SetSignal"      , 4 , new SetSignal   ) &&
+         cmdMgr->regCmd("SetWeight"      , 4 , new SetWeight   ) &&
+         cmdMgr->regCmd("MakeBasic"      , 5 , new MakeBasic   ) &&
+         cmdMgr->regCmd("MakeCombine"    , 5 , new MakeCombine ) &&
+         cmdMgr->regCmd("MakeSignalPlot" , 5 , new MakeSignalPlot  ) &&
+         cmdMgr->regCmd("ClearPlot"      , 5 , new ClearPlot   ) ) ) {
       cerr << "Registering \"plot\" commands fails... exiting" << endl;
       return false;
    }
@@ -155,9 +156,28 @@ CmdExecStatus SetEff::exec( const string& input )
 
    return CMD_EXEC_DONE;  
 }
-
 void SetEff::usage( ostream& os ) const {} 
 void SetEff::help() const {}
+
+//------------------------------------------------------------------------------ 
+//   SetWeight
+//------------------------------------------------------------------------------
+CmdExecStatus SetWeight::exec( const string& input )
+{
+   CHECKMGR ;
+   options.clear();
+   if( !CmdExec::lexOptions( input, options, 2 )){ return CMD_EXEC_ERROR; }
+
+   if( !pltMgr->sample(options[0]) ){
+      std::cerr << "Error! Sample " << options[0] << "not found!" << std::endl;
+      return CMD_EXEC_ERROR;
+   } 
+
+   pltMgr->sample(options[0])->setSampleWeight(std::stof(options[1]));
+   return CMD_EXEC_DONE; 
+}
+void SetWeight::usage( ostream& os ) const {} 
+void SetWeight::help() const {}
 
 //------------------------------------------------------------------------------ 
 //   SetSignal

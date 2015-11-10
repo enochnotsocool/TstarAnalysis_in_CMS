@@ -17,6 +17,7 @@ CmdClass(AddFile);
 CmdClass(SetXSection);
 CmdClass(SetEff);
 CmdClass(SetSignal);
+CmdClass(SetWeight);
 CmdClass(MakeBasic);
 CmdClass(MakeCombine);
 CmdClass(MakeSignalPlot);

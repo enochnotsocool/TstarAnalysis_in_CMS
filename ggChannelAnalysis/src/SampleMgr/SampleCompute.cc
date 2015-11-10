@@ -11,19 +11,23 @@
 #include "MiniMuonBranches.h"
 #include "MiniElectronBranches.h"
 
-
 //------------------------------------------------------------------------------ 
-//   Helper variables
+//   Helper variables and functions
 //------------------------------------------------------------------------------
 static MiniEventBranches    eventBranches;
 static MiniJetBranches      jetBranches;
 static MiniMuonBranches     muonBranches;
 static MiniElectronBranches elecBranches;
-
 void SetInputTree( TTree* );
 
+//------------------------------------------------------------------------------ 
+//   SampleMgr method implementation
+//------------------------------------------------------------------------------
 void SampleMgr::makeBasicPlots()
 {
+   float eventWeight ;
+   float totalWeight ;
+   const float sampleWeight = _sample_weight; 
    printf( "Making basic plots for %s\n", _name.c_str() );
   
    SetInputTree( _chain );
@@ -31,6 +35,10 @@ void SampleMgr::makeBasicPlots()
    for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
       printf( "\r[%s] Event %lld/%lld.... " , _name.c_str() , i+1 , _chain->GetEntries() );
       _chain->GetEntry(i);
+
+      eventWeight = eventBranches._eventWeight;
+      totalWeight = sampleWeight * eventWeight;
+
       const auto& jetPt  = *(jetBranches.PtPtr);
       const auto& jetEta = *(jetBranches.EtaPtr);
       const auto& muonPt = *(muonBranches.PtPtr);
@@ -41,8 +49,8 @@ void SampleMgr::makeBasicPlots()
       Hist( "ChiSquareMass" )->Fill( eventBranches._chiSqMass );
       Hist( "MET" )->Fill( eventBranches._MET );
       Hist( "JetCount" )->Fill( eventBranches._JetCount );
-      Hist( "VertexCountNoWeight" )->Fill( eventBranches._VertexCount );
-      Hist( "VertexCount" )->Fill( eventBranches._VertexCount , eventBranches._eventWeight );
+      Hist( "VertexCountNoWeight" )->Fill( eventBranches._VertexCount , sampleWeight );
+      Hist( "VertexCount" )->Fill( eventBranches._VertexCount , totalWeight );
 
 
       Hist("JetPt")->Fill( jetPt[0] );
@@ -56,18 +64,15 @@ void SampleMgr::makeBasicPlots()
          Hist("LeptonPt")->Fill( elecPt[j] );
          Hist("LeptonEta")->Fill( elecEta[j] );
       }
-
    }
-
    puts("Done!\n");
 }
-
 
 float SampleMgr::getRawEventCount() const {
    return _chain->GetEntries();
 }
 
-float SampleMgr::getWeightedEventCount() const 
+float SampleMgr::getEventWeightedCount() const 
 {
    float ans = 0;
    SetInputTree( _chain );
@@ -78,13 +83,24 @@ float SampleMgr::getWeightedEventCount() const
    return ans; 
 }
 
-float SampleMgr::getAverageWeight() const 
+float SampleMgr::getAverageEventWeight() const 
 {
-   return getWeightedEventCount() / getRawEventCount();
+   return getEventWeightedCount() / getRawEventCount(); 
+}
+
+float SampleMgr::getTotalWeightedCount() const 
+{
+   return getEventWeightedCount() * _sample_weight ; 
+}
+
+float SampleMgr::getAverageTotalWeight() const 
+{
+   return getTotalWeightedCount() / getRawEventCount();
 }
 
 float SampleMgr::getExpectedYield( float totalLumi ) const {
-   return totalLumi * _cross_section * _selection_eff * getAverageWeight() ; }
+   return totalLumi * _cross_section * _selection_eff * getAverageTotalWeight() ;
+}
 
 //------------------------------------------------------------------------------ 
 //   Helper function implementation

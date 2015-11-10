@@ -15,7 +15,7 @@ options.register('maxEvts',
       'Number of events to process')
 
 options.register('sample',
-      'file:/wk_cms/yichen/TstarAnalysis/gg_MuonSignal_miniAOD/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/miniAOD.root',
+      'file:/wk_cms/yichen/miniAODs/MC_reMiniAOD_25ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root',
       opts.VarParsing.multiplicity.list,
       opts.VarParsing.varType.string,
       'Sample to analyze')
@@ -147,8 +147,8 @@ process.TFileService = cms.Service("TFileService",
       fileName = cms.string( options.filename )
       )
 
-process.ntuplizer = cms.EDAnalyzer(
-      "Ntuplizer",
+process.mcweighter = cms.EDAnalyzer(
+      "MCWeighter",
       hltsrc      = cms.InputTag("TriggerResults::HLT"),
       metsrc      = cms.InputTag( "slimmedMETs" ) ,
       pileupsrc   = cms.InputTag( "slimmedAddPileupInfo"),
@@ -167,5 +167,5 @@ process.ntuplizer = cms.EDAnalyzer(
 
 process.outpath = cms.EndPath(
       process.egmGsfElectronIDSequence * 
-      process.ntuplizer
+      process.mcweighter
       )

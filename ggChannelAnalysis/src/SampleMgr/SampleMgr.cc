@@ -28,6 +28,7 @@ SampleMgr::SampleMgr( const std::string& name )
    _name   = name ;
    _chain  = new TChain( "ntuplizer/TstarAnalysis" );
    _cross_section = 1. ;
+   _sample_weight = 1. ;
    _selection_eff = 0. ; 
 
    for( const auto& pair : availiableList  ){
@@ -55,23 +56,43 @@ SampleMgr::~SampleMgr()
 }
 
 //------------------------------------------------------------------------------ 
-//   Basic access function
+//   Basic access functions
 //------------------------------------------------------------------------------
-const std::string& SampleMgr::name() const{
-   return _name ; }
+const std::string& SampleMgr::name() const{ return _name ; }
+float SampleMgr::crossSection() const { return _cross_section;}
+void  SampleMgr::setCrossSection( const float x ){ _cross_section = x ; }
+float SampleMgr::selectionEff() const { return _selection_eff;}
+void  SampleMgr::setSelectionEff( const float x ){ _selection_eff = x ; }
+float SampleMgr::sampleWeight() const { return _sample_weight;}
+void  SampleMgr::setSampleWeight( const float x ){ _sample_weight = x ; }
+void SampleMgr::Print( float totalLumi ) const 
+{
+   std::cout << "--------------------------------------------" << std::endl;
+   std::cout << "   Name:           " << _name << std::endl;
+   std::cout << "   Files:          " << std::endl;
+   printFileList();
+   std::cout << "   Event Count:    " << getRawEventCount() << std::endl;
+   std::cout << "   Weighted Count: " << getTotalWeightedCount() << std::endl;
+   std::cout << "      Event Based Average: "  << getAverageEventWeight() << std::endl;
+   std::cout << "      Sample Weight:       "  << sampleWeight() << std::endl;
+   if( _name != "Data" ){
+      std::cout << "   XSection:    " << _cross_section << std::endl;
+      std::cout << "   Efficiency:  " << _selection_eff << std::endl;
+      std::cout << "   Exp. Yield:  " << getExpectedYield(totalLumi) << std::endl;
+   }
+   std::cout << "--------------------------------------------\n" << std::endl;
+}
 
+//------------------------------------------------------------------------------ 
+//   ROOT object interaction functions
+//------------------------------------------------------------------------------
 void SampleMgr::addFile( const std::string& filename )
 {
    printf("Adding file %s to %s\n" , filename.c_str() , _name.c_str() );
    _chain->Add( filename.c_str() );
 }
 
-
-
-TH1F* SampleMgr::Hist( const std::string& histname )
-{
-   return _histMap[histname];
-}
+TH1F* SampleMgr::Hist( const std::string& histname ) { return _histMap[histname]; }
 
 void SampleMgr::setFillColor( const Color_t& c , const float alpha )
 {
@@ -89,31 +110,8 @@ void SampleMgr::setLineColor( const Color_t& c )
    _lineColor = c ;
 }
 
-void SampleMgr::Print( float totalLumi ) const 
-{
-   std::cout << "--------------------------------------------" << std::endl;
-   std::cout << "   Name:         " << _name << std::endl;
-   std::cout << "   Files:        " << std::endl;
-   printFileList();
-   std::cout << "   Event Count:  " << getRawEventCount() << std::endl;
-   std::cout << "   W E Count  :  " << getWeightedEventCount() << std::endl;
-   if( _name != "Data" ){
-      std::cout << "   XSection:   " << _cross_section << std::endl;
-      std::cout << "   Efficiency: " << _selection_eff << std::endl;
-      std::cout << "   Exp. Yield: " << getExpectedYield(totalLumi) << std::endl;
-   }
-   std::cout << "--------------------------------------------\n" << std::endl;
-}
-
-
-float SampleMgr::crossSection() const { return _cross_section;}
-void  SampleMgr::setCrossSection( const float x ){ _cross_section = x ; }
-float SampleMgr::selectionEff() const { return _selection_eff;}
-void  SampleMgr::setSelectionEff( const float x ){ _selection_eff = x ; }
-
-
 //------------------------------------------------------------------------------ 
-//   Private member functions
+//   Root object interaction helper private functions
 //------------------------------------------------------------------------------
 void SampleMgr::addHist( const std::string& histname , int nbin , float xmin , float xmax )
 {
@@ -128,7 +126,6 @@ void SampleMgr::printFileList() const
    TIter next(fileElements);
    TChainElement* chEl = 0;
    while (( chEl=(TChainElement*)next() )) {
-      printf(" %s,", chEl->GetTitle());
+      printf("      %s\n", chEl->GetTitle());
    }
-   printf("\n");
 }

@@ -1,4 +1,4 @@
-SetLumi 1310.4
+SetLumi 1340.4
 
 SetXSection 31_TTJets        831.76
 
