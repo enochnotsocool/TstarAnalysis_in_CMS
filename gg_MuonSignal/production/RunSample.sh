@@ -66,7 +66,7 @@ function main(){
 
       mv $file ${file}.sh
       chmod +x ${file}.sh
-      bsub -q 2nd ${file}.sh
+      # bsub -q 2nd ${file}.sh
    done
 }
 
