@@ -158,17 +158,7 @@ process.out = cms.OutputModule(
       SelectEvents = cms.untracked.PSet( SelectEvents = cms.vstring('p1') ),
       outputCommands = cms.untracked.vstring(
          "drop *",
-         "keep *_TriggerResults_*_*",
-         "keep *_fixedGridRhoFastjetAll_*_*",
-         "keep *_offlineSlimmedPrimaryVertices_*_*",
-         "keep *_slimmedAddPileupInfo_*_*",
-         "keep *_slimmedMETs_*_*",
-         "keep *_slimmedMuons_*_*",
-         "keep *_slimmedElectrons_*_*",
-         "keep *_slimmedJets_*_*",
-         "keep *_reducedEgamma_*_*",
-         "keep *_offlineBeamSpot_*_*",
-         "keep *_addPileupInfo_*_*"
+         "keep *" # Update to keep everything just in case
          )
       )
 
