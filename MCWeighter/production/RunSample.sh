@@ -8,9 +8,7 @@
 #!/bin/bash
 
 Config_Dir=$(pwd)"/Config"
-Tuple_Dir=$(pwd)"/Tuples"
-Hist_Dir=$(pwd)"/Histograms"
-
+Log_Dir=$(pwd)"/Log"
 function main(){
    parseArguments $@
    local dataset=$1
@@ -18,8 +16,7 @@ function main(){
    local DataProcess=$( getDataProcess $dataset )
    local jsonFile=$( getJsonFile $dataset )
    mkdir -p $Config_Dir/$Name
-   mkdir -p $Tuple_Dir/$Name
-   mkdir -p $Hist_Dir/$Name
+   mkdir -p $Log_Dir/$Name
 
    echo "Finished Parsing arguments...."
 
@@ -38,25 +35,31 @@ function main(){
       file_name=${file##*/}
       output_tuple_file=$Tuple_Dir/$Name/Tuple_${file_name}.root
       output_hist_file=$Hist_Dir/$Name/Hist_${file_name}.root
-      cmd="cmsRun $(pwd)/runFilter.py"
+      output_log_file=$Log_Dir/$Name/log_${file_name}.txt
+
+      sampleList=""
+      for sample in $(cat $file) ; do
+         sampleList=$sampleList","$sample
+      done
+      sampleList=${sampleList#,}
+
+      cmd="cmsRun $(pwd)/MCWeighter_cfg.py"
       cmd=${cmd}" DataProcessing=$DataProcess"
-      cmd=${cmd}" outputLabel=$output_tuple_file"
-      cmd=${cmd}" histFile=$output_hist_file"
       cmd=${cmd}" maxEvts=-1"
       cmd=${cmd}" jsonFile=$jsonFile"
-      cmd=${cmd}" sample="
-      cat $file  |
-         sed 's@root@root,\\@' |
-         sed '$s/\,\\//g'      |
-         sed "1i${cmd}"        |
-         sed 's@sample=@sample=\\@'|
-         sed '1ieval \`scramv1 runtime -sh\`' |
-         sed "1icd $(pwd)" |
-         sed "1i#!/bin/bash" > temp.txt
+      cmd=${cmd}" sample="$sampleList
+      cmd=${cmd}" &> $output_log_file"
+      echo $cmd > temp.txt
+       
+      echo "#!/bin/bash" > temp.txt
+      echo "cd $(pwd)"   >> temp.txt 
+      echo "eval \`scramv1 runtime -sh\`" >> temp.txt 
+      echo $cmd >> temp.txt
       mv temp.txt $file
+
       mv $file ${file}.sh
       chmod +x ${file}.sh
-      bsub -q 2nd ${file}.sh
+      # bsub -q 2nd ${file}.sh
    done
 }
 
