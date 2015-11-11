@@ -8,16 +8,23 @@ import copy
 myOptions.initOptions( 'analysis' )
 
 print( "Adding additional option settings" )
+
 myOptions.obj.register("histFile",
       "myHist.root",
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.string,
       'Histogram filename')
 
+myOptions.obj.register( "filterType",
+      "gg_MuonSignal",
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.string,
+      "Type of filter to run" )
+
 print( "Begin parsing inputs" )
 myOptions.obj.parseArguments()
 
-process = cms.Process( "ggElectronSignal" )
+process = cms.Process( "ggFilter" )
 myProcess.initProcess( process )
 
 #------------------------------------------------------------------------------- 
@@ -45,17 +52,7 @@ process.out = cms.OutputModule(
       SelectEvents = cms.untracked.PSet( SelectEvents = cms.vstring('p1') ),
       outputCommands = cms.untracked.vstring(
          "drop *",
-         "keep *_TriggerResults_*_*",
-         "keep *_fixedGridRhoFastjetAll_*_*",
-         "keep *_offlineSlimmedPrimaryVertices_*_*",
-         "keep *_slimmedAddPileupInfo_*_*",
-         "keep *_slimmedMETs_*_*",
-         "keep *_slimmedMuons_*_*",
-         "keep *_slimmedElectrons_*_*",
-         "keep *_slimmedJets_*_*",
-         "keep *_reducedEgamma_*_*",
-         "keep *_offlineBeamSpot_*_*",
-         "keep *_addPileupInfo_*_*"
+         "keep *",
          )
       )
 
@@ -66,27 +63,18 @@ process.TFileService = cms.Service("TFileService",
       fileName = cms.string( myOptions.obj.histFile )
       )
 
-process.gg_ElectronSignal = cms.EDFilter(
-      "gg_ElectronSignal",
-      hltsrc      = cms.untracked.InputTag("TriggerResults::HLT"),
-      metsrc      = cms.untracked.InputTag( "slimmedMETs" ) ,
-      pileupsrc   = cms.untracked.InputTag( "slimmedAddPileupInfo" ),
-      vertexsrc   = cms.untracked.InputTag( "offlineSlimmedPrimaryVertices" ),
-      convsrc     = cms.untracked.InputTag( "reducedEgamma","reducedConversions"),
-      rhosrc      = cms.untracked.InputTag( "fixedGridRhoFastjetAll" ),
-      beamspotsrc = cms.untracked.InputTag( "offlineBeamSpot" ),
-      muonsrc     = cms.untracked.InputTag( "slimmedMuons" ) ,
-      elecsrc     = cms.untracked.InputTag( "slimmedElectrons" ),
-      jetsrc      = cms.untracked.InputTag( "slimmedJets" ),
+process.filterType = cms.EDFilter(
+      myOptions.obj.filterType ,
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
       )
 
 process.p1 = cms.Path(
       process.egmGsfElectronIDSequence * 
-      process.gg_ElectronSignal
+      process.filterType
       )
 
 process.outpath = cms.EndPath(
       process.out
       )
+

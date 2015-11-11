@@ -17,6 +17,7 @@ BaseFilter::BaseFilter( const edm::ParameterSet& iConfig ):
 {
    eleLooseIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
+   _debug                = iConfig.getUntrackedParameter<int>( "Debug" , 0 );
 
    _selcMuonCount = fs->make<TH1F>( "MuonSelectionCount"  , "SelectionCount" , 10 , 0 , 10 );
    _selcElecCount = fs->make<TH1F>( "ElecSelectionCount"  , "SelectionCount" , 10 , 0 , 10 );
@@ -108,25 +109,25 @@ void BaseFilter::processJet(const edm::Event& , const edm::EventSetup& )
 bool BaseFilter::passTrigger( const edm::Event& iEvent, const edm::EventSetup& )
 {
    static unsigned int triggerindex = 0 ;
-   if( ! _triggerResults.isValid() ) { 
-      // std::cerr << "Handle is invalid!" << std::endl;
+   if( ! _triggerResults.isValid() ) {
+      if( _debug ){ std::cerr << "Handle is invalid!" << std::endl; }
       return false; }
    const edm::TriggerNames& triggerNames = iEvent.triggerNames( *_triggerResults );
 
    for( const auto& trigger : _acceptTriggers ){
       triggerindex = triggerNames.triggerIndex( trigger );
-      std::cerr << "Getting trigger: " << trigger << " at " << triggerindex << std::endl;
+      if( _debug ) { std::cerr << "Getting trigger: " << trigger << " at " << triggerindex << std::endl; }
       if( triggerindex == triggerNames.size()  ){ 
-         std::cerr << "Trigger not found" << std::endl;
+         if( _debug ) { std::cerr << "Trigger not found" << std::endl; }
          continue ; }
       if( ! _triggerResults->wasrun( triggerindex ) ) { 
-         std::cerr << "Trigger was not run" << std::endl;
+         if( _debug ){ std::cerr << "Trigger was not run" << std::endl;}
          continue; }
       if( ! _triggerResults->accept( triggerindex ) ) { 
-         std::cerr << "Trigger was not accepted" << std::endl;
+         if( _debug ) { std::cerr << "Trigger was not accepted" << std::endl;}
          continue; }
       if( _triggerResults->error( triggerindex ) ) { 
-         std::cerr << "Trigger has error " << std::endl;
+         if( _debug ) { std::cerr << "Trigger has error " << std::endl; }
          continue; }
       return true;
    }

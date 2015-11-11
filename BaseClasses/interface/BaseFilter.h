@@ -47,6 +47,9 @@ protected:
    TH1F*  _vetoMuonCount;
    TH1F*  _vetoElecCount;
 
+   //----- Misc. Objects  ---------------------------------------------------------
+   unsigned  _debug;
+
 private:
    void beginJob();
    void endJob();
