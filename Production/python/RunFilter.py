@@ -51,7 +51,6 @@ process.out = cms.OutputModule(
       fileName = cms.untracked.string( myOptions.obj.outputLabel ),
       SelectEvents = cms.untracked.PSet( SelectEvents = cms.vstring('p1') ),
       outputCommands = cms.untracked.vstring(
-         "drop *",
          "keep *",
          )
       )

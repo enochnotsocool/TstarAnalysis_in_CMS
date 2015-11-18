@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as opts
-import TstarAnalysis.BasesClasses,CommonOptions as myOptions
+import TstarAnalysis.BaseClasses.CommonOptions as myOptions
 
 options = opts.VarParsing ('analysis')
 
