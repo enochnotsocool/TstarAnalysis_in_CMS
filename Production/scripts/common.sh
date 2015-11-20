@@ -25,7 +25,7 @@ function getDataProcess()
       echo "MC25ns_MiniAODv2"
    elif [[ $1 == *"74X_mcRun2_asymptotic50ns_v0"* ]]; then
       echo "MC50ns_MiniAODv2"
-   elif [[ $1 == *"74X_dataRun2_Prompt_v4"* ]]; then
+   elif [[ $1 == *"Run2015D-PromptReco-v4"* ]]; then
       echo "Data25ns_PromptRecov4"
    elif [[ $1 == *"Run2015D-05Oct2015"*  ]]; then
       echo "Data25ns_ReReco"
@@ -38,7 +38,7 @@ function getDataProcess()
 
 function getJsonFile(){
    if [[ $1 == *"Run2015"* ]]; then
-      echo "$(pwd)/./Cert_246908-258750_25ns.json" 
+      echo "$(pwd)/./Cert_25ns_Latest.json" 
    else 
       echo ""
    fi
