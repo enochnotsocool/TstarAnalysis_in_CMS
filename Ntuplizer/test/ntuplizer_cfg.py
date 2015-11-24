@@ -124,15 +124,11 @@ switchOnVIDElectronIdProducer(process, dataFormat)
 mu_elid_modules = ""
 elec_loose_id_label = ""
 elec_medium_id_label = ""
-if options.DataProcessing=="MC50ns" or options.DataProcessing=="MC25ns" :
-   my_elid_modules = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff'
-   elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"
-   elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"
-elif "Data50ns" in options.DataProcessing :
+if "50ns" in options.DataProcessing :
    my_elid_modules = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff'
    elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-loose"
    elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-medium"
-elif "Data25ns" in options.DataProcessing :
+elif "25ns" in options.DataProcessing :
    my_elid_modules =  'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' 
    elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"
    elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"
@@ -149,17 +145,6 @@ process.TFileService = cms.Service("TFileService",
 
 process.ntuplizer = cms.EDAnalyzer(
       "Ntuplizer",
-      hltsrc      = cms.InputTag("TriggerResults::HLT"),
-      metsrc      = cms.InputTag( "slimmedMETs" ) ,
-      pileupsrc   = cms.InputTag( "slimmedAddPileupInfo"),
-      vertexsrc   = cms.InputTag( "offlineSlimmedPrimaryVertices" ),
-      convsrc     = cms.InputTag( "reducedEgamma","reducedConversions"),
-      rhosrc      = cms.InputTag( "fixedGridRhoFastjetAll" ),
-      beamspotsrc = cms.InputTag( "offlineBeamSpot" ),
-      muonsrc     = cms.InputTag( "slimmedMuons" ) ,
-      elecsrc     = cms.InputTag( "slimmedElectrons" ),
-      jetsrc      = cms.InputTag( "slimmedJets" ),
-      gensrc      = cms.InputTag( "generator" ),
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
    )
