@@ -11,7 +11,7 @@ import FWCore.PythonUtilities.LumiList as LumiList
 def initProcess( obj ):
    print( "Loading common Process parameters" )
    obj.load("FWCore.MessageService.MessageLogger_cfi")
-   obj.MessageLogger.cerr.FwkReport.reportEvery = 100
+   obj.MessageLogger.cerr.FwkReport.reportEvery = 10000
    obj.MessageLogger.categories.append('HLTrigReport')
 
    obj.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
