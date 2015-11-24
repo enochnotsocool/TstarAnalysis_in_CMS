@@ -2,7 +2,6 @@
 #
 #   File        : compute.sh
 #   Descriptions: Commands for getting the information for pileup reweighting
-#   Usage       : ./compute.sh Option
 #
 #-------------------------------------------------------------------------------
 #!/bin/bash
@@ -14,10 +13,10 @@ scp ${USER}@lxplus6.cern.ch:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/
 
 echo "Computing Data pile up using pileupCalc.py tool!"
 pileupCalc.py                       \
-   -i Cert_246908-258750_25ns.json  \
+   -i Cert_25ns_Latest.json         \
    --inputLumiJSON pileup.json      \
    --calcMode true                  \
-   --minBiasXsec 80000              \
+   --minBiasXsec 69000              \
    --maxPileupBin  $PILEUP_BINCOUNT \
    --numPileupBins $PILEUP_BINCOUNT \
    DataPileUp.root

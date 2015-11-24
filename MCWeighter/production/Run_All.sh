@@ -7,6 +7,6 @@
 #-------------------------------------------------------------------------------
 #!/bin/bash
 
-for dataset in $(cat ./DataSetList.asc); do
+for dataset in $(cat ./MCWeighter_cfg.py ); do
    ./RunSample.sh $dataset
 done
