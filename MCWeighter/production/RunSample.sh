@@ -46,7 +46,6 @@ function main(){
       cmd="cmsRun $(pwd)/MCWeighter_cfg.py"
       cmd=${cmd}" DataProcessing=$DataProcess"
       cmd=${cmd}" maxEvts=-1"
-      cmd=${cmd}" jsonFile=$jsonFile"
       cmd=${cmd}" sample="$sampleList
       cmd=${cmd}" &> $output_log_file"
       echo $cmd > temp.txt

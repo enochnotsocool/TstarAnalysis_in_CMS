@@ -82,7 +82,7 @@ if not (options.forceResiduals == None):
 #------------------------------------------------------------------------------- 
 process = cms.Process("TstarNtuplizer")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.MessageLogger.categories.append('HLTrigReport')
 
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
@@ -112,32 +112,6 @@ elif options.DataProcessing=="Data25ns":
 else:
    print "Choose any of the following options for 'DataProcessing'", "MC50ns,  MC25ns, Data50ns, Data25ns" 
 
-#------------------------------------------------------------------------------- 
-#   Egamma ID pre-requisites
-#-------------------------------------------------------------------------------
-from PhysicsTools.PatAlgos.tools.coreTools import *
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-
-dataFormat = DataFormat.MiniAOD
-switchOnVIDElectronIdProducer(process, dataFormat)
-
-mu_elid_modules = ""
-elec_loose_id_label = ""
-elec_medium_id_label = ""
-if options.DataProcessing=="MC50ns" or options.DataProcessing=="MC25ns" :
-   my_elid_modules = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff'
-   elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"
-   elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"
-elif "Data50ns" in options.DataProcessing :
-   my_elid_modules = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff'
-   elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-loose"
-   elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-medium"
-elif "Data25ns" in options.DataProcessing :
-   my_elid_modules =  'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' 
-   elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"
-   elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"
-
-setupAllVIDIdsInModule(process,my_elid_modules ,setupVIDElectronSelection)
 
 
 #------------------------------------------------------------------------------- 
@@ -149,23 +123,9 @@ process.TFileService = cms.Service("TFileService",
 
 process.mcweighter = cms.EDAnalyzer(
       "MCWeighter",
-      hltsrc      = cms.InputTag("TriggerResults::HLT"),
-      metsrc      = cms.InputTag( "slimmedMETs" ) ,
-      pileupsrc   = cms.InputTag( "slimmedAddPileupInfo"),
-      vertexsrc   = cms.InputTag( "offlineSlimmedPrimaryVertices" ),
-      convsrc     = cms.InputTag( "reducedEgamma","reducedConversions"),
-      rhosrc      = cms.InputTag( "fixedGridRhoFastjetAll" ),
-      beamspotsrc = cms.InputTag( "offlineBeamSpot" ),
-      muonsrc     = cms.InputTag( "slimmedMuons" ) ,
-      elecsrc     = cms.InputTag( "slimmedElectrons" ),
-      jetsrc      = cms.InputTag( "slimmedJets" ),
-      gensrc      = cms.InputTag( "generator" ),
-      eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
-      eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
    )
 
 
 process.outpath = cms.EndPath(
-      process.egmGsfElectronIDSequence * 
       process.mcweighter
       )
