@@ -7,6 +7,6 @@
 #-------------------------------------------------------------------------------
 #!/bin/bash
 
-for dataset in $(cat ./MCSetList.asc ); do
+for dataset in $(cat ./DataSetList.asc); do
    ./RunSample.sh $dataset
 done

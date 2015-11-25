@@ -24,7 +24,7 @@ void compare()
       mcFactor   = mcHist->GetBinContent(i);
       rescaleFactor = dataFactor/mcFactor; 
       if( rescaleFactor < 0.000001 ) rescaleFactor = 0. ; 
-            printf( "[%2d] %.6f   : %.6f/%.6f\n" , 
+            printf( "[%2d] %.12f   : %.6f/%.6f\n" , 
             i-1 , rescaleFactor , 
             dataFactor , mcFactor );
    }
