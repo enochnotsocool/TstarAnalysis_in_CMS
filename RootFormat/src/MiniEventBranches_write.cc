@@ -15,6 +15,7 @@ void MiniEventBranches::registerVariables( TTree* tree )
    tree->Branch( "EventMET" , &_MET );
    tree->Branch( "EventMETPhi" , &_METPhi );
    tree->Branch( "EventeventWeight" , &_eventWeight );
+   tree->Branch( "EventgeneratorWeight" , &_generatorWeight );
    tree->Branch( "EventchiSqMass" , &_chiSqMass );
 }
 

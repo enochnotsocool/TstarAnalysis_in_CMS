@@ -15,11 +15,6 @@ float Ntuplizer::computeEventWeight( const edm::Event& iEvent )
    float ans = 1.0 ; 
    //----- PileUp weighting  ------------------------------------------------------
    ans *= PileUpWeight[ _eventBranches._pileUp ] ;
-   if( _genHandle.isValid() ){
-      if( _genHandle->weight() < 0 ) { 
-         std::cout << "Minus weighting found!" << _genHandle->weight() << std::endl; }
-      ans *= _genHandle->weight();
-   }
 
    return ans;
 }

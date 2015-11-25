@@ -26,6 +26,7 @@ public:
    float _MET;
    float _METPhi;
    float _eventWeight;
+   float _generatorWeight;
    float _chiSqMass;
 };
 

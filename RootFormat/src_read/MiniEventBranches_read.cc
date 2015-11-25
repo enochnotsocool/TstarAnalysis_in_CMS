@@ -14,6 +14,7 @@ void MiniEventBranches::retrieveVariables( TTree* tree ){
    tree->SetBranchAddress( "EventMET" , &_MET );
    tree->SetBranchAddress( "EventMETPhi" , &_METPhi );
    tree->SetBranchAddress( "EventeventWeight" , &_eventWeight );
+   tree->SetBranchAddress( "EventgeneratorWeight" , &_generatorWeight );
    tree->SetBranchAddress( "EventchiSqMass" , &_chiSqMass );
 }
 

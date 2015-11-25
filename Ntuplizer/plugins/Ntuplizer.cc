@@ -25,6 +25,9 @@ void Ntuplizer::addCustomVariables( const edm::Event& iEvent )
 {
    _eventBranches._chiSqMass = computeChiSqMass();
    _eventBranches._eventWeight = computeEventWeight( iEvent );
+   if( _genHandle.isValid() ){
+      _eventBranches._generatorWeight = _genHandle->weight();
+   }
 }
 
 

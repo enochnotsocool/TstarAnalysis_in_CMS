@@ -22,6 +22,7 @@ public:
   const float& MET();
   const float& METPhi();
   const float& eventWeight();
+  const float& generatorWeight();
   const float& chiSqMass();
 
 private:
