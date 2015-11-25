@@ -8,8 +8,9 @@
 #!/bin/bash
 
 Config_Dir=$(pwd)"/Config"
-Log_Dir=$(pwd)"/Log"
+Tuple_Dir=$(pwd)"/Tuples"
 Hist_Dir=$(pwd)"/Histograms"
+Log_Dir=$(pwd)"/Log"
 function main(){
    parseArguments $@
    local dataset=$1
@@ -17,8 +18,9 @@ function main(){
    local DataProcess=$( getDataProcess $dataset )
    local jsonFile=$( getJsonFile $dataset )
    mkdir -p $Config_Dir/$Name
-   mkdir -p $Log_Dir/$Name
+   mkdir -p $Tuple_Dir/$Name
    mkdir -p $Hist_Dir/$Name
+   mkdir -p $Log_Dir/$Name
 
    echo "Finished Parsing arguments...."
 
@@ -35,6 +37,7 @@ function main(){
    for file in $(ls "$shell_files"*) ; do
       echo $file
       file_name=${file##*/}
+      output_tuple_file=$Tuple_Dir/$Name/Tuple_${file_name}.root
       output_hist_file=$Hist_Dir/$Name/Hist_${file_name}.root
       output_log_file=$Log_Dir/$Name/log_${file_name}.txt
 
@@ -44,14 +47,17 @@ function main(){
       done
       sampleList=${sampleList#,}
 
-      cmd="cmsRun $(pwd)/MCWeighter_cfg.py"
+      cmd="cmsRun $(pwd)/runFilter.py"
       cmd=${cmd}" DataProcessing=$DataProcess"
+      cmd=${cmd}" outputLabel=$output_tuple_file"
+      cmd=${cmd}" histFile=$output_hist_file"
       cmd=${cmd}" maxEvts=-1"
+      cmd=${cmd}" jsonFile=$jsonFile"
       cmd=${cmd}" sample="$sampleList
-      cmd=${cmd}" filename="$output_hist_file
       cmd=${cmd}" &> $output_log_file"
       echo $cmd > temp.txt
-       
+      
+      
       echo "#!/bin/bash" > temp.txt
       echo "cd $(pwd)"   >> temp.txt 
       echo "eval \`scramv1 runtime -sh\`" >> temp.txt 

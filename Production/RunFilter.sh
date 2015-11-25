@@ -39,7 +39,7 @@ function main(){
       echo ">>> Splitting query results"
       local shell_files="$Config_Dir/$Name/file_"
       rm ${shell_files}*
-      split -l 32 ./temp.txt $shell_files
+      split -l 16 ./temp.txt $shell_files
       echo ">>> Finished splitting files..."
 
       #-----  Parsing files  ---------------------------------------------------------
@@ -115,7 +115,7 @@ function makeRequirements()
    Tuple_Dir=$(pwd)"/FilteredMiniAOD//$channel"
    Hist_Dir=$(pwd)"/Histograms/$channel"
    Log_Dir=$(pwd)"/OutputLog/$channel"
-   datasetList=$( cat ./MCSetList.asc ./DataSetList.asc )
+   datasetList=$( cat ./MCSetList.asc )
 
    for dataset in $datasetList ; do 
       local name=$(getDataSetName $dataset )
