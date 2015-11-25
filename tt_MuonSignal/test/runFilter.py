@@ -23,7 +23,7 @@ options.register('outputLabel',
       'Output label')
 
 options.register('DataProcessing',
-      "MC25ns",
+      "Data25ns",
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.string,
       'Data processing type')
@@ -166,19 +166,11 @@ process.TFileService = cms.Service("TFileService",
       )
 
 process.gg_MuonSignal = cms.EDFilter(
-      "gg_MuonSignal",
-      hltsrc      = cms.InputTag("TriggerResults::HLT"),
-      metsrc      = cms.InputTag( "slimmedMETs" ) ,
-      pileupsrc   = cms.InputTag( "slimmedAddPileupInfo" ),
-      vertexsrc   = cms.InputTag( "offlineSlimmedPrimaryVertices" ),
-      convsrc     = cms.InputTag( "reducedEgamma","reducedConversions"),
-      rhosrc      = cms.InputTag( "fixedGridRhoFastjetAll" ),
-      beamspotsrc = cms.InputTag( "offlineBeamSpot" ),
-      muonsrc     = cms.InputTag( "slimmedMuons" ) ,
-      elecsrc     = cms.InputTag( "slimmedElectrons" ),
-      jetsrc      = cms.InputTag( "slimmedJets" ),
+      "tt_MuonSignal",
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
+      JetPt     = cms.untracked.int32(30),
+      JetNumber = cms.untracked.int32(4)
       )
 
 process.p1 = cms.Path(

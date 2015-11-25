@@ -11,10 +11,12 @@
 #ifndef __BASEFILTER_H__
 #define __BASEFILTER_H__
 
-#include "MiniAODAnalysis/tt_MuonSignal/interface/MiniAODFilter.h"
+#include "MiniAODAnalysis/BaseFilter/interface/MiniAODFilter.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "TH1F.h"
+#include <vector>
+#include <string>
 
 class tt_MuonSignal : public MiniAODFilter {
 public:

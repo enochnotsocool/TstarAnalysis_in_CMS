@@ -5,8 +5,10 @@
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
-#include "TstarAnalysis/BaseClasses/interface/tt_MuonSignal.h"
+#include "TstarAnalysis/tt_MuonSignal/interface/tt_MuonSignal.h"
 #include "TstarAnalysis/BaseClasses/interface/Selection.h"
+#include "TstarAnalysis/BaseClasses/interface/Limits.h"
+#include "TLorentzVector.h"
 #include <iostream>
 
 //------------------------------------------------------------------------------ 
@@ -17,7 +19,9 @@ tt_MuonSignal::tt_MuonSignal( const edm::ParameterSet& iConfig ):
 {
    eleLooseIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
-   _debug                = iConfig.getUntrackedParameter<int>( "Debug" , 0 );
+   _debug                = iConfig.getUntrackedParameter<int>  ( "Debug" , 0 );
+   _jetPt                = iConfig.getUntrackedParameter<int>( "JetPt" , 30. );
+   _jetNumber            = iConfig.getUntrackedParameter<int>  ( "JetNumber" , 4 );
 
    _selcMuonCount = fs->make<TH1F>( "MuonSelectionCount"  , "SelectionCount" , 10 , 0 , 10 );
    _selcElecCount = fs->make<TH1F>( "ElecSelectionCount"  , "SelectionCount" , 10 , 0 , 10 );
@@ -110,34 +114,6 @@ void tt_MuonSignal::processJet(const edm::Event& , const edm::EventSetup& )
    }
 }
 
-bool tt_MuonSignal::passTrigger( const edm::Event& iEvent, const edm::EventSetup& )
-{
-   static unsigned int triggerindex = 0 ;
-   if( ! _triggerResults.isValid() ) {
-      if( _debug ){ std::cerr << "Handle is invalid!" << std::endl; }
-      return false; }
-   const edm::TriggerNames& triggerNames = iEvent.triggerNames( *_triggerResults );
-
-   for( const auto& trigger : _acceptTriggers ){
-      triggerindex = triggerNames.triggerIndex( trigger );
-      if( _debug ) { std::cerr << "Getting trigger: " << trigger << " at " << triggerindex << std::endl; }
-      if( triggerindex == triggerNames.size()  ){ 
-         if( _debug ) { std::cerr << "Trigger not found" << std::endl; }
-         continue ; }
-      if( ! _triggerResults->wasrun( triggerindex ) ) { 
-         if( _debug ){ std::cerr << "Trigger was not run" << std::endl;}
-         continue; }
-      if( ! _triggerResults->accept( triggerindex ) ) { 
-         if( _debug ) { std::cerr << "Trigger was not accepted" << std::endl;}
-         continue; }
-      if( _triggerResults->error( triggerindex ) ) { 
-         if( _debug ) { std::cerr << "Trigger has error " << std::endl; }
-         continue; }
-      return true;
-   }
-   return false;
-}
-
 bool tt_MuonSignal::MySelectionJet( const pat::Jet& jet, TH1F* hist )
 {
    if( hist!=NULL ) { hist->Fill(0); }
@@ -171,7 +147,7 @@ bool tt_MuonSignal::MySelectionJet( const pat::Jet& jet, TH1F* hist )
    return true;
 }
 
-bool BaseFilter::passTrigger( const edm::Event& iEvent, const edm::EventSetup& )
+bool tt_MuonSignal::passTrigger( const edm::Event& iEvent, const edm::EventSetup& )
 {
    static unsigned int triggerindex = 0 ;
    if( ! _triggerResults.isValid() ) {
@@ -204,7 +180,7 @@ bool BaseFilter::passTrigger( const edm::Event& iEvent, const edm::EventSetup& )
 //------------------------------------------------------------------------------
 #define fillHist \
    _eventSelectionCount->Fill(i) ; ++i ;
-bool tt_MuonSignal::passEventSelection( const edm::Event&, const edm::EventSetup& )
+bool tt_MuonSignal::passEventSelection( const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    unsigned int i = 0 ; 
    fillHist;
