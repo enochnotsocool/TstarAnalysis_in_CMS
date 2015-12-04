@@ -13,6 +13,7 @@
 
 #include "MiniAODAnalysis/BaseFilter/interface/MiniAODFilter.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
+#include "TstarAnalysis/BaseClasses/interface/ObjectSelection.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "TH1F.h"
 
@@ -59,6 +60,7 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleMediumIdMapToken_  ;
    edm::Handle<edm::ValueMap<bool>>  loose_id_decisions  ;
    edm::Handle<edm::ValueMap<bool>>  medium_id_decisions ;
+   ObjectSelection  _objSel;
 };
 
 #endif // __BASEFILTER_H__

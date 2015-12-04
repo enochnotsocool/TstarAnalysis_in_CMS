@@ -6,34 +6,38 @@
  *
 *******************************************************************************/
 #include "TH1F.h"
-#include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
-#include "TstarAnalysis/BaseClasses/interface/Limits.h"
+#include "TstarAnalysis/BaseClasses/interface/Utils.h"
+#include "TstarAnalysis/BaseClasses/interface/ObjectSelection.h"
 
-bool isVetoElectron( const ElecEDMPtr el, const edm::ValueMap<bool>& looseID, TH1F* hist )
+bool ObjectSelection::isVetoElectron( const ElecEDMPtr el, const edm::ValueMap<bool>& looseID, TH1F* hist ) const
 {
-   if( hist!=NULL) { hist->Fill(0); }
+   int i = 0 ;
+   FillHistAtBin( hist , i );
    if( !looseID[el] ) { return false; }
-   if( hist!=NULL) { hist->Fill(1); }
-   if( el->pt() < VETO_ELEC_PT_LIM ) { return false; }
-   if( hist!=NULL) { hist->Fill(2); }
-   if( abs(el->eta()) > VETO_ELEC_ETA_LIM ) { return false; } 
-   if( hist!=NULL) { hist->Fill(3); }
-   if( abs(el->eta()) > 1.44 && abs(el->eta()) < 1.57 ){ return false ; }
-   if( hist!=NULL) { hist->Fill(4); }
+   FillHistAtBin( hist , i );
+   if( el->pt() < fElectron_Veto_Minimum_Pt ) { return false; }
+   FillHistAtBin( hist , i );
+   if( abs(el->eta()) > fElectron_Veto_Maximum_Eta ) { return false; } 
+   FillHistAtBin( hist , i );
+   if( abs(el->eta()) > fElectron_Mininum_CrackEta && 
+       abs(el->eta()) < fElectron_Maximum_CrackEta   ){ return false ; }
+   FillHistAtBin( hist , i );
    return true;
 }
 
-bool isSelectionElectron( const ElecEDMPtr el , const edm::ValueMap<bool>& mediumID, TH1F* hist ) 
+bool ObjectSelection::isSelectionElectron( const ElecEDMPtr el , const edm::ValueMap<bool>& mediumID, TH1F* hist ) const
 {
-   if( hist!=NULL) { hist->Fill(0); }
+   int i = 0 ;
+   FillHistAtBin( hist , i );
    if( !mediumID[el] ) { return false; }
-   if( hist!=NULL) { hist->Fill(1); }
-   if( el->pt() < SELECTED_ELEC_PT_LIM ) { return false; }
-   if( hist!=NULL) { hist->Fill(2); }
-   if( abs(el->eta()) > SELECTED_ELEC_ETA_LIM ) { return false; } 
-   if( hist!=NULL) { hist->Fill(3); }
-   if( abs(el->eta()) > 1.44 && abs(el->eta()) < 1.57 ){ return false ; }
-   if( hist!=NULL) { hist->Fill(4); }
+   FillHistAtBin( hist , i );
+   if( el->pt() < fElectron_Minimum_Pt ) { return false; }
+   FillHistAtBin( hist , i );
+   if( abs(el->eta()) > fElectron_Maximum_Eta ) { return false; } 
+   FillHistAtBin( hist , i );
+   if( abs(el->eta()) > fElectron_Mininum_CrackEta && 
+       abs(el->eta()) < fElectron_Maximum_CrackEta ){ return false ; }
+   FillHistAtBin( hist , i );
    return true;
 }
 

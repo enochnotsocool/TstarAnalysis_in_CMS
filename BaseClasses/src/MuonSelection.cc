@@ -6,34 +6,36 @@
  *  
 *******************************************************************************/
 #include "TH1F.h"
-#include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
-#include "TstarAnalysis/BaseClasses/interface/Limits.h"
+#include "TstarAnalysis/BaseClasses/interface/Utils.h"
+#include "TstarAnalysis/BaseClasses/interface/ObjectSelection.h"
 
-bool isVetoMuon( const pat::Muon& mu , TH1F* hist  )
+
+bool ObjectSelection::isVetoMuon( const pat::Muon& mu , TH1F* hist  ) const
 {
-   if( hist!=NULL ) { hist->Fill(0); }
+   int i = 0;
+   FillHistAtBin( hist , i );
    if( !muon::isLooseMuon( mu ) ){ return false; } 
-   if( hist!=NULL ) { hist->Fill(1); }
-   if( mu.pt() < VETO_MUON_PT_LIM ) { return false; }
-   if( hist!=NULL ) { hist->Fill(2); }
-   if( abs( mu.eta() ) > VETO_MUON_ETA_LIM ) { return false; } 
-   if( hist!=NULL ) { hist->Fill(3); }
-   if( mu.trackIso() /mu.pt()  > VETO_MUON_ISO_LIM ) { return false; }
-   if( hist!=NULL ) { hist->Fill(4); }
+   FillHistAtBin( hist , i );
+   if( mu.pt() < fMuon_Veto_Minimum_Pt ) { return false; }
+   FillHistAtBin( hist , i );
+   if( abs( mu.eta() ) > fMuon_Veto_Maximum_Eta ) { return false; } 
+   FillHistAtBin( hist , i );
+   if( mu.trackIso() /mu.pt()  > fMuon_Veto_Maximum_Isolation ) { return false; }
+   FillHistAtBin( hist , i );
    return true;
 }
 
-bool isSelectionMuon( const pat::Muon& mu , const reco::Vertex& pv , TH1F* hist )
+bool ObjectSelection::isSelectionMuon( const pat::Muon& mu , const reco::Vertex& pv , TH1F* hist ) const
 {
-   if( hist!=NULL ) { hist->Fill(0); }
+   int i = 0 ;
+   FillHistAtBin( hist , i );
    if( !muon::isTightMuon( mu, pv ) ) { return false; }
-   if( hist!=NULL ) { hist->Fill(1); }
-   if( mu.pt() < SELECTED_MUON_PT_LIM ) { return false ; }
-   if( hist!=NULL ) { hist->Fill(2); }
-   if( abs(mu.eta())  > SELECTED_MUON_ETA_LIM) { return false ; }
-   if( hist!=NULL ) { hist->Fill(3); }
-   if( mu.trackIso() / mu.pt() > SELECTED_MUON_ISO_LIM ) { return false ; }
-   if( hist!=NULL ) { hist->Fill(4); }
+   FillHistAtBin( hist , i );
+   if( mu.pt() < fMuon_Minimum_Pt ) { return false ; }
+   FillHistAtBin( hist , i );
+   if( abs(mu.eta())  > fMuon_Maximum_Eta ) { return false ; }
+   FillHistAtBin( hist , i );
+   if( mu.trackIso() / mu.pt() > fMuon_Maximum_Isolation ) { return false ; }
    return true;
 }
 

@@ -7,13 +7,13 @@
 *******************************************************************************/
 
 #include "TstarAnalysis/BaseClasses/interface/BaseAnalyzer.h"
-#include "TstarAnalysis/BaseClasses/interface/Selection.h"
 
 //------------------------------------------------------------------------------ 
 //   Constructor and destructor
 //------------------------------------------------------------------------------
 BaseAnalyzer::BaseAnalyzer( const edm::ParameterSet& iConfig ):
-   MiniAODAnalyzer(iConfig)
+   MiniAODAnalyzer(iConfig),
+   _objSel( iConfig.getParameter<edm::ParameterSet>( "ObjectSelectionParameter" ))
 {
    eleLooseIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
@@ -36,7 +36,7 @@ void BaseAnalyzer::endJob() {}
 void BaseAnalyzer::processVertex(const edm::Event& , const edm::EventSetup& )
 { 
    for( auto vertex = _vertexList->begin() ; vertex != _vertexList->end() ; ++vertex ){
-      if( isGoodPrimaryVertex( *vertex, 0 ) ){
+      if( _objSel.isGoodPrimaryVertex( *vertex, 0 ) ){
          _primaryVertex = *vertex ;
          break;
       }
@@ -47,7 +47,7 @@ void BaseAnalyzer::processMuon(const edm::Event& , const edm::EventSetup& )
 {
    _selectedMuonList.clear();
    for( auto muon = _muonList->begin() ; muon != _muonList->end() ; ++muon ){
-      if( isSelectionMuon( *muon , _primaryVertex ) ){
+      if( _objSel.isSelectionMuon( *muon , _primaryVertex ) ){
          _selectedMuonList.push_back( &*muon ); } 
    }
 }
@@ -60,7 +60,7 @@ void BaseAnalyzer::processElectron(const edm::Event& iEvent, const edm::EventSet
    auto elec = _electronList->begin() ; 
    for( size_t i = 0 ; i < _electronList->size() ; ++i, ++elec ){
       auto elecPtr = _electronList->ptrAt(i);
-      if( isSelectionElectron( elecPtr , (*medium_id_decisions) ) ) {
+      if( _objSel.isSelectionElectron( elecPtr , (*medium_id_decisions) ) ) {
          _selectedElectronList.push_back( &*elec ); }
    }
 }
@@ -71,7 +71,7 @@ void BaseAnalyzer::processJet(const edm::Event& , const edm::EventSetup& )
    _selectedBJetList.clear();
 
    for( auto jet = _jetList->begin() ; jet != _jetList->end() ; ++jet ){
-      if( isSelectionJet( *jet , _selectedMuonList , _selectedElectronList ) ){
+      if( _objSel.isSelectionJet( *jet , _selectedMuonList , _selectedElectronList ) ){
          if( jet->bDiscriminator( "pfCombinedSecondaryVertexV2BJetTags" ) > 0.89 ){
             _selectedBJetList.push_back( &*jet );
          } else {

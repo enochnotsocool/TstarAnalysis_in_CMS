@@ -6,14 +6,14 @@
  *
 *******************************************************************************/
 #include "TstarAnalysis/BaseClasses/interface/BaseFilter.h"
-#include "TstarAnalysis/BaseClasses/interface/Selection.h"
 #include <iostream>
 
 //------------------------------------------------------------------------------ 
 //   Constructor and destructor
 //------------------------------------------------------------------------------
 BaseFilter::BaseFilter( const edm::ParameterSet& iConfig ):
-   MiniAODFilter( iConfig )
+   MiniAODFilter( iConfig ),
+   _objSel( iConfig.getParameter<edm::ParameterSet>( "ObjectSelectionParameters" ))
 {
    eleLooseIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
@@ -39,7 +39,7 @@ void BaseFilter::processVertex(const edm::Event& , const edm::EventSetup& )
    bool gotPV = false;
    auto vertex = _vertexList->begin() ;
    for( ; vertex != _vertexList->end() ; ++vertex ){
-      if( !gotPV && isGoodPrimaryVertex( *vertex, 0 ) ){
+      if( !gotPV && _objSel.isGoodPrimaryVertex( *vertex, 0 ) ){
          _primaryVertex = *vertex ;
          gotPV = true;
          break;
@@ -56,8 +56,8 @@ void BaseFilter::processMuon(const edm::Event& , const edm::EventSetup& )
    _vetoMuonList.clear();
 
    for( ; muon != _muonList->end() ; ++muon ){
-      selcMuon = isSelectionMuon( *muon , _primaryVertex , _selcMuonCount );
-      vetoMuon = isVetoMuon( *muon , _vetoMuonCount  );
+      selcMuon = _objSel.isSelectionMuon( *muon , _primaryVertex , _selcMuonCount );
+      vetoMuon = _objSel.isVetoMuon( *muon , _vetoMuonCount  );
       if( selcMuon ){
          _selectedMuonList.push_back( &*muon );
       } else if( vetoMuon ) {
@@ -78,8 +78,8 @@ void BaseFilter::processElectron(const edm::Event& iEvent, const edm::EventSetup
    auto elec = _electronList->begin() ; 
    for( size_t i = 0 ; i < _electronList->size() ; ++i, ++elec ){
       auto elecPtr = _electronList->ptrAt(i);
-      selcElec = isSelectionElectron( elecPtr , (*medium_id_decisions) , _selcElecCount );
-      vetoElec = isVetoElectron( elecPtr , (*loose_id_decisions) , _vetoElecCount );
+      selcElec = _objSel.isSelectionElectron( elecPtr , (*medium_id_decisions) , _selcElecCount );
+      vetoElec = _objSel.isVetoElectron( elecPtr , (*loose_id_decisions) , _vetoElecCount );
       if( selcElec ){
          _selectedElectronList.push_back( &*elec );
       } else if( vetoElec ){
@@ -96,7 +96,7 @@ void BaseFilter::processJet(const edm::Event& , const edm::EventSetup& )
    _selectedBJetList.clear();
 
    for( ; jet != _jetList->end() ; ++jet ){
-      selcJet = isSelectionJet( *jet , _selectedMuonList , _selectedElectronList , _selcJetCount );
+      selcJet = _objSel.isSelectionJet( *jet , _selectedMuonList , _selectedElectronList , _selcJetCount );
       if( selcJet ){
          _selectedJetList.push_back( &*jet );
          if( jet->bDiscriminator( "pfCombinedSecondaryVertexV2BJetTags" ) > 0.89 ){

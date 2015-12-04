@@ -6,20 +6,20 @@
  *  
 *******************************************************************************/
 
-#include "TH1F.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "TstarAnalysis/BaseClasses/interface/Utils.h"
+#include "TstarAnalysis/BaseClasses/interface/ObjectSelection.h"
 
-bool isGoodPrimaryVertex( const reco::Vertex& v , TH1F* hist )
+bool ObjectSelection::isGoodPrimaryVertex( const reco::Vertex& v , TH1F* hist ) const
 {
-   if( hist!=NULL ) { hist->Fill(0); }
+   int i = 0;
+   FillHistAtBin( hist , i );
    if( v.isFake() ) { return false; }
-   if( hist!=NULL ) { hist->Fill(1); }
-   if( v.ndof() < 4 ) { return false; } 
-   if( hist!=NULL ) { hist->Fill(2); }
-   if( v.z() >=24 ) { return false; }
-   if( hist!=NULL ) { hist->Fill(3); }
-   if( v.position().Rho() >=2  ) { return false; }
-   if( hist!=NULL ) { hist->Fill(4); }
+   FillHistAtBin( hist , i );
+   if( v.ndof() < fVertex_Minimum_DegreeOfFreedom ) { return false; } 
+   FillHistAtBin( hist , i );
+   if( v.z() >= fVertex_Maximum_Z ) { return false; }
+   FillHistAtBin( hist , i );
+   if( v.position().Rho() >= fVertex_Maximum_Rho  ) { return false; }
    return true;
 }
 

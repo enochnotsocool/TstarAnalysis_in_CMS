@@ -14,6 +14,7 @@
 #include "TstarAnalysis/RootFormat/interface/MiniElectronBranches.h"
 #include "TstarAnalysis/RootFormat/interface/MiniJetBranches.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
+#include "TstarAnalysis/BaseClasses/interface/ObjectSelection.h"
 #include "TTree.h"
 
 
@@ -58,6 +59,7 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleMediumIdMapToken_  ;
    edm::Handle<edm::ValueMap<bool>>  loose_id_decisions  ;
    edm::Handle<edm::ValueMap<bool>>  medium_id_decisions ;
+   ObjectSelection  _objSel;
 };
 
 #endif // __BASEANALYZER_H__

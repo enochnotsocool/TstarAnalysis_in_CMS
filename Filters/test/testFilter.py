@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as opts
-import TstarAnalysis.BaseClasses.CommonOptions as myOptions
+# import TstarAnalysis.BaseClasses.CommonOptions as myOptions
 
 options = opts.VarParsing ('analysis')
 
@@ -23,7 +23,7 @@ options.register('outputLabel',
       'Output label')
 
 options.register('DataProcessing',
-      "Data25ns",
+      "MC25ns",
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.string,
       'Data processing type')
@@ -158,6 +158,8 @@ process.out = cms.OutputModule(
          )
       )
 
+from TstarAnalysis.BaseClasses.DefaultObjectSelection import *
+
 #------------------------------------------------------------------------------- 
 #   EDFilter settings
 #------------------------------------------------------------------------------- 
@@ -165,12 +167,12 @@ process.TFileService = cms.Service("TFileService",
       fileName = cms.string( options.histFile )
       )
 
+
 process.gg_MuonSignal = cms.EDFilter(
-      "tt_MuonSignal",
+      "gg_MuonSignal",
+      ObjectSelectionParameters = DefaultObjectSelection.clone(),
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
-      JetPt     = cms.untracked.int32(30),
-      JetNumber = cms.untracked.int32(4)
       )
 
 process.p1 = cms.Path(
@@ -181,3 +183,4 @@ process.p1 = cms.Path(
 process.outpath = cms.EndPath(
       process.out
       )
+
