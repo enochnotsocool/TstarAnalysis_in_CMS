@@ -6,6 +6,7 @@
  *
 *******************************************************************************/
 #include "TstarAnalysis/BaseClasses/interface/BaseFilter.h"
+#include "TstarAnalysis/BaseClasses/interface/Utils.h"
 #include <iostream>
 
 //------------------------------------------------------------------------------ 
@@ -37,27 +38,25 @@ gg_MuonSignal::~gg_MuonSignal()
 //------------------------------------------------------------------------------ 
 //   Muon Signal criteria
 //------------------------------------------------------------------------------
-#define fillHist \
-   _eventSelectionCount->Fill(i) ; ++i ;
 
 bool gg_MuonSignal::passEventSelection( const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   unsigned int i = 0 ; 
-   fillHist;
+   int i = 0 ; 
+   FillHistAtBin( _eventSelectionCount , i ); 
    if( !passTrigger( iEvent, iSetup ) ) { return false; }
-   fillHist;
+   FillHistAtBin( _eventSelectionCount , i ); 
    if( _selectedMuonList.size() != 1 ){ return false; }
-   fillHist ; 
+   FillHistAtBin( _eventSelectionCount , i ); 
    if( ! _selectedElectronList.empty() ){ return false; }
-   fillHist ;
+   FillHistAtBin( _eventSelectionCount , i ); 
    if( ! _vetoMuonList.empty() ) { return false; }
-   fillHist ; 
+   FillHistAtBin( _eventSelectionCount , i ); 
    if( ! _vetoElectronList.empty() ) { return false; }
-   fillHist ; 
+   FillHistAtBin( _eventSelectionCount , i ); 
    if( _selectedJetList.size() < 6 ) { return false; }
-   fillHist ; 
+   FillHistAtBin( _eventSelectionCount , i ); 
    if( _selectedBJetList.empty() ) { return false; }
-   fillHist ;
+   FillHistAtBin( _eventSelectionCount , i ); 
    return true;
 }
 

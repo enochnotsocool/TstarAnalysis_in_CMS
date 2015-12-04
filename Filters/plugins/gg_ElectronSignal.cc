@@ -6,7 +6,7 @@
  *
 *******************************************************************************/
 #include "TstarAnalysis/BaseClasses/interface/BaseFilter.h"
-#include "FWCore/Common/interface/TriggerNames.h"
+#include "TstarAnalysis/BaseClasses/interface/Utils.h"
 #include <iostream>
 
 //------------------------------------------------------------------------------ 
@@ -37,30 +37,27 @@ gg_ElectronSignal::~gg_ElectronSignal()
 //------------------------------------------------------------------------------ 
 //   Electron Signal criteria
 //------------------------------------------------------------------------------
-#define fillHist \
-   _eventSelectionCount->Fill(i) ; ++i ;
 
 bool gg_ElectronSignal::passEventSelection( const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   unsigned int i = 0 ;
-   fillHist;
+   int i = 0 ;
+   FillHistAtBin( _eventSelectionCount , i );
    if( !passTrigger(iEvent,iSetup) ){ return false; }
-   fillHist;
+   FillHistAtBin( _eventSelectionCount , i );
    if( _selectedElectronList.size() != 1 ){ return false; }
-   fillHist;
+   FillHistAtBin( _eventSelectionCount , i );
    if( ! _selectedMuonList.empty() ){ return false; }
-   fillHist;
+   FillHistAtBin( _eventSelectionCount , i );
    if( ! _vetoMuonList.empty() ) { return false; }
-   fillHist;
+   FillHistAtBin( _eventSelectionCount , i );
    if( ! _vetoElectronList.empty() ) { return false; }
-   fillHist;
+   FillHistAtBin( _eventSelectionCount , i );
    if( _selectedJetList.size() < 6 ) { return false; }
-   fillHist;
+   FillHistAtBin( _eventSelectionCount , i );
    if( _selectedBJetList.empty() ) { return false; }
-   fillHist;
+   FillHistAtBin( _eventSelectionCount , i );
    return true;
 }
-
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(gg_ElectronSignal);
