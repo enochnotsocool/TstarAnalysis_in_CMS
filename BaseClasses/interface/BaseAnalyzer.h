@@ -50,6 +50,8 @@ protected:
    MiniElectronBranches _elecBranches;
    MiniJetBranches      _jetBranches;
 
+   unsigned _debug;
+
 private:
    void beginJob();
    void endJob();

@@ -5,11 +5,15 @@
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
+
 #include "TstarAnalysis/BaseClasses/interface/BaseAnalyzer.h"
+#include <iostream>
+using namespace std;
 
 //----- Muon Information  ------------------------------------------------------
 void BaseAnalyzer::addMuonVariables()
 {
+   if( _debug ) { cerr << "Adding Muon Information" << endl; }
    _muonBranches.clear(); // Clearing previous event contents
    for( const auto& muon : _selectedMuonList ){
       _muonBranches.Pt.push_back( muon->pt() );
@@ -31,6 +35,7 @@ void addJet( MiniJetBranches&  b , const pat::Jet* j )
 
 void BaseAnalyzer::addJetVariables()
 {
+   if( _debug ) { cerr << "Entering Jet loops Information" << endl; }
    _jetBranches.clear();
    for( const auto& jet : _selectedLJetList ){
       addJet( _jetBranches , jet );
@@ -43,6 +48,7 @@ void BaseAnalyzer::addJetVariables()
 //----- Electron Information  --------------------------------------------------
 void BaseAnalyzer::addElectronVariables()
 {
+   if( _debug ) { cerr << "Adding electron Information" << endl; }
    _elecBranches.clear();
    for( const auto elec : _selectedElectronList ){
       _elecBranches.Pt.push_back( elec->pt() );
@@ -54,26 +60,19 @@ void BaseAnalyzer::addElectronVariables()
 
 void BaseAnalyzer::addEventVariables( const edm::Event& iEvent )
 {
-   //printf("Getting run info...\n" );
+   if( _debug ) { cerr << "Getting Run Information" << endl; }
    _eventBranches._RunNumber           = iEvent.id().run();
    _eventBranches._EventNumber         = iEvent.id().event();
    _eventBranches._BunchCrossingNumber = iEvent.bunchCrossing();
    _eventBranches._LumiNumber          = iEvent.luminosityBlock();
 
-   //printf("Getting Object Info...\n");
+   if( _debug ) { cerr << "Getting object information" << endl; }
    _eventBranches._MuonCount     = _selectedMuonList.size();
    _eventBranches._ElectronCount = _selectedElectronList.size();
    _eventBranches._JetCount      = _selectedBJetList.size() + _selectedLJetList.size();
    _eventBranches._VertexCount   = _vertexList->size();
 
-   //printf("Getting PileUp Info\n");
-   if( !iEvent.isRealData() ){
-      _eventBranches._pileUp = (unsigned int)_pileupList->begin()->getTrueNumInteractions() ;
-   } else {
-      _eventBranches._pileUp = 1.0 ; 
-   }
-
-   // printf("Getting METInfo\n");
+   if( _debug ) { cerr << "Getting MET information" << endl; }
    if( _metList.isValid() ){
       _eventBranches._MET    = _metList->begin()->pt();
       _eventBranches._METPhi = _metList->begin()->phi();
@@ -81,6 +80,15 @@ void BaseAnalyzer::addEventVariables( const edm::Event& iEvent )
      //  std::cout << "Bad MET" << std::endl;
       _eventBranches._MET = _eventBranches._METPhi = 0 ;
    }
+   
+   if( _debug ) { cerr << "Getting PileUp information" << endl; }
+   if( !iEvent.isRealData() ){
+      _eventBranches._pileUp = (unsigned int)_pileupList->begin()->getTrueNumInteractions() ;
+   } else {
+      _eventBranches._pileUp = 1.0 ; 
+   }
+
+   // printf("Getting METInfo\n");
 
 }
 

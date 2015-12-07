@@ -7,22 +7,28 @@
 *******************************************************************************/
 
 #include "TstarAnalysis/BaseClasses/interface/BaseAnalyzer.h"
+#include <iostream>
+using namespace std;
 
 //------------------------------------------------------------------------------ 
 //   Constructor and destructor
 //------------------------------------------------------------------------------
 BaseAnalyzer::BaseAnalyzer( const edm::ParameterSet& iConfig ):
    MiniAODAnalyzer(iConfig),
+   _debug( iConfig.getUntrackedParameter<int>( "Debug" , 0 ) ),
    _objSel( iConfig.getParameter<edm::ParameterSet>( "ObjectSelectionParameter" ))
 {
+   if( _debug ){ cerr << "Spawning Instance of BaseAnalyzer" << endl; }
    eleLooseIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
-  
+
+   if( _debug ){ cerr << "Generating storage tree..." << flush ; }
    _tree = fs->make<TTree>( "TstarAnalysis" , "TstarAnalysis" );
    _eventBranches.registerVariables( _tree );
    _muonBranches.registerVariables( _tree );
    _elecBranches.registerVariables( _tree );
    _jetBranches.registerVariables( _tree );
+   if( _debug ){ cerr << "Done!" << endl; }
 }
 
 BaseAnalyzer::~BaseAnalyzer() {}
@@ -83,6 +89,7 @@ void BaseAnalyzer::processJet(const edm::Event& , const edm::EventSetup& )
 
 void BaseAnalyzer::processEvent( const edm::Event& iEvent , const edm::EventSetup& )
 {
+   if( _debug ) { cerr << "Processing Event" << endl; } 
    addEventVariables(iEvent);
    addMuonVariables();
    addElectronVariables();

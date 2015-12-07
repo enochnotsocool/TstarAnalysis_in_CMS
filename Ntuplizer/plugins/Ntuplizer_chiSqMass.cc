@@ -40,7 +40,7 @@ static TLorentzVector neutrino[2]; // Two candidate solution for nu
 //------------------------------------------------------------------------------
 void solveNeutrino( const TLorentzVector& , float , float );
 
-float Ntuplizer::computeChiSqMass()
+float Ntuplizer::ComputeChiSqMass()
 {
    // std::cout << "Begin mass calculation" << std::endl;
 

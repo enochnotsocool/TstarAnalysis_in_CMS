@@ -9,7 +9,7 @@
 #include "TstarAnalysis/Constants/interface/Constants.h"
 #include <iostream>
 
-float Ntuplizer::computeEventWeight( const edm::Event& iEvent )
+float Ntuplizer::ComputeEventWeight( const edm::Event& iEvent )
 {
    if( iEvent.isRealData() ) { return 1.0; }
    float ans = 1.0 ; 

@@ -6,13 +6,14 @@
  *  
 *******************************************************************************/
 #include "TstarAnalysis/Ntuplizer/interface/Ntuplizer.h"
+#include <iostream>
+using namespace std;
 
-Ntuplizer::Ntuplizer(const edm::ParameterSet& iConfig):
+Ntuplizer::Ntuplizer(const edm::ParameterSet& iConfig ):
    BaseAnalyzer(iConfig)
 {
-   // TODO:
-   // _top_fitter constructor;
-   // _resolution constructors;
+   if( _debug ) { cerr << "Spawning instance of Ntuplizer" << endl; }
+   InitHitFit( iConfig );
 }
 
 Ntuplizer::~Ntuplizer(){}
@@ -25,6 +26,7 @@ void Ntuplizer::endJob(){}
 //------------------------------------------------------------------------------
 void Ntuplizer::addCustomVariables( const edm::Event& iEvent )
 {
+   if( _debug > 1 ) { cerr << "\t[1] Adding custom variables" << endl ; } 
    _eventBranches._chiSqMass = ComputeChiSqMass();
    _eventBranches._eventWeight = ComputeEventWeight( iEvent );
    if( _genHandle.isValid() ){
