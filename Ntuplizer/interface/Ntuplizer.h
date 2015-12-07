@@ -13,6 +13,9 @@
 #define __NTUPLIZER_H__
 
 #include "TstarAnalysis/BaseClasses/interface/BaseAnalyzer.h"
+#include "TstarAnalysis/Ntuplizer/interface/LepJets_Event.h"
+#include "TstarAnalysis/Ntuplizer/interface/LepJets_Event_Jet.h"
+#include "TopQuarkAnalysis/TopHitFit/interface/EtaDepResolution.h"
 
 class Ntuplizer : public BaseAnalyzer {
 public:
@@ -23,11 +26,27 @@ protected:
    virtual void addCustomVariables(const edm::Event&);
 
 private:
+
+   //----- TO HIT FIT members  ----------------------------------------------------
+   LepJets_Event*     _hitFitEvent;
+   Resolution*        _met_KtResolution;
+   EtaDepResolution*  _electronResolution;  // Read from external file
+   EtaDepResolution*  _muonResolution;      // Read from external file
+   EtaDepResolution*  _lightJetResolution;  // Read from external file
+   EtaDepResolution*  _bJetResolution;      // Read from external file
+
    virtual void beginJob() override;
    virtual void endJob() override;
 
-   float computeChiSqMass();
-   float computeEventWeight( const edm::Event& );
+   float ComputeChiSqMass();
+   float ComputeEventWeight( const edm::Event& );
+
+   void  AddHitFitResults( const edm::Event& ) ; 
+   void  MakeNewEvent();
+   void  AddMET( const pat::MET& );
+   void  AddLepton( const pat::Muon& );
+   void  AddLepton( const pat::Electron& );
+   void  AddJet( const pat::Jet& );
 };
 
 

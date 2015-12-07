@@ -23,11 +23,13 @@ void Ntuplizer::endJob(){}
 //------------------------------------------------------------------------------
 void Ntuplizer::addCustomVariables( const edm::Event& iEvent )
 {
-   _eventBranches._chiSqMass = computeChiSqMass();
-   _eventBranches._eventWeight = computeEventWeight( iEvent );
+   _eventBranches._chiSqMass = ComputeChiSqMass();
+   _eventBranches._eventWeight = ComputeEventWeight( iEvent );
    if( _genHandle.isValid() ){
       _eventBranches._generatorWeight = _genHandle->weight();
    }
+
+   AddHitFitResults( iEvent ); 
 }
 
 
