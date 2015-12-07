@@ -1,7 +1,9 @@
-<use name="root" />
+<use name="root"  />
+<use name="clhep" />
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
+<use name="TopQuarkAnalysis/TopHitFit" />
 <use name="TstarAnalysis/Constants" />
 <use name="TstarAnalysis/BaseClasses" />
 <flags EDM_PLUGIN="1"/>

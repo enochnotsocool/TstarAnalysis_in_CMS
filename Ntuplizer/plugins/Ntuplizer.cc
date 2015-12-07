@@ -10,7 +10,9 @@
 Ntuplizer::Ntuplizer(const edm::ParameterSet& iConfig):
    BaseAnalyzer(iConfig)
 {
-
+   // TODO:
+   // _top_fitter constructor;
+   // _resolution constructors;
 }
 
 Ntuplizer::~Ntuplizer(){}
@@ -29,7 +31,8 @@ void Ntuplizer::addCustomVariables( const edm::Event& iEvent )
       _eventBranches._generatorWeight = _genHandle->weight();
    }
 
-   AddHitFitResults( iEvent ); 
+   RunHitFit( iEvent );
+   AddHitFitResults();
 }
 
 

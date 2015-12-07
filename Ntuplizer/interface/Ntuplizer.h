@@ -13,9 +13,11 @@
 #define __NTUPLIZER_H__
 
 #include "TstarAnalysis/BaseClasses/interface/BaseAnalyzer.h"
-#include "TstarAnalysis/Ntuplizer/interface/LepJets_Event.h"
-#include "TstarAnalysis/Ntuplizer/interface/LepJets_Event_Jet.h"
+#include "bpkFrameWork/ModifiedHitFit/interface/Lepjets_Event.h"
+#include "bpkFrameWork/ModifiedHitFit/interface/Lepjets_Event_Jet.h"
+#include "bpkFrameWork/ModifiedHitFit/interface/Top_Fit.h"
 #include "TopQuarkAnalysis/TopHitFit/interface/EtaDepResolution.h"
+#include "TopQuarkAnalysis/TopHitFit/interface/Fit_Result.h"
 
 class Ntuplizer : public BaseAnalyzer {
 public:
@@ -28,25 +30,33 @@ protected:
 private:
 
    //----- TO HIT FIT members  ----------------------------------------------------
-   LepJets_Event*     _hitFitEvent;
-   Resolution*        _met_KtResolution;
-   EtaDepResolution*  _electronResolution;  // Read from external file
-   EtaDepResolution*  _muonResolution;      // Read from external file
-   EtaDepResolution*  _lightJetResolution;  // Read from external file
-   EtaDepResolution*  _bJetResolution;      // Read from external file
+   hitfit::Top_Fit            _top_fitter;
+   hitfit::Resolution*        _met_KtResolution;    // Constant for the time being
+   hitfit::EtaDepResolution*  _electronResolution;  // Read from external file
+   hitfit::EtaDepResolution*  _muonResolution;      // Read from external file
+   hitfit::EtaDepResolution*  _lightJetResolution;  // Read from external file
+   hitfit::EtaDepResolution*  _bJetResolution;      // Read from external file
+   vector<hitfit::Fit_Result> _fitResultList; 
 
+   //----- Inherited member functions  --------------------------------------------
    virtual void beginJob() override;
    virtual void endJob() override;
 
+   //------------------------------------------------------------------------------ 
+   //   Analysis specific member functions
+   //------------------------------------------------------------------------------
    float ComputeChiSqMass();
    float ComputeEventWeight( const edm::Event& );
 
-   void  AddHitFitResults( const edm::Event& ) ; 
+   //----- HIT FIT related member functions  --------------------------------------
+   void  RunHitFit( const edm::Event& ) ; 
    void  MakeNewEvent();
-   void  AddMET( const pat::MET& );
-   void  AddLepton( const pat::Muon& );
-   void  AddLepton( const pat::Electron& );
-   void  AddJet( const pat::Jet& );
+   void  AddMET( Lepjets_Event& , const pat::MET& );
+   void  AddLepton( Lepjets_Event&, const pat::Muon& );
+   void  AddLepton( Lepjets_Event&, const pat::Electron& );
+   void  AddJet( Lepjets_Event&, const pat::Jet& , const int );
+   bool  CheckBTagOrder( const vector<int>& );
+   void  AddHitFitResults();
 };
 
 
