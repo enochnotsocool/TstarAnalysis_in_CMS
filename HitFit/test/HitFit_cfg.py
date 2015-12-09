@@ -66,7 +66,7 @@ process.TFileService = cms.Service("TFileService",
       )
 
 process.ntuplizer = cms.EDAnalyzer(
-      "Ntuplizer",
+      "HitFit",
       ObjectSelectionParameter = DefaultObjectSelection,  
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,

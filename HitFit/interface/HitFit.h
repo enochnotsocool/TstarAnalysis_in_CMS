@@ -1,7 +1,7 @@
 /*******************************************************************************
  *
- *  Filename    : Ntuplizer.h
- *  Description : Ntuplizer for TstarAnalysis
+ *  Filename    : HitFit.h
+ *  Description : HitFit for TstarAnalysis
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
  *  Details     : 
@@ -22,10 +22,10 @@
 
 #include <vector>
 
-class Ntuplizer : public BaseAnalyzer {
+class HitFit : public BaseAnalyzer {
 public:
-   explicit Ntuplizer(const edm::ParameterSet&);
-   ~Ntuplizer();
+   explicit HitFit(const edm::ParameterSet&);
+   ~HitFit();
 
 protected:
    virtual void addCustomVariables(const edm::Event&);

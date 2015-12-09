@@ -1,12 +1,12 @@
 /*******************************************************************************
  *
- *  Filename    : Ntuplizer_chiSqMass.cc
+ *  Filename    : HitFit_chiSqMass.cc
  *  Description : Computing chi square mass
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
 *******************************************************************************/
-#include "TstarAnalysis/Ntuplizer/interface/Ntuplizer.h"
-#include "TstarAnalysis/Ntuplizer/interface/JetPermutator.h"
+#include "TstarAnalysis/HitFit/interface/HitFit.h"
+#include "TstarAnalysis/HitFit/interface/JetPermutator.h"
 #include "TLorentzVector.h"
 #include <iostream>
 
@@ -40,7 +40,7 @@ static TLorentzVector neutrino[2]; // Two candidate solution for nu
 //------------------------------------------------------------------------------
 void solveNeutrino( const TLorentzVector& , float , float );
 
-float Ntuplizer::ComputeChiSqMass()
+float HitFit::ComputeChiSqMass()
 {
    // std::cout << "Begin mass calculation" << std::endl;
 

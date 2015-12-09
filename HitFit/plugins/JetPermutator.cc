@@ -6,7 +6,7 @@
  *
 *******************************************************************************/
 
-#include "TstarAnalysis/Ntuplizer/interface/JetPermutator.h"
+#include "TstarAnalysis/HitFit/interface/JetPermutator.h"
 #include <algorithm>
 #include <iostream>
 //------------------------------------------------------------------------------ 

@@ -1,12 +1,12 @@
 /*******************************************************************************
  *
- *  Filename    : Ntuplizer_HitFit.cc
+ *  Filename    : HitFit_HitFit.cc
  *  Description : HitFIt related packages
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
 
-#include "TstarAnalysis/Ntuplizer/interface/Ntuplizer.h"
+#include "TstarAnalysis/HitFit/interface/HitFit.h"
 
 #include "TopQuarkAnalysis/TopHitFit/interface/fourvec.h"
 #include "TopQuarkAnalysis/TopHitFit/interface/EtaDepResolution.h"
@@ -25,7 +25,7 @@ using namespace hitfit;
 //------------------------------------------------------------------------------
 #define DEFAULT_W_MASS    80.4
 #define DEFAULT_TOP_MASS   0.0
-static const edm::FileInPath defaultFitter( "TstarAnalysis/Ntuplizer/data/top_gluon.txt" );
+static const edm::FileInPath defaultFitter( "TstarAnalysis/HitFit/data/top_gluon.txt" );
 static const edm::FileInPath defaultElecFile( "TopQuarkAnalysis/TopHitFit/data/resolution/tqafElectronResolution.txt" );
 static const edm::FileInPath defaultMuonFile( "TopQuarkAnalysis/TopHitFit/data/resolution/tqafMuonResolution.txt" );
 static const edm::FileInPath defaultLJetFile( "TopQuarkAnalysis/TopHitFit/data/resolution/tqafUdscJetResolution.txt" );
@@ -36,7 +36,7 @@ static const edm::FileInPath defaultBJetFile( "TopQuarkAnalysis/TopHitFit/data/r
 //------------------------------------------------------------------------------ 
 //   Variable initialization and cleaning
 //------------------------------------------------------------------------------
-void Ntuplizer::InitHitFit( const edm::ParameterSet& iConfig )
+void HitFit::InitHitFit( const edm::ParameterSet& iConfig )
 {
    if( _debug ) { cerr << "Constructing HitFit objects..." << flush; }
    const edm::FileInPath fitterFile = iConfig.getUntrackedParameter<edm::FileInPath>( "fitterConfig" , defaultFitter );
@@ -61,7 +61,7 @@ void Ntuplizer::InitHitFit( const edm::ParameterSet& iConfig )
    _hitfitBranches.registerVariables( _tree );
 }
 
-void Ntuplizer::ClearHitFit()
+void HitFit::ClearHitFit()
 {
    delete _top_fitter;
    delete _electronResolution;
@@ -74,7 +74,7 @@ void Ntuplizer::ClearHitFit()
 //------------------------------------------------------------------------------ 
 //   Hit Fit Control Flow
 //------------------------------------------------------------------------------
-void Ntuplizer::RunHitFit( const edm::Event& iEvent ) 
+void HitFit::RunHitFit( const edm::Event& iEvent ) 
 {
    // Dummy variables for storing fitting results;
    bool   solveNeutrino;
@@ -164,7 +164,7 @@ void Ntuplizer::RunHitFit( const edm::Event& iEvent )
 //------------------------------------------------------------------------------ 
 //   Ntuplization
 //------------------------------------------------------------------------------
-void Ntuplizer::AddHitFitResults()
+void HitFit::AddHitFitResults()
 {
    double   this_ChiSquare;
    double   min_ChiSquare = 10000000.;
@@ -228,13 +228,13 @@ void Ntuplizer::AddHitFitResults()
 //------------------------------------------------------------------------------ 
 //   Object Translation
 //------------------------------------------------------------------------------
-void Ntuplizer::AddMET( Lepjets_Event& hitFitEvent, const pat::MET& met )
+void HitFit::AddMET( Lepjets_Event& hitFitEvent, const pat::MET& met )
 {
    hitFitEvent.met()    = Fourvec( met.px() , met.py() , 0 , met.pt() );
    hitFitEvent.kt_res() = *( _met_KtResolution );
 }
 
-void Ntuplizer::AddLepton( Lepjets_Event& hitFitEvent , const pat::Muon& mu )
+void HitFit::AddLepton( Lepjets_Event& hitFitEvent , const pat::Muon& mu )
 {
    double muon_eta = mu.eta() ; // Required! For type conversion
    Fourvec lep_p4( mu.px() , mu.py() , mu.pz() , mu.energy() );
@@ -242,7 +242,7 @@ void Ntuplizer::AddLepton( Lepjets_Event& hitFitEvent , const pat::Muon& mu )
    hitFitEvent.add_lep( Lepjets_Event_Lep(lep_p4 , 0 , lep_resolution) ); //label = 0 for primary lepton
 }
 
-void Ntuplizer::AddLepton( Lepjets_Event& hitFitEvent, const pat::Electron& el )
+void HitFit::AddLepton( Lepjets_Event& hitFitEvent, const pat::Electron& el )
 {
    double elec_eta = el.eta();
    Fourvec lep_p4( el.px() , el.py() , el.pz() , el.energy() );
@@ -251,7 +251,7 @@ void Ntuplizer::AddLepton( Lepjets_Event& hitFitEvent, const pat::Electron& el )
 }
 
 
-void Ntuplizer::AddJet( Lepjets_Event& hitFitEvent, const pat::Jet& jet , const int type )
+void HitFit::AddJet( Lepjets_Event& hitFitEvent, const pat::Jet& jet , const int type )
 {
    double jet_eta = jet.eta();
    Fourvec jetp4( jet.px() , jet.py() , jet.pz(), jet.energy() );
@@ -264,7 +264,7 @@ void Ntuplizer::AddJet( Lepjets_Event& hitFitEvent, const pat::Jet& jet , const 
    hitFitEvent.add_jet( Lepjets_Event_Jet(jetp4 , type , jet_resolution) );
 }
 
-bool Ntuplizer::CheckBTagOrder( const vector<int>& jet_type_list )
+bool HitFit::CheckBTagOrder( const vector<int>& jet_type_list )
 {
    //----- First tag must be b tag  -----------------------------------------------
    if( jet_type_list[0] == hitfit::lepb_label ){ return true; }
