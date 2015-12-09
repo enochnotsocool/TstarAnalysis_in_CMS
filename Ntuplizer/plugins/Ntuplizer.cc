@@ -27,14 +27,11 @@ void Ntuplizer::endJob(){}
 void Ntuplizer::addCustomVariables( const edm::Event& iEvent )
 {
    if( _debug > 1 ) { cerr << "\t[1] Adding custom variables" << endl ; } 
-   _eventBranches._chiSqMass = ComputeChiSqMass();
-   _eventBranches._eventWeight = ComputeEventWeight( iEvent );
-   if( _genHandle.isValid() ){
-      _eventBranches._generatorWeight = _genHandle->weight();
-   }
-
-   RunHitFit( iEvent );
-   AddHitFitResults();
+   _eventBranches.chiSqMass   = ComputeChiSqMass();
+   _eventBranches.eventWeight = ComputeEventWeight( iEvent );
+   
+   //RunHitFit( iEvent );
+   //AddHitFitResults();
 }
 
 

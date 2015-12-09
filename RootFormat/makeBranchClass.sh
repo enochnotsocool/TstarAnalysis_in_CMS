@@ -8,104 +8,129 @@
 #!/bin/bash
 
 HEADERFILE_DIR="./interface"
-PARTICLE_HEAD_DIR="./interface_read"
-WRITE_IMP_DIR="./src"
-READ_IMP_DIR="./src_read"
+WRITE_IMP_DIR="./src/"
+READ_IMP_DIR="./src_read/"
+VARLIST_DIR="./variableList/"
 
-function main() {
-   makeParticle Electron
-   makeParticle Event 
-   makeParticle Muon
-   makeParticle Jet
+TARGETLIST="Event Electron Muon Jet HitFit"
+
+
+makeBranchName() 
+{
+   target=$1
+   vartype=$2
+   varname=$3
+   varsize=$4
+
+   echo "\"${target}.${varname}\""; 
 }
 
-function makeParticle() {
-   filename=${1}.txt
-   branch_headerFile="./interface/Mini${1}Branches.h"
-   branch_writeFile="./src/Mini${1}Branches_write.cc"
-   branch_readFile="./src_read/Mini${1}Branches_read.cc"
-   particle_header="./interface_read/Mini${1}.h"
-   particle_file="./src_read/Mini${1}.cc"
-   makeHeader ${1} ${branch_headerFile}
-   makeWriteFile ${1} ${branch_writeFile}
-   makeReadFile ${1} ${branch_readFile}
-   makeParticleHead ${1} ${particle_header}
-   makePartcleFile ${1} $particle_file
+makeAddress()
+{
+   target=$1
+   vartype=$2
+   varname=$3
+   varsize=$4
+
+   if [[ $varsize == ""  ]] ; then 
+      echo "\&$varname"; 
+   else
+      echo "$varname"
+   fi 
 }
 
-function makeHeader(){
-   DataTypeList=""
-   while read -r line; do
-      var_type=$( echo $line | awk '{print $1}')
-      var_name=$( echo $line | awk '{print $2}')
-      if [[ $1 != Event ]]; then
-         DataTypeList=$DataTypeList"\n   std::vector<$var_type> ${var_name};"
-         DataTypeList=$DataTypeList"\n   std::vector<$var_type>* ${var_name}Ptr;"
+makeLeafName()
+{
+   target=$1
+   vartype=$2
+   varname=$3
+   varsize=$4
+
+   
+   ## Getting character flag
+   if [[ $vartype == "Int_t" ]] ; then
+      typeToken=I
+   elif [[ $vartype == "UInt_t" ]]; then
+      typeToken=i
+   elif [[ $vartype == "Float_t" ]] ; then   
+      typeToken=F
+   elif [[ $vartype == "Bool_t" ]] ; then
+      typeToken=O
+   elif [[ $vartype == "Char_t" ]] ; then 
+      typeToken=C
+   elif [[ $vartype == "ULong64_t" ]] ; then 
+      typeToken=l
+   else 
+      echo $UNKNOWN_STRING
+      exit -1;
+   fi
+
+   if [[ $varsize == "" ]]; then
+      echo "\"${target}.$varname/$typeToken\""
+   else 
+      echo "\"${target}.$varname[${target}.Size]/$typeToken\"";
+   fi 
+}
+
+
+
+for target in $TARGETLIST ; do 
+   varfile="${VARLIST_DIR}/${target}.cc"
+   if [[ ! -f ${varfile} ]]; then
+      echo "Skipping Branches for $target! File ${varfile} doesn't exist!"
+      continue;
+   fi
+   
+   #-----  Making header  ---------------------------------------------------------
+   headerfile=${HEADERFILE_DIR}/${target}Branches.h
+   sed "s@OBJECT@${target}@" ./templates/BranchesHeader.h |
+   sed -e "/__DATA_MEMBERS__/r $varfile" |
+   sed -e "/__DATA_MEMBERS__/d" |
+   cat > ${headerfile}
+   astyle --suffix=none ${headerfile}
+
+   #-----  Making stripped down files  --------------------------------------------
+   sed 's|/\*|\n&|g;s|*/|&\n|g' $varfile |
+   sed '/\/\*/,/*\//d'  |  ## Removing multi-line comments
+   sed 's@//.*@@'       |  ## Remove single line comment
+   sed 's@\[\s*@ [@'    |  ## Ensuring array declaration spacing
+   sed 's@\s*\]@]@'     |  ## Ensuring array declaration spacing
+   sed 's@;@@'          |  ## Stripping semicolons
+   sed '/^\s*$/d'       |  ## Stripping blank lines
+   cat > temp.txt
+
+   #-----  Making read/write commands  -------------------------------------------------
+   writecmd=""
+   readcmd=""
+   while read line ; do 
+      wordlist=( $line )
+      vartype=${wordlist[0]}; varname=${wordlist[1]}; varsize=${wordlist[2]}
+
+      branchName=$( makeBranchName $target $vartype $varname $varsize)
+      address=$(    makeAddress    $target $vartype $varname $varsize)
+      leafname=$(   makeLeafName   $target $vartype $varname $varsize)
+
+      if [[ $leafname == "" ]]; then
+         writecmd=$writecmd"\ntree->Branch($branchName,$address );"
       else
-         DataTypeList=$DataTypeList"\n   $var_type _${var_name};"
+         writecmd=${writecmd}"\ntree->Branch($branchName,$address,$leafname);"
       fi
-   done < ${1}.txt
-   cat ./templates/ParticleBranchesHeader.h | 
-      sed "s@PARTICLE@${1}@"      |
-      sed "s@__DATA_MEMBERS__@$DataTypeList@" > $2 
-}
+      readcmd=${readcmd}"\ntree->SetBranchAddress($branchName,$address);"
+   done < temp.txt
 
-function makeWriteFile() {
-   registerCMDs=""
-   clearCMDS=""
-   while read -r line ; do 
-      var_name=$( echo $line | awk '{print $2}' );
-      if [[ $1 != Event ]]; then
-         registerCMDs=$registerCMDs"\n   tree->Branch( \"${1}$var_name\" , \&${var_name} );"
-         clearCMDS=$clearCMDS"\n   ${var_name}.clear();"
-      else
-         registerCMDs=$registerCMDs"\n   tree->Branch( \"${1}$var_name\" , \&_${var_name} );"
-      fi
-   done < ${1}.txt
-   cat ./templates/ParticleBranchesWrite.h |
-      sed "s@PARTICLE@${1}@g" |
-      sed "s@__REGISTER_CMDS__@$registerCMDs@" |
-      sed "s@__CLEAR_CMDS__@$clearCMDS@" > $2
-}
+   #-----  Making writing file  ---------------------------------------------------
+   writefile=${WRITE_IMP_DIR}/${target}Branch.cc
+   sed "s@OBJECT@$target@" ./templates/BranchesWrite.cc |
+   sed -e "s@__REGISTER_CMDS__@${writecmd}@" |
+   cat > $writefile 
+   astyle --suffix=none ${writefile}
+   
+   #-----  Making reading file  ---------------------------------------------------
+   writefile=${READ_IMP_DIR}/${target}Branch_read.cc
+   sed "s@OBJECT@$target@" ./templates/BranchesRead.cc |
+   sed -e "s@__READ_CMDS__@${readcmd}@" |
+   cat > $writefile 
+   astyle --suffix=none ${writefile}
 
-function makeReadFile() {
-   readCMDs=""
-   loadCMDs=""
-   while read -r line ; do 
-      var_name=$( echo $line | awk '{print $2}' );
-      if [[ $1 != Event ]]; then
-         readCMDs=$readCMDs"\n   tree->SetBranchAddress( \"${1}$var_name\" , \&${var_name}Ptr );"
-      else
-         readCMDs=$readCMDs"\n   tree->SetBranchAddress( \"${1}$var_name\" , \&_${var_name} );"
-      fi
-   done < ${1}.txt
-   cat ./templates/ParticleBranchesRead.h | 
-      sed "s@PARTICLE@${1}@g" |
-      sed "s@__READ_CMDS__@$readCMDs@" > $2
-}
+done
 
-function makeParticleHead() {
-   accessFunction=""
-   while read -r line ; do 
-      var_type=$( echo $line | awk '{print $1}')
-      var_name=$( echo $line | awk '{print $2}' );
-      accessFunction=$accessFunction"\n  const $var_type\& $var_name();"
-   done < ${1}.txt
-   cat ./templates/Particle.h |
-      sed "s@PARTICLE@${1}@g" |
-      sed "s@__ACCESS_FUNCTIONS__@${accessFunction}@" > ${2}
-}
-
-function makePartcleFile() {
-   accessFunction=""
-   while read -r line ; do 
-      var_type=$( echo $line | awk '{print $1}')
-      var_name=$( echo $line | awk '{print $2}' );
-      accessFunction=$accessFunction"const $var_type\& Mini${1}::$var_name() { return ${1}Branches._${var_name}List[ _index ]; }"
-   done < ${1}.txt
-   cat ./templates/Particle.cc |
-      sed "s@PARTICLE@${1}@g" |
-      sed "s@__ACCESS_FUNCTIONS__@${accessFunction}@" > ${2}
-}
-
-main $@

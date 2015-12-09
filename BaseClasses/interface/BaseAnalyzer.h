@@ -9,10 +9,10 @@
 #define __BASEANALYZER_H__
 
 #include "MiniAODAnalysis/BaseAnalyzer/interface/MiniAODAnalyzer.h"
-#include "TstarAnalysis/RootFormat/interface/MiniEventBranches.h"
-#include "TstarAnalysis/RootFormat/interface/MiniMuonBranches.h"
-#include "TstarAnalysis/RootFormat/interface/MiniElectronBranches.h"
-#include "TstarAnalysis/RootFormat/interface/MiniJetBranches.h"
+#include "TstarAnalysis/RootFormat/interface/EventBranches.h"
+#include "TstarAnalysis/RootFormat/interface/MuonBranches.h"
+#include "TstarAnalysis/RootFormat/interface/ElectronBranches.h"
+#include "TstarAnalysis/RootFormat/interface/JetBranches.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
 #include "TstarAnalysis/BaseClasses/interface/ObjectSelection.h"
 #include "TTree.h"
@@ -44,11 +44,11 @@ protected:
    JetList       _selectedLJetList;
    JetList       _selectedBJetList;
 
-   TTree*               _tree;
-   MiniEventBranches    _eventBranches;
-   MiniMuonBranches     _muonBranches;
-   MiniElectronBranches _elecBranches;
-   MiniJetBranches      _jetBranches;
+   TTree*            _tree;
+   EventBranches     _eventBranches;
+   MuonBranches      _muonBranches;
+   ElectronBranches  _elecBranches;
+   JetBranches       _jetBranches;
 
    unsigned _debug;
 

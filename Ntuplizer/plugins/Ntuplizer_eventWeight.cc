@@ -14,7 +14,7 @@ float Ntuplizer::ComputeEventWeight( const edm::Event& iEvent )
    if( iEvent.isRealData() ) { return 1.0; }
    float ans = 1.0 ; 
    //----- PileUp weighting  ------------------------------------------------------
-   ans *= PileUpWeight[ _eventBranches._pileUp ] ;
+   ans *= PileUpWeight[ _eventBranches.pileUp ] ;
 
    return ans;
 }

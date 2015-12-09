@@ -14,29 +14,30 @@ using namespace std;
 void BaseAnalyzer::addMuonVariables()
 {
    if( _debug ) { cerr << "Adding Muon Information" << endl; }
-   _muonBranches.clear(); // Clearing previous event contents
+   _muonBranches.Size = 0 ;
    for( const auto& muon : _selectedMuonList ){
-      _muonBranches.Pt.push_back( muon->pt() );
-      _muonBranches.Eta.push_back( muon->eta() );
-      _muonBranches.Phi.push_back( muon->phi() );
-      _muonBranches.Energy.push_back( muon->energy() );
-      _muonBranches.trackRelIso.push_back( muon->trackIso() / muon->pt() );
+      _muonBranches.Pt[_muonBranches.Size]= muon->pt() ;
+      _muonBranches.Eta[_muonBranches.Size]= muon->eta() ;
+      _muonBranches.Phi[_muonBranches.Size]= muon->phi() ;
+      _muonBranches.Energy[_muonBranches.Size]= muon->energy() ;
+      _muonBranches.TrackRelIso[_muonBranches.Size]= muon->trackIso() / muon->pt() ;
    }
 }
 
 //----- Jet Information  -------------------------------------------------------
-void addJet( MiniJetBranches&  b , const pat::Jet* j )
+void addJet( JetBranches&  b , const pat::Jet* j )
 {
-   b.Pt.push_back( j->pt() );
-   b.Eta.push_back( j->eta() );
-   b.Phi.push_back( j->phi() );
-   b.Energy.push_back( j->energy() );    
+   b.Pt[b.Size]= j->pt();
+   b.Eta[b.Size]= j->eta();
+   b.Phi[b.Size]= j->phi();
+   b.Energy[b.Size]= j->energy();
+   b.Size++;
 }
 
 void BaseAnalyzer::addJetVariables()
 {
    if( _debug ) { cerr << "Entering Jet loops Information" << endl; }
-   _jetBranches.clear();
+   _jetBranches.Size=0;
    for( const auto& jet : _selectedLJetList ){
       addJet( _jetBranches , jet );
    }
@@ -49,43 +50,38 @@ void BaseAnalyzer::addJetVariables()
 void BaseAnalyzer::addElectronVariables()
 {
    if( _debug ) { cerr << "Adding electron Information" << endl; }
-   _elecBranches.clear();
+   _elecBranches.Size=0;
    for( const auto elec : _selectedElectronList ){
-      _elecBranches.Pt.push_back( elec->pt() );
-      _elecBranches.Eta.push_back( elec->eta() );
-      _elecBranches.Phi.push_back( elec->phi() );
-      _elecBranches.Energy.push_back( elec->energy() );
+      _elecBranches.Pt[_elecBranches.Size]     = elec->pt() ;
+      _elecBranches.Eta[_elecBranches.Size]    = elec->eta();
+      _elecBranches.Phi[_elecBranches.Size]    = elec->phi();
+      _elecBranches.Energy[_elecBranches.Size] = elec->energy();
+      _elecBranches.Size++;
    }
 }
 
 void BaseAnalyzer::addEventVariables( const edm::Event& iEvent )
 {
    if( _debug ) { cerr << "Getting Run Information" << endl; }
-   _eventBranches._RunNumber           = iEvent.id().run();
-   _eventBranches._EventNumber         = iEvent.id().event();
-   _eventBranches._BunchCrossingNumber = iEvent.bunchCrossing();
-   _eventBranches._LumiNumber          = iEvent.luminosityBlock();
-
-   if( _debug ) { cerr << "Getting object information" << endl; }
-   _eventBranches._MuonCount     = _selectedMuonList.size();
-   _eventBranches._ElectronCount = _selectedElectronList.size();
-   _eventBranches._JetCount      = _selectedBJetList.size() + _selectedLJetList.size();
-   _eventBranches._VertexCount   = _vertexList->size();
+   _eventBranches.RunNumber           = iEvent.id().run();
+   _eventBranches.EventNumber         = iEvent.id().event();
+   _eventBranches.BunchCrossingNumber = iEvent.bunchCrossing();
+   _eventBranches.LumiNumber          = iEvent.luminosityBlock();
 
    if( _debug ) { cerr << "Getting MET information" << endl; }
    if( _metList.isValid() ){
-      _eventBranches._MET    = _metList->begin()->pt();
-      _eventBranches._METPhi = _metList->begin()->phi();
+      _eventBranches.MET    = _metList->begin()->pt();
+      _eventBranches.METPhi = _metList->begin()->phi();
    } else {
      //  std::cout << "Bad MET" << std::endl;
-      _eventBranches._MET = _eventBranches._METPhi = 0 ;
+      _eventBranches.MET = _eventBranches.METPhi = 0 ;
    }
    
    if( _debug ) { cerr << "Getting PileUp information" << endl; }
    if( !iEvent.isRealData() ){
-      _eventBranches._pileUp = (unsigned int)_pileupList->begin()->getTrueNumInteractions() ;
+      _eventBranches.pileUp = (unsigned int)_pileupList->begin()->getTrueNumInteractions() ;
    } else {
-      _eventBranches._pileUp = 1.0 ; 
+      _eventBranches.pileUp = 1.0 ; 
    }
 
    // printf("Getting METInfo\n");

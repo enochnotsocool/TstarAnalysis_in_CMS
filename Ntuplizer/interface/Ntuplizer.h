@@ -13,6 +13,7 @@
 #define __NTUPLIZER_H__
 
 #include "TstarAnalysis/BaseClasses/interface/BaseAnalyzer.h"
+#include "TstarAnalysis/RootFormat/interface/HitFitBranches.h"
 #include "bpkFrameWork/ModifiedHitFit/interface/Lepjets_Event.h"
 #include "bpkFrameWork/ModifiedHitFit/interface/Lepjets_Event_Jet.h"
 #include "bpkFrameWork/ModifiedHitFit/interface/Top_Fit.h"
@@ -38,7 +39,9 @@ private:
    hitfit::EtaDepResolution*       _muonResolution;      // Read from external file
    hitfit::EtaDepResolution*       _lightJetResolution;  // Read from external file
    hitfit::EtaDepResolution*       _bJetResolution;      // Read from external file
-   std::vector<hitfit::Fit_Result> _fitResultList; 
+   std::vector<hitfit::Fit_Result> _fitResultList;
+
+   HitFitBranches _hitfitBranches; 
 
    //----- Inherited member functions  --------------------------------------------
    virtual void beginJob() override;

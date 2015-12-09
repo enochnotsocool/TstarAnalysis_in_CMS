@@ -31,6 +31,8 @@ static const edm::FileInPath defaultMuonFile( "TopQuarkAnalysis/TopHitFit/data/r
 static const edm::FileInPath defaultLJetFile( "TopQuarkAnalysis/TopHitFit/data/resolution/tqafUdscJetResolution.txt" );
 static const edm::FileInPath defaultBJetFile( "TopQuarkAnalysis/TopHitFit/data/resolution/tqafBJetResolution.txt" ); 
 
+#define MAX_HIT_FIT_JETS  6
+
 //------------------------------------------------------------------------------ 
 //   Variable initialization and cleaning
 //------------------------------------------------------------------------------
@@ -55,6 +57,8 @@ void Ntuplizer::InitHitFit( const edm::ParameterSet& iConfig )
  
    _met_KtResolution = new Resolution("0,0,12");
    if( _debug ) { cerr << " Done Resolutions!" << endl; }
+
+   _hitfitBranches.registerVariables( _tree );
 }
 
 void Ntuplizer::ClearHitFit()
@@ -99,7 +103,8 @@ void Ntuplizer::RunHitFit( const edm::Event& iEvent )
 
    //----- Setting up Jet Labels  -------------------------------------------------
    const unsigned numberOfJets = _selectedLJetList.size() + _selectedBJetList.size();
-   vector<int> jet_type_list( numberOfJets , hitfit::unknown_label ) ;
+   const unsigned hitfitJetCount = (numberOfJets<MAX_HIT_FIT_JETS)?numberOfJets:MAX_HIT_FIT_JETS;
+   vector<int> jet_type_list( hitfitJetCount , hitfit::unknown_label ) ;
    jet_type_list[0] = hitfit::lepb_label; 
    jet_type_list[1] = hitfit::hadb_label;
    jet_type_list[2] = hitfit::hadw1_label;
@@ -124,7 +129,9 @@ void Ntuplizer::RunHitFit( const edm::Event& iEvent )
       for( const auto& jet : _selectedBJetList ){
          AddJet( hitFitEvent, *jet, jet_type_list[i]); ++i; }
       for( const auto& jet : _selectedLJetList ){
-         AddJet( hitFitEvent, *jet, jet_type_list[i]); ++i; }
+         AddJet( hitFitEvent, *jet, jet_type_list[i]); ++i;
+         if( i >= hitfitJetCount ){ break; }
+      }
       hitFitEvent.set_jet_types( jet_type_list );
 
       // Running Hit Fit
@@ -165,6 +172,7 @@ void Ntuplizer::AddHitFitResults()
 
    if( _debug ) { cerr << "Getting HitFit results!" << endl; }
 
+   //----- Getting Best results only  ---------------------------------------------
    for( unsigned i = 0; i < _fitResultList.size() ; ++i ){
       this_ChiSquare = _fitResultList[i].chisq() ;
       if( this_ChiSquare < min_ChiSquare && this_ChiSquare > 0.0 ){
@@ -173,8 +181,48 @@ void Ntuplizer::AddHitFitResults()
       }
    }
    const Fit_Result& best = _fitResultList[min_index];
-   math::XYZTLorentzVector fittedLepW( hitfit::Top_Decaykin::lepw( best.ev() ) );
-   cout << "Leptonic W:" << fittedLepW.px() << " " << fittedLepW.py() << endl;
+
+   const math::XYZTLorentzVector fittedLepton( best.ev().lep(0).p() );
+   const math::XYZTLorentzVector fittedNeutrino( best.ev().met() );
+   const math::XYZTLorentzVector fittedKt    ( best.ev().kt() );
+   const math::XYZTLorentzVector fittedLepW  ( hitfit::Top_Decaykin::lepw( best.ev() ) );
+   const math::XYZTLorentzVector fittedLepTop( hitfit::Top_Decaykin::lept( best.ev() ) );
+   const math::XYZTLorentzVector fittedHadW  ( hitfit::Top_Decaykin::hadw( best.ev() ) );
+   const math::XYZTLorentzVector fittedHadTop( hitfit::Top_Decaykin::hadt( best.ev() ) );
+
+   _hitfitBranches.TstarMass      = best.mt();
+   _hitfitBranches.TstarMassSigma = best.sigmt();
+   _hitfitBranches.ChiSquare      = best.chisq();
+
+   _hitfitBranches.Lepton_Pt     = fittedLepton.pt();
+   _hitfitBranches.Lepton_Eta    = fittedLepton.eta();
+   _hitfitBranches.Lepton_Phi    = fittedLepton.phi();
+   _hitfitBranches.Lepton_Energy = fittedLepton.energy();
+   
+   _hitfitBranches.Neutrino_Pt     = fittedNeutrino.pt() ;
+   _hitfitBranches.Neutrino_Eta    = fittedNeutrino.eta();
+   _hitfitBranches.Neutrino_Phi    = fittedNeutrino.phi();
+   _hitfitBranches.Neutrino_Energy = fittedNeutrino.energy();
+
+   _hitfitBranches.Leptonic_W_Pt     = fittedLepW.pt();       
+   _hitfitBranches.Leptonic_W_Eta    = fittedLepW.eta();       
+   _hitfitBranches.Leptonic_W_Phi    = fittedLepW.phi();       
+   _hitfitBranches.Leptonic_W_Energy = fittedLepW.energy();       
+   _hitfitBranches.Hadronic_W_Pt     = fittedHadW.pt();
+   _hitfitBranches.Hadronic_W_Eta    = fittedHadW.eta();
+   _hitfitBranches.Hadronic_W_Phi    = fittedHadW.phi();
+   _hitfitBranches.Hadronic_W_Energy = fittedHadW.energy();
+
+   _hitfitBranches.Leptonic_Top_Pt      = fittedLepTop.pt();
+   _hitfitBranches.Leptonic_Top_Eta     = fittedLepTop.eta();
+   _hitfitBranches.Leptonic_Top_Phi     = fittedLepTop.phi();
+   _hitfitBranches.Leptonic_Top_Energy  = fittedLepTop.energy();
+   _hitfitBranches.Hadronic_Top_Pt      = fittedHadTop.pt() ;
+   _hitfitBranches.Hadronic_Top_Eta     = fittedHadTop.eta() ;
+   _hitfitBranches.Hadronic_Top_Phi     = fittedHadTop.phi() ;
+   _hitfitBranches.Hadronic_Top_Energy  = fittedHadTop.energy() ;
+
+   _fitResultList.clear();
 }
 
 //------------------------------------------------------------------------------ 
