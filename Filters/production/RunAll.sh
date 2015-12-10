@@ -8,7 +8,7 @@
 #!/bin/bash
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-FILTER_TYPE="gg_MuonSignal"
+FILTER_TYPE="gg_MuonSignal gg_ElectronSignal"
 MuonData=""
 
 for filter in ${FILTER_TYPE} ; do 
