@@ -1,0 +1,12 @@
+<use name="root" />
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/Common" />
+<use name="DataFormats/ParticleFlowCandidate"/>
+<use name="DataFormats/VertexReco"/>
+<use name="DataFormats/ParticleFlowReco"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="TopQuarkAnalyisis/TopHitFit" />
+<export><lib   name="1"/></export>
+
+
