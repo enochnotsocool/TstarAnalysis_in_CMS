@@ -6,5 +6,6 @@
 <use name="TopQuarkAnalysis/TopHitFit" />
 <use name="TstarAnalysis/Constants" />
 <use name="TstarAnalysis/BaseClasses" />
+<use name="TstarAnalysis/ggChannel_Ntuplizer" />
 <flags CXXFLAGS="-g"/>
 <flags EDM_PLUGIN="1"/>

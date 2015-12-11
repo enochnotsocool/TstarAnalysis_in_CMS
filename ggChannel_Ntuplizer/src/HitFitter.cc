@@ -10,6 +10,7 @@
 #include "TopQuarkAnalysis/TopHitFit/interface/fourvec.h"
 #include "TopQuarkAnalysis/TopHitFit/interface/Defaults_Text.h"
 
+#include <iostream>
 #include <algorithm>
 using namespace hitfit;
 using namespace std;
@@ -19,24 +20,27 @@ using namespace std;
 #define DEFAULT_W_MASS    80.4
 #define DEFAULT_TOP_MASS   0.0
 static const edm::FileInPath defaultFitter( "TstarAnalysis/ggChannel_Ntuplizer/data/top_gluon.txt" );
-static const edm::FileInPath defaultElecFile( "TopQuarkAnalysis/TopggChannel_Ntuplizer/data/resolution/tqafElectronResolution.txt" );
-static const edm::FileInPath defaultMuonFile( "TopQuarkAnalysis/TopggChannel_Ntuplizer/data/resolution/tqafMuonResolution.txt" );
-static const edm::FileInPath defaultLJetFile( "TopQuarkAnalysis/TopggChannel_Ntuplizer/data/resolution/tqafUdscJetResolution.txt" );
-static const edm::FileInPath defaultBJetFile( "TopQuarkAnalysis/TopggChannel_Ntuplizer/data/resolution/tqafBJetResolution.txt" ); 
+static const edm::FileInPath defaultElecFile( "TopQuarkAnalysis/TopHitFit/data/resolution/tqafElectronResolution.txt" );
+static const edm::FileInPath defaultMuonFile( "TopQuarkAnalysis/TopHitFit/data/resolution/tqafMuonResolution.txt" );
+static const edm::FileInPath defaultLJetFile( "TopQuarkAnalysis/TopHitFit/data/resolution/tqafUdscJetResolution.txt" );
+static const edm::FileInPath defaultBJetFile( "TopQuarkAnalysis/TopHitFit/data/resolution/tqafBJetResolution.txt" ); 
 
 #define MAX_HIT_FIT_JETS  6
 
 //------------------------------------------------------------------------------ 
 //   Constructor and Destructor
 //------------------------------------------------------------------------------
-HitFitter::HitFitter( const edm::ParameterSet& iConfig )
+HitFitter::HitFitter( const edm::ParameterSet& iConfig ):
+   _debug( iConfig.getUntrackedParameter<int>( "Debug" , 0 ) )
 {
+   if( _debug ) { cout << "Getting Top_Fit variables.... " << endl ; }
    const edm::FileInPath fitterFile = iConfig.getUntrackedParameter<edm::FileInPath>( "fitterConfig" , defaultFitter );
    double fitter_lepWMass = iConfig.getUntrackedParameter<double>( "fittingLeptonicWMass" ,  DEFAULT_W_MASS );
    double fitter_hadWMass = iConfig.getUntrackedParameter<double>( "fittingHadronicWMass" ,  DEFAULT_W_MASS );
    double fitter_topMass  = iConfig.getUntrackedParameter<double>( "fittingTopMass" ,  DEFAULT_TOP_MASS );
    _top_fitter = new Top_Fit( Defaults_Text(fitterFile.fullPath()) , fitter_lepWMass , fitter_hadWMass , fitter_topMass );
 
+   if( _debug ) { cout << "Getting Resolutions..." << endl; }
    const edm::FileInPath elecResolutionFile = iConfig.getUntrackedParameter<edm::FileInPath>( "electronResolution" , defaultElecFile );
    const edm::FileInPath muonResolutionFile = iConfig.getUntrackedParameter<edm::FileInPath>( "muonResolution" , defaultMuonFile );
    const edm::FileInPath ljetResolutionFile = iConfig.getUntrackedParameter<edm::FileInPath>( "lightJetResolution" , defaultLJetFile );
@@ -46,10 +50,12 @@ HitFitter::HitFitter( const edm::ParameterSet& iConfig )
    _lightJetResolution = new EtaDepResolution( ljetResolutionFile.fullPath() );
    _bJetResolution     = new EtaDepResolution( bjetResolutionFile.fullPath() );
    _met_KtResolution   = new Resolution("0,0,12");
+
 }
 
 HitFitter::~HitFitter()
 {
+   if( _debug ) { cout << "Clearing analysis wide objects" << endl; }
    delete _top_fitter;
    delete _electronResolution;
    delete _muonResolution;
@@ -75,6 +81,7 @@ void HitFitter::RunPermutations()
 
    // Dummy event only handling MET and Lepton
    // Jets are handled in the permutation loop
+   if( _debug ) { cout << " Setting up template event " << endl; }
    Lepjets_Event hitFitEventTemplate( 0,0 );
 
    //----- Setting up MET  --------------------------------------------------------
@@ -101,6 +108,13 @@ void HitFitter::RunPermutations()
 
    //----- Permute jet labels  ---------------------------------------------------
    do {
+      if( _debug > 2) {
+         cout << "\t Jet Type:" << flush;
+         for( unsigned i = 0 ; i < jet_type_list.size() ; ++i ){
+            cout << ", " << jet_type_list[i] << flush;
+         }
+         cout << endl;
+      }
       if( !CheckBTagOrder( jet_type_list ) ) { continue; }
 
       Lepjets_Event hitFitEvent = hitFitEventTemplate;
@@ -140,7 +154,7 @@ void HitFitter::RunPermutations()
 
 void HitFitter::ClearAll()
 {
-   // Deleting all per-event results
+   if( _debug ) { cout << "Deleting all per-event results" << endl; }
    _resultList.clear();
    _elcteoncListPtr = NULL;
    _muonListPtr     = NULL;
@@ -149,7 +163,7 @@ void HitFitter::ClearAll()
    _metPtr          = NULL;
 }
 
-const hitfit::Fit_Results& HitFitter::getBestResult() const
+const hitfit::Fit_Result& HitFitter::getBestResult() const
 {
    unsigned min_index  = -1;
    double min_ChiSquare = 10000000.;
@@ -168,10 +182,10 @@ const hitfit::Fit_Results& HitFitter::getBestResult() const
 //------------------------------------------------------------------------------ 
 //   Translator private functions
 //------------------------------------------------------------------------------
-void HitFitter::AddHitFitMetMET( Lepjets_Event* hitFitEvent, const pat::MET* met ) const 
+void HitFitter::AddHitFitMET( Lepjets_Event* hitFitEvent, const pat::MET* met ) const 
 {
-   hitFitEvent.met()    = Fourvec( met->px() , met->py() , 0 , met->pt() );
-   hitFitEvent.kt_res() = *( _met_KtResolution );
+   hitFitEvent->met()    = Fourvec( met->px() , met->py() , 0 , met->pt() );
+   hitFitEvent->kt_res() = *( _met_KtResolution );
 }
 
 void HitFitter::AddHitFitLepton( Lepjets_Event* hitFitEvent , const pat::Muon* mu ) const
@@ -203,5 +217,9 @@ void HitFitter::AddHitFitJet( Lepjets_Event* hitFitEvent, const pat::Jet* jet , 
    hitFitEvent->add_jet( Lepjets_Event_Jet(jetp4 , type , jet_resolution) );
 }
 
-
-
+bool HitFitter::CheckBTagOrder( const std::vector<int>& jet_type_list ) const 
+{
+   if( jet_type_list[0] == hitfit::hadb_label ) return true;
+   if( jet_type_list[0] == hitfit::lepb_label ) return true;
+   return false;
+}

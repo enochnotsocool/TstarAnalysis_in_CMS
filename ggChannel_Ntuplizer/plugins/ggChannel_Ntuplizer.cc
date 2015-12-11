@@ -27,7 +27,7 @@ void ggChannel_Ntuplizer::endJob(){}
 void ggChannel_Ntuplizer::addCustomVariables( const edm::Event& iEvent )
 {
    if( _debug > 1 ) { cerr << "\t[1] Adding custom variables" << endl ; } 
-   _eventBranches.chiSqMass   = ComputeChiSqMass();
+   // _eventBranches.chiSqMass   = ComputeChiSqMass();
    _eventBranches.eventWeight = ComputeEventWeight( iEvent );
 
    RunHitFit();

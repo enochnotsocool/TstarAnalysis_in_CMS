@@ -16,6 +16,7 @@
 
 #include "TopQuarkAnalysis/TopHitFit/interface/EtaDepResolution.h"
 #include "TopQuarkAnalysis/TopHitFit/interface/Top_Decaykin.h"
+#include "TopQuarkAnalysis/TopHitFit/interface/Fit_Result.h"
 
 #include <vector>
 
@@ -57,6 +58,8 @@ private:
    hitfit::EtaDepResolution*       _muonResolution;      // Read from external file
    hitfit::EtaDepResolution*       _lightJetResolution;  // Read from external file
    hitfit::EtaDepResolution*       _bJetResolution;      // Read from external file
+
+   unsigned _debug;
  
    //----- Translator functions  --------------------------------------------------
    void AddHitFitMET( hitfit::Lepjets_Event*, const pat::MET* ) const;

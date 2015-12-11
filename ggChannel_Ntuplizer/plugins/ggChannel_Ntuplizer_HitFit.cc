@@ -8,9 +8,8 @@
 
 #include "TstarAnalysis/ggChannel_Ntuplizer/interface/ggChannel_Ntuplizer.h"
 
-#include "TopQuarkAnalysis/TopHitFit/interface/fourvec.h"
 #include "TopQuarkAnalysis/TopHitFit/interface/Top_Decaykin.h"
-#include "TopQuarkAnalysis/TopHitFit/interface/Defaults_Text.h"
+#include "TopQuarkAnalysis/TopHitFit/interface/Fit_Result.h"
 
 #include <stdlib.h>
 #include <vector>
@@ -28,7 +27,7 @@ void ggChannel_Ntuplizer::RunHitFit()
 
    _hitfitter.RunPermutations();
 
-   const Fit_Result& best = _hitfitter.getBestResult();
+   const hitfit::Fit_Result& best = _hitfitter.getBestResult();
    const math::XYZTLorentzVector fittedLepton( best.ev().lep(0).p() );
    const math::XYZTLorentzVector fittedNeutrino( best.ev().met() );
    const math::XYZTLorentzVector fittedKt    ( best.ev().kt() );
