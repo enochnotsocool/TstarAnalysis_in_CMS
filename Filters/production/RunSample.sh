@@ -8,6 +8,8 @@
 #!/bin/bash
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source ${DIR}/source/DataSetParser.sh
+
 PYTHON_DIR=$DIR/PYTHONFILES
 SCRIPT_DIR=$DIR/RUNSCRIPTS
 OUTPUT_DIR=$DIR/LOG
@@ -64,31 +66,6 @@ function main()
    done
 }
 
-function makeName()
-{
-   echo $1 | awk -F "/" '{print $2"_"$3 }' 
-}
-function getDataProcess() 
-{
-   local data_set=$1
-   if [[ $data_set == *"RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"* ]]; then
-      echo "MC25ns_MiniAODv2"
-   elif [[ $data_set == *"RunIISpring15MiniAODv2-Asympt50ns_74X_mcRun2_asymptotic50ns_v0-v1"* ]]; then
-      echo "MC50ns_MiniAODv2"
-   elif [[ $data_set == *"Run2015D-PromptReco-v4"* ]]; then
-      echo "Data25ns_PromptRecov4"
-   elif [[ $data_set == *"Run2015D-05Oct2015"* ]]; then
-      echo "Data25ns_MiniAODv2"
-   elif [[ $data_set == *"Run2015C_25ns-05Oct2015"* ]]; then
-      echo "Data25ns_ReReco"
-   elif [[ $data_set == *"Run2015"*"05Oct2015"* ]]; then
-      echo "Data50ns_MiniAODv2"
-   elif [[ $data_set == *"RunIISpring15DR74"* ]]; then
-      echo "MC25ns_MiniAODv1"
-   else
-      echo ""
-   fi
-}
 
 function makeDirectories()
 {
@@ -113,19 +90,12 @@ function parseArguments()
 {
    filterType=$1 
    if [[ $filterType == "gg_MuonSignal" ]]; then
-      echo "Running gg Channel Muon Signal Region"
+      echo "Running gluon-gluon Channel Muon Signal Region"
+   elif [[ $filterType == "gg_ElectronSignal" ]]; then
+      echo "Running gluon-gluon Channel Electron Signal Region"
    else
       echo "Error! Unrecognised filter type!"
       exit 1
-   fi
-}
-
-function getJson()
-{
-   if [[ $1 == *"Run2015"* ]]; then
-      echo "$DIR/Cert_25ns_Latest.json" 
-   else 
-      echo ""
    fi
 }
 

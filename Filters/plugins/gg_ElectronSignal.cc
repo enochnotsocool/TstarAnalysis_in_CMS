@@ -25,8 +25,10 @@ protected:
 gg_ElectronSignal::gg_ElectronSignal( const edm::ParameterSet& iConfig ):
    BaseFilter( iConfig )
 {
-   _acceptTriggers.push_back( "HLT_Ele32_eta2p1_WPTight_Gsf_v2" ); // For Data
-   _acceptTriggers.push_back( "HLT_Ele32_eta2p1_WP75_Gsf_v1" ); // For MC 
+   _acceptTriggers.push_back( "HLT Ele27 eta2p1 WPLoose Gsf_v1" );
+   _acceptTriggers.push_back( "HLT Ele27 eta2p1 WPLoose Gsf_v2" );
+   _acceptTriggers.push_back( "HLT Ele27 eta2p1 WPLoose Gsf_v3" );
+   _acceptTriggers.push_back( "HLT Ele27 eta2p1 WPLoose Gsf_v4" );
 }
 
 gg_ElectronSignal::~gg_ElectronSignal()
