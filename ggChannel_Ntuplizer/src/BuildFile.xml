@@ -7,7 +7,7 @@
 <use name="DataFormats/ParticleFlowReco"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="bpkFrameWork/ModifiedHitFit" />
-<use name="TopQuarkAnalyisis/TopHitFit" />
+<use name="TopQuarkAnalysis/TopHitFit" />
 <export><lib name="1"/></export>
 
 

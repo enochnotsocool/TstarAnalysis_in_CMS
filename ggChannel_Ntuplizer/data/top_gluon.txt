@@ -84,7 +84,7 @@ use_e = true
 # Tevatron Run 1 : e_com = 1800
 # Tevatron Run 2 : e_com = 1960
 # LHC Run        : e_com = 7000, 8000, 10000, 12000, 13000, 14000
-e_com = 8000
+e_com = 13000
 
 # If this is true and the event does not have a neutrino,
 # then the fit will be done without the overall transverse
