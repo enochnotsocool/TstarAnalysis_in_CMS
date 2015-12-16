@@ -11,6 +11,7 @@ using namespace std;
 
 ggChannel_Ntuplizer::ggChannel_Ntuplizer(const edm::ParameterSet& iConfig ):
    BaseAnalyzer(iConfig),
+   _chisqSolver(iConfig),
    _hitfitter( iConfig )
 {
    _hitfitBranches.registerVariables( _tree );
@@ -27,9 +28,9 @@ void ggChannel_Ntuplizer::endJob(){}
 void ggChannel_Ntuplizer::addCustomVariables( const edm::Event& iEvent )
 {
    if( _debug > 1 ) { cerr << "\t[1] Adding custom variables" << endl ; } 
-   // _eventBranches.chiSqMass   = ComputeChiSqMass();
    _eventBranches.eventWeight = ComputeEventWeight( iEvent );
 
+   RunChiSquare();
    RunHitFit();
 }
 

@@ -169,9 +169,11 @@ const hitfit::Fit_Result& HitFitter::getBestResult() const
    double min_ChiSquare = 10000000.;
    double this_ChiSquare;
 
+   if( _debug ) { cout << "Getting Best Results" << endl; }
    for( unsigned i = 0; i < _resultList.size() ; ++i ){
       this_ChiSquare = _resultList[i].chisq() ;
       if( this_ChiSquare < min_ChiSquare && this_ChiSquare > 0.0 ){
+         if( _debug > 2 ) { cout << "Best Result at" << i << endl; }
          min_index = i;
          min_ChiSquare = this_ChiSquare;
       }

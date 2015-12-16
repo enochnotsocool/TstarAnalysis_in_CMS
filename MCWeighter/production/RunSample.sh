@@ -15,7 +15,6 @@ function main(){
    local dataset=$1
    local Name=$( getDataSetName $dataset )
    local DataProcess=$( getDataProcess $dataset )
-   local jsonFile=$( getJsonFile $dataset )
    mkdir -p $Config_Dir/$Name
    mkdir -p $Log_Dir/$Name
    mkdir -p $Hist_Dir/$Name
@@ -31,6 +30,7 @@ function main(){
    rm ${shell_files}*
    split -l 32 temp.txt $shell_files
    echo "Finished splitting files..."
+
    #-----  Parsing files  ---------------------------------------------------------
    for file in $(ls "$shell_files"*) ; do
       echo $file
@@ -86,12 +86,5 @@ function getDataProcess(){
    fi
 }
 
-function getJsonFile(){
-   if [[ $1 == *"Run2015"* ]]; then
-      echo "$(pwd)/./Cert_246908-258750_25ns.json" 
-   else 
-      echo ""
-   fi
-}
 
 main $@

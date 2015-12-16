@@ -15,7 +15,7 @@
 #include "TstarAnalysis/BaseClasses/interface/BaseAnalyzer.h"
 #include "TstarAnalysis/RootFormat/interface/HitFitBranches.h"
 #include "TstarAnalysis/ggChannel_Ntuplizer/interface/HitFitter.h"
-
+#include "TstarAnalysis/ggChannel_Ntuplizer/interface/ChiSquareSolver.h"
 #include <vector>
 
 class ggChannel_Ntuplizer : public BaseAnalyzer {
@@ -27,7 +27,7 @@ protected:
    virtual void addCustomVariables(const edm::Event&);
 
 private:
-
+   ChiSquareSolver _chisqSolver;
    HitFitter      _hitfitter;
    HitFitBranches _hitfitBranches; 
 
@@ -38,9 +38,9 @@ private:
    //------------------------------------------------------------------------------ 
    //   Analysis specific member functions
    //------------------------------------------------------------------------------
-   float ComputeChiSqMass();
    float ComputeEventWeight( const edm::Event& );
 
+   void RunChiSquare();
    void RunHitFit();
 };
 
