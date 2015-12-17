@@ -9,7 +9,7 @@
 
 HEADERFILE_DIR="./interface"
 WRITE_IMP_DIR="./src/"
-READ_IMP_DIR="./src_read/"
+READ_IMP_DIR="./src/"
 VARLIST_DIR="./variableList/"
 
 TARGETLIST="Event Electron Muon Jet HitFit"
