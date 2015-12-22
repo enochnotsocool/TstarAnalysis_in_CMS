@@ -9,12 +9,11 @@
 #define __BASEANALYZER_H__
 
 #include "MiniAODAnalysis/BaseAnalyzer/interface/MiniAODAnalyzer.h"
-#include "TstarAnalysis/RootFormat/interface/EventBranches.h"
-#include "TstarAnalysis/RootFormat/interface/MuonBranches.h"
-#include "TstarAnalysis/RootFormat/interface/ElectronBranches.h"
-#include "TstarAnalysis/RootFormat/interface/JetBranches.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
 #include "TstarAnalysis/BaseClasses/interface/ObjectSelection.h"
+
+#include "TstarAnalysis/RootFormat/interface/MiniEvent.h"
+
 #include "TTree.h"
 
 
@@ -31,9 +30,9 @@ protected:
    void processEvent(const edm::Event& , const edm::EventSetup& );
 
    void addEventVariables(const edm::Event& );
-   void addMuonVariables();
-   void addJetVariables();
-   void addElectronVariables();
+   void addMuon();
+   void addJet();
+   void addElectron();
    //Adding analysis specific variables
    virtual void addCustomVariables(const edm::Event&);
    
@@ -44,11 +43,8 @@ protected:
    JetList       _selectedLJetList;
    JetList       _selectedBJetList;
 
-   TTree*            _tree;
-   EventBranches     _eventBranches;
-   MuonBranches      _muonBranches;
-   ElectronBranches  _elecBranches;
-   JetBranches       _jetBranches;
+   TTree*  _tree;
+   MiniEvent*  _event;
 
    unsigned _debug;
 

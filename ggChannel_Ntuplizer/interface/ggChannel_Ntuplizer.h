@@ -13,9 +13,11 @@
 #define __NTUPLIZER_H__
 
 #include "TstarAnalysis/BaseClasses/interface/BaseAnalyzer.h"
-#include "TstarAnalysis/RootFormat/interface/HitFitBranches.h"
+
 #include "TstarAnalysis/ggChannel_Ntuplizer/interface/HitFitter.h"
 #include "TstarAnalysis/ggChannel_Ntuplizer/interface/ChiSquareSolver.h"
+#include "TstarAnalysis/RootFormat/interface/ChiSquareResult.h"
+#include "TstarAnalysis/RootFormat/interface/HitFitResult.h"
 #include <vector>
 
 class ggChannel_Ntuplizer : public BaseAnalyzer {
@@ -27,9 +29,12 @@ protected:
    virtual void addCustomVariables(const edm::Event&);
 
 private:
-   ChiSquareSolver _chisqSolver;
-   HitFitter      _hitfitter;
-   HitFitBranches _hitfitBranches; 
+   
+   ChiSquareSolver  _chisqSolver;
+   ChiSquareResult* _chisqResult;
+
+   HitFitter     _hitfitter;
+   HitFitResult* _hitfitResult;
 
    //----- Inherited member functions  --------------------------------------------
    virtual void beginJob() override;

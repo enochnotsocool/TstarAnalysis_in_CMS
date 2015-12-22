@@ -22,9 +22,14 @@ for file in $(ls $InputDir) ; do
       DataProcessing="MC25ns_MiniAODv2"
    fi
 
-   outputfile=$file
-   cmsRun ggChannel_Ntuplizer_cfg.py \
-      sample="file:///${InputDir}/$file" \
-      outputLabel="$TargetDir/$outputfile" \
-      DataProcessing=$DataProcessing &
+   outputfile=${file%%_4f*}
+   outputfile=${outputfile%%_5f*}
+   outputfile=${outputfile%%_Tune*}
+   outputfile=${outputfile}.root
+   echo $outputfile 
+
+   #cmsRun ggChannel_Ntuplizer_cfg.py \
+   #   sample="file:///${InputDir}/$file" \
+   #   outputLabel="$TargetDir/$outputfile" \
+   #   DataProcessing=$DataProcessing &
 done

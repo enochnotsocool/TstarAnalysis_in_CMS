@@ -15,22 +15,9 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
+#include "TstarAnalysis/RootFormat/interface/ChiSquareResult.h"
 #include "TLorentzVector.h"
 #include <vector>
-
-class ChiSquareResult 
-{
-public:
-   ChiSquareResult(double tstar,double chisq); 
-   virtual ~ChiSquareResult();
-
-   double ChiSquare() const;
-   double TstarMass() const;
-
-private:
-   const double _tstarMass;
-   const double _chiSquare;
-};
 
 class ChiSquareSolver
 {

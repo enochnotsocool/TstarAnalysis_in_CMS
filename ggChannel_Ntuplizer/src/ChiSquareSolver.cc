@@ -6,6 +6,7 @@
  *
 *******************************************************************************/
 #include "TstarAnalysis/ggChannel_Ntuplizer/interface/ChiSquareSolver.h"
+#include "TstarAnalysis/BaseClasses/interface/Utils.h"
 #include <algorithm>
 #include <iostream>
 using namespace std;
@@ -68,7 +69,18 @@ void ChiSquareSolver::RunPermutations()
             +(( lep_tstar.Mag() - had_tstar.Mag() ) * ( lep_tstar.Mag() - had_tstar.Mag() )) / ( TSTAR_WIDTH * TSTAR_WIDTH ) ;
 
          tstarMass = (lep_tstar.Mag() + had_tstar.Mag()) / 2.;
-         _resultsList.push_back( ChiSquareResult(tstarMass, chiSquare) );
+         _resultsList.push_back( ChiSquareResult(
+                  tstarMass, 
+                  chiSquare,
+                  _lepton ,
+                  _neutrino[i],
+                  lep_w,
+                  lep_t,
+                  lep_tstar,
+                  had_w,
+                  had_t,
+                  had_tstar
+                  ) );
          if( _debug > 2 ) { cout << "\t " << tstarMass << " "<< chiSquare << endl; }
       }
    } while( next_permutation( _bjetList.begin() , _bjetList.end() ) );
@@ -77,6 +89,7 @@ void ChiSquareSolver::RunPermutations()
 
 const ChiSquareResult& ChiSquareSolver::BestResult() const
 {
+   if( _debug ) { cout << "Getting Best Results..." << endl; } 
    unsigned index = -1;
    double min_chiSq = 100000000.;
    for( unsigned i = 0 ; i < _resultsList.size() ; ++i  ){
@@ -85,6 +98,10 @@ const ChiSquareResult& ChiSquareSolver::BestResult() const
          index = i;
       }
    }
+
+   if( _debug ){ 
+      cout << "Found best results at " << index 
+           << " with chi^2 value: " << min_chiSq << endl; }
    return _resultsList[index];
 }
 
@@ -183,6 +200,10 @@ void ChiSquareSolver::solveNeutrino()
       _npz_ = ( -1. * _b_ - sqrt( _d_ ) )/ ( 2.*_a_ ) ;    
       _nE_  = sqrt( _npx_ * _npx_  + _npy_ * _npy_ + _npz_ * _npz_) ; 
       _neutrino[1] = TLorentzVector( _npx_ , _npy_ , _npz_ , _nE_ ) ;
+   }
+   if( _debug > 1 ){
+      cout << "Lepton: " << _lepton << endl;
+      cout << "Neutrino:" << _neutrino[0] << endl; 
    }
 }
 

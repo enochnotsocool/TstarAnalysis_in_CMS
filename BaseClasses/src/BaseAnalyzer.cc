@@ -23,11 +23,9 @@ BaseAnalyzer::BaseAnalyzer( const edm::ParameterSet& iConfig ):
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
 
    if( _debug ){ cerr << "Generating storage tree..." << flush ; }
+   _event = new MiniEvent();
    _tree = fs->make<TTree>( "TstarAnalysis" , "TstarAnalysis" );
-   _eventBranches.registerVariables( _tree );
-   _muonBranches.registerVariables( _tree );
-   _elecBranches.registerVariables( _tree );
-   _jetBranches.registerVariables( _tree );
+   _tree->Branch( "MiniEvent" , "MiniEvent" , &_event , 32000 , 99 );
    if( _debug ){ cerr << "Done!" << endl; }
 }
 
@@ -89,11 +87,11 @@ void BaseAnalyzer::processJet(const edm::Event& , const edm::EventSetup& )
 
 void BaseAnalyzer::processEvent( const edm::Event& iEvent , const edm::EventSetup& )
 {
-   if( _debug ) { cerr << "Processing Event" << endl; } 
+   if( _debug ) { cerr << "Processing Event" << endl; }
    addEventVariables(iEvent);
-   addMuonVariables();
-   addElectronVariables();
-   addJetVariables();
+   addMuon();
+   addElectron();
+   addJet();
    addCustomVariables(iEvent);
 
    _tree->Fill();

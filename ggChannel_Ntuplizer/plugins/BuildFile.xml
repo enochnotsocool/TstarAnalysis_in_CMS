@@ -7,5 +7,7 @@
 <use name="TstarAnalysis/Constants" />
 <use name="TstarAnalysis/BaseClasses" />
 <use name="TstarAnalysis/ggChannel_Ntuplizer" />
+<use name="TstarAnalysis/RootFormat" />
 <flags CXXFLAGS="-g"/>
+<flags CPPDEFINES="CMSSW"/>
 <flags EDM_PLUGIN="1"/>
