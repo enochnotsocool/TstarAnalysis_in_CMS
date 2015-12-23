@@ -1,0 +1,7 @@
+<use name="ROOT" />
+<use name="TstarAnalysis/RootFormat" />
+<lib>
+   <Flags CXXFLAGS="-lGui -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -pthread -lm -ldl -rdynamic"/>
+</lib>
+<export><lib   name="1"/></export>
+

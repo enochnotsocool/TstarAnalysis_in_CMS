@@ -48,10 +48,10 @@ void BaseAnalyzer::addElectron()
 void BaseAnalyzer::addEventVariables( const edm::Event& iEvent )
 {
    if( _debug ) { cerr << "Getting Run Information" << endl; }
-   //_eventBranches.RunNumber           = iEvent.id().run();
-   //_eventBranches.EventNumber         = iEvent.id().event();
-   //_eventBranches.BunchCrossingNumber = iEvent.bunchCrossing();
-   //_eventBranches.LumiNumber          = iEvent.luminosityBlock();
+   _event->SetRunNumber( iEvent.id().run() );
+   _event->SetEventNumber( iEvent.id().event() );
+   _event->SetBunchCrossing( iEvent.bunchCrossing() );
+   _event->SetLumiNumber( iEvent.luminosityBlock() );
 
    if( _debug ) { cerr << "Getting MET information" << endl; }
    if( _metList.isValid() ){

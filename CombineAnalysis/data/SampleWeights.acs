@@ -1,0 +1,28 @@
+TTJets          0.3316595185022218
+
+SingleTbar_TW   1.0  
+SingleT_TW      1.0  
+SingleT_T       0.21561780778353254
+SingleT_S       0.6231044290938643
+
+WJets           0.6839531959912285
+ZJets           0.6314714376112539
+WW              1.0
+WZ              0.657655702369151 
+ZZ              1.0  
+
+TTW_Lepton      0.5134278077403641  
+TTW_Quark       0.5160054870474026 
+TTZ_Lepton      0.46479899497487437
+TTZ_Quark       0.46479899497487437
+
+Tstar_M1000        0.5  
+Tstar_M1100        0.5  
+Tstar_M1200        0.5  
+Tstar_M1300        0.5  
+Tstar_M1400        0.5  
+Tstar_M1500        0.5  
+Tstar_M1600        0.5  
+Tstar_M0700        0.5  
+Tstar_M0800        0.5  
+Tstar_M0900        0.5  

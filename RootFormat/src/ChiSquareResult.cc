@@ -5,7 +5,11 @@
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
+#ifdef CMSSW
 #include "TstarAnalysis/RootFormat/interface/ChiSquareResult.h"
+#else
+#include "ChiSquareResult.h"
+#endif
 
 ChiSquareResult::ChiSquareResult( 
       double tstar                    ,

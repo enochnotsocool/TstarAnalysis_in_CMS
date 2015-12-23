@@ -30,7 +30,6 @@ void ggChannel_Ntuplizer::RunHitFit()
    _hitfitter.RunPermutations();
 
    _hitfitResult->MakeResult( _hitfitter.getBestResult() );
-
 }
 
 void HitFitResult::MakeResult( const hitfit::Fit_Result& x )
@@ -49,7 +48,7 @@ void HitFitResult::MakeResult( const hitfit::Fit_Result& x )
 TLorentzVector ToRootFormat( const hitfit::Fourvec& x )
 {
    TLorentzVector ans;
-   math::XYZTLorentzVector y = x ;
+   const math::XYZTLorentzVector y(x);
    ans.SetPtEtaPhiE( y.pt() , y.eta(), y.phi(), y.energy() );
    return ans;
 }

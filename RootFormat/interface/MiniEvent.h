@@ -28,25 +28,41 @@ public:
    MiniEvent();
    virtual ~MiniEvent ();
 
-   void ClearLists();
+   void SetRunNumber( const unsigned );
+   void SetLumiNumber( const unsigned long long );
+   void SetEventNumber( const unsigned );
+   void SetBunchCrossing( const unsigned );
+   unsigned RunNumber() const ;
+   unsigned EventNumber() const;
+   unsigned BunchCrossing() const;
+   unsigned long long LumiNumber() const;
+
+   void     SetPileUp( const unsigned );
+   unsigned PileUp() const;
+   void     SetTotalWeight( const double );
+   double   TotalEventWeight() const;
    
+   void   SetMet( const double, const double );
+   double MET() const;
+   double METPhi() const;
+
    std::vector<MiniJet>&  JetList();
    std::vector<MiniMuon>& MuonList() ;
    std::vector<MiniElectron>& ElectronList();
    void AddJet( const MiniJet& );
    void AddMuon( const MiniMuon& );
    void AddElectron( const MiniElectron& );
-
-   void   SetMet( const double, const double );
-   double MET() const;
-   double METPhi() const;
-
-   void     SetPileUp( const unsigned );
-   unsigned PileUp() const;
-
+   void ClearLists();
+   
 private:
-  
+   //----- Event id number  -------------------------------------------------------
+   unsigned            _runNumber;
+   unsigned long long  _lumiNumber;
+   unsigned            _eventNumber;
+   unsigned            _bunchCrossingNumber;
+   
    unsigned _pileup;
+   double   _totalEventWeight;
    double _met;
    double _metphi;
 

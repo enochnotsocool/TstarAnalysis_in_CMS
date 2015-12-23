@@ -13,6 +13,19 @@ options.setDefault('DataProcessing', "MC25ns_MiniAODv2" )
 options.setDefault('Debug', 10 )
 options.setDefault('outputLabel','ntuple.root')
 
+options.register( 'RunChiSq'
+      True,
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.bool,
+      'Whether to run chi square sorting method' )
+
+options.register( 'RunHitFit'
+      False,
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.bool,
+      'Whether to run HitFit method' )
+
+
 options.parseArguments()
 
 #------------------------------------------------------------------------------- 
@@ -72,6 +85,8 @@ process.ntuplizer = cms.EDAnalyzer(
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
       Debug = cms.untracked.int32( options.Debug ),
+      RunChiSq = options.RunChiSq,
+      RunHitFit = options.RunHitFit
    )
 
 

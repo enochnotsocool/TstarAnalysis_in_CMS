@@ -29,12 +29,15 @@ protected:
    virtual void addCustomVariables(const edm::Event&);
 
 private:
-   
    ChiSquareSolver  _chisqSolver;
    ChiSquareResult* _chisqResult;
 
    HitFitter     _hitfitter;
    HitFitResult* _hitfitResult;
+
+   // Flags of operation 
+   const bool  _runChiSq;
+   const bool _runHitFit;
 
    //----- Inherited member functions  --------------------------------------------
    virtual void beginJob() override;

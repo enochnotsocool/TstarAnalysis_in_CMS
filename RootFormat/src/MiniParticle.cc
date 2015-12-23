@@ -1,8 +1,18 @@
+/*******************************************************************************
+ *
+ *  Filename    : MiniParticle.cc
+ *  Description : Simple Four Momentum particle class
+ *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+ *  
+*******************************************************************************/
+#ifdef CMSSW
 #include "TstarAnalysis/RootFormat/interface/MiniParticle.h"  
+#else
+#include "MiniParticle.h"
+#endif
 
 MiniParticle::MiniParticle() {}
 MiniParticle::~MiniParticle(){}
-
 
 const  TLorentzVector& MiniParticle::p4() const{ return _p4; }
 double MiniParticle::pt()     const { return _p4.Pt(); }

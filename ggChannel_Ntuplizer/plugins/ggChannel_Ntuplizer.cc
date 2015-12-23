@@ -12,12 +12,18 @@ using namespace std;
 ggChannel_Ntuplizer::ggChannel_Ntuplizer(const edm::ParameterSet& iConfig ):
    BaseAnalyzer(iConfig),
    _chisqSolver(iConfig),
-   _hitfitter( iConfig )
+   _hitfitter( iConfig ),
+   _runChiSq( iConfig.getParameter<bool>("RunChiSquare" ) ),
+   _runHitFit(iConfig.getParameter<bool>("RunHitFit" ) )
 {
-   _chisqResult  = new ChiSquareResult;
-   _hitfitResult = new HitFitResult;
-   _tree->Branch( "ChiSquareResult" , "ChiSquareResult" , &_chisqResult , 32000 , 99 );
-   _tree->Branch( "HitFitResult", "HitFitResult", &_hitfitResult, 32000, 99 );
+   if( _runChiSq ){
+      _chisqResult  = new ChiSquareResult;
+      _tree->Branch( "ChiSquareResult" , "ChiSquareResult" , &_chisqResult , 32000 , 99 );
+   }
+   if( _runHitFit ){
+      _hitfitResult = new HitFitResult;
+      _tree->Branch( "HitFitResult", "HitFitResult", &_hitfitResult, 32000, 99 );
+   }
 }
 
 ggChannel_Ntuplizer::~ggChannel_Ntuplizer(){}
