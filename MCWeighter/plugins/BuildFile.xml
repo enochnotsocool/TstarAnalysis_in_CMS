@@ -2,5 +2,5 @@
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
-<use name="MiniAODAnalysis/BaseAnalyzer" />
+<use name="TstarAnalysis/BaseClasses" />
 <flags EDM_PLUGIN="1"/>

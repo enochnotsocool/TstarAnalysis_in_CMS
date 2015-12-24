@@ -166,10 +166,10 @@ void HitFitter::ClearAll()
 const hitfit::Fit_Result& HitFitter::getBestResult() const
 {
    unsigned min_index  = -1;
-   double min_ChiSquare = 10000000.;
+   double min_ChiSquare = 100000000000.;
    double this_ChiSquare;
 
-   if( _debug ) { cout << "Getting Best Results" << endl; }
+   if( _debug ) { cout << "Getting Best Results out of" << _resultList.size() << endl; }
    for( unsigned i = 0; i < _resultList.size() ; ++i ){
       this_ChiSquare = _resultList[i].chisq() ;
       if( this_ChiSquare < min_ChiSquare && this_ChiSquare > 0.0 ){

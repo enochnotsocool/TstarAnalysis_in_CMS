@@ -28,8 +28,10 @@ for file in $(ls $InputDir) ; do
    outputfile=${outputfile}.root
    echo $outputfile 
 
-   #cmsRun ggChannel_Ntuplizer_cfg.py \
-   #   sample="file:///${InputDir}/$file" \
-   #   outputLabel="$TargetDir/$outputfile" \
-   #   DataProcessing=$DataProcessing &
+   logfile=log_MuonSignal_${outputfile%.root}.txt
+   cmsRun ggChannel_Ntuplizer_cfg.py       \
+      maxEvents=-1                         \
+      sample="file:///${InputDir}/$file"   \
+      outputLabel="$TargetDir/$outputfile" \
+      DataProcessing=$DataProcessing &> $logfile &
 done

@@ -12,12 +12,18 @@ using namespace std;
 
 std::string Stringify( const PlotName x )
 {
-   if( x == ChiSquareMass) { return "ChiSquareMass"; }
-   if( x == MET          ) { return "MET"; }
+   if( x == ChiSquareTstarMass ) { return "t+g inveriant Mass (#chi^{2} Method)"; }
+   if( x == ChiSquareTMass ) { return "t Mass (#chi^{2} Method)"; }
+
+   if( x == HitFitTstarMass ) { return "t+g invariant mass (HitFit Package)"; }
+   if( x == HitFitTMass) { return "t Mass (HitFit Pacakge)"; }
+
    if( x == JetPt        ) { return "JetPt"; }
    if( x == JetEta       ) { return "JetEta"; }
+   if( x == JetCount     ) { return "JetCount"; }
    if( x == LeptonPt     ) { return "LeptonPt"; }
    if( x == LeptonEta    ) { return "LeptonEta"; }
+   if( x == MET          ) { return "MET"; }
    if( x == VertexCount  ) { return "VertexCount"; } 
    return "";
 }

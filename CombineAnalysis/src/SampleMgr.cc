@@ -31,6 +31,7 @@ SampleMgr::SampleMgr( const SampleName& name )
    setCrossSection( 1. );
    setSelectionEff( 0. );
 
+   _histMap.clear();
    for( const auto& pair : availiablePlots  ){
       plotname = pair.first;
       binCount = pair.second.BinCount();
@@ -46,6 +47,13 @@ SampleMgr::SampleMgr( const SampleName& name )
          Hist( plotname )->SetMarkerStyle( 21 );
       }
    }
+  
+   _event = new MiniEvent;
+   _chisq = new ChiSquareResult;
+   _hitfit = new HitFitResult;
+   _chain->SetBranchAddress( "MiniEvent" , &_event );
+   _chain->SetBranchAddress( "ChiSquareResult" , &_chisq );
+   _chain->SetBranchAddress( "HitFitResult" , &_hitfit );
 }
 
 SampleMgr::~SampleMgr()

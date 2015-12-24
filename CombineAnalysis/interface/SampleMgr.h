@@ -8,12 +8,16 @@
 #ifndef __SAMPLEINFO_H__
 #define __SAMPLEINFO_H__
 
+#include "TstarAnalysis/CombineAnalysis/interface/PlotDef.h"
+#include "TstarAnalysis/CombineAnalysis/interface/Parameter.h"
+#include "TstarAnalysis/RootFormat/interface/MiniEvent.h"
+#include "TstarAnalysis/RootFormat/interface/ChiSquareResult.h"
+#include "TstarAnalysis/RootFormat/interface/HitFitResult.h"
+
 #include <string>
 #include <map>
 #include <TChain.h>
 #include <TH1F.h>
-#include "TstarAnalysis/CombineAnalysis/interface/PlotDef.h"
-#include "TstarAnalysis/CombineAnalysis/interface/Parameter.h"
 
 typedef std::map<const PlotName,TH1F*>  HistMap; 
 
@@ -93,14 +97,19 @@ public:
 
 private:
    SampleName   _name;
-   TChain*      _chain;
    Color_t      _fillColor;
    Color_t      _lineColor;
    HistMap      _histMap;
    Parameter    _cross_section;
    Parameter    _selection_eff;
    Parameter    _sample_weight;
-  
+   
+   //----- File Reading data members  ---------------------------------------------
+   TChain*          _chain;
+   MiniEvent*       _event;
+   ChiSquareResult* _chisq;
+   HitFitResult*    _hitfit;
+
    //----- ROOT object interaction helper functions  ------------------------------
    void addHist( const PlotName& , int ,  float , float );
    void printFileList() const;

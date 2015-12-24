@@ -12,15 +12,16 @@ options.setDefault('sample', 'file:/wk_cms/yichen/TstarAnalysis/gg_MuonSignal_Mi
 options.setDefault('DataProcessing', "MC25ns_MiniAODv2" )
 options.setDefault('Debug', 10 )
 options.setDefault('outputLabel','ntuple.root')
+options.setDefault('maxEvents' , 20 )
 
-options.register( 'RunChiSq'
+options.register( 'RunChiSq',
       True,
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.bool,
       'Whether to run chi square sorting method' )
 
-options.register( 'RunHitFit'
-      False,
+options.register( 'RunHitFit',
+      True,
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.bool,
       'Whether to run HitFit method' )
@@ -85,8 +86,8 @@ process.ntuplizer = cms.EDAnalyzer(
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
       Debug = cms.untracked.int32( options.Debug ),
-      RunChiSq = options.RunChiSq,
-      RunHitFit = options.RunHitFit
+      RunChiSquare = cms.bool( options.RunChiSq ),
+      RunHitFit = cms.bool( options.RunHitFit )
    )
 
 

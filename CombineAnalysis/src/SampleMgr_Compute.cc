@@ -19,40 +19,47 @@
 //------------------------------------------------------------------------------
 void SampleMgr::makeBasicPlots()
 {
-   MiniEvent*        event;
-   ChiSquareResult*  chiResult;
-   HitFitResult*     hitfitResult;
    float eventWeight ;
-
-   _chain->SetBranchAddress( "MiniEvent" , &event );
-   _chain->SetBranchAddress( "ChiSquareResult" , &chiResult );
-   _chain->SetBranchAddress( "HitFitResult" , &hitfitResult );
-
    printf( "Making basic plots for %s\n", Stringify(_name).c_str() );
-  
-   for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
-      printf( "\r[%s] Event %lld/%lld.... " , Stringify(_name).c_str() , i+1 , _chain->GetEntries() );
-      _chain->GetEntry(i);
 
-      eventWeight = event->TotalEventWeight();
+   printf( "Sanity check for _histMap...\n" );
+   for( const auto& pair : _histMap ){
+      printf("%s %p\n" , Stringify(pair.first).c_str() , pair.second );
+   }
+
+   for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
+      _chain->GetEntry(i);
       
-      Hist( ChiSquareMass )->Fill( chiResult->TstarMass() , eventWeight );
-      Hist( MET )->Fill( event->MET() , eventWeight  );
-      // Hist( JetCount )->Fill( jetBranches.Size , eventWeight );
+      if( i%100 == 0 ){
+         printf( "[%s] Event %lld/%lld .... " , Stringify(_name).c_str() , i+1 , _chain->GetEntries() );}
+
+      eventWeight = _event->TotalEventWeight();
+      
+      printf( "\t MET:%lf, ChiTstar:%lf, HitFitTstar:%lf\r", 
+            _event->MET() , _chisq->TstarMass() , _hitfit->TstarMass() );
+
+      //----- Kinematic plots  -------------------------------------------------------
+      Hist( MET )->Fill( _event->MET() , eventWeight  );
+      Hist( JetCount )->Fill( _event->JetList().size() , eventWeight );
       // Hist( VertexCount )->Fill( eventBranches.VertexCount , eventWeight );
 
+      Hist( JetPt )->Fill( _event->JetList()[0].pt() , eventWeight );
+      Hist( JetEta )->Fill( _event->JetList()[0].eta() , eventWeight );
 
-      Hist( JetPt )->Fill( event->JetList()[0].pt() , eventWeight );
-      Hist( JetEta )->Fill( event->JetList()[0].eta() , eventWeight );
-
-      for( const auto& mu : event->MuonList() ){
+      for( const auto& mu : _event->MuonList() ){
          Hist(LeptonPt)->Fill( mu.pt() , eventWeight  );
          Hist(LeptonEta)->Fill( mu.eta() , eventWeight );
       }
-      for( const auto& el : event->ElectronList() ){
+      for( const auto& el : _event->ElectronList() ){
          Hist(LeptonPt)->Fill( el.pt() , eventWeight );
          Hist(LeptonEta)->Fill( el.eta() ,eventWeight );
       }
+
+      //----- Signal variable plots  -------------------------------------------------
+      Hist( ChiSquareTstarMass )->Fill( _chisq->TstarMass() , eventWeight );
+      Hist( ChiSquareTMass )->Fill( _chisq->LeptonicTop().Mag() , eventWeight );
+      Hist( HitFitTstarMass )->Fill( _hitfit->TstarMass() , eventWeight );
+      Hist( HitFitTMass )->Fill( _hitfit->LeptonicTop().Mag() , eventWeight );
    }
    puts("Done!\n");
 }

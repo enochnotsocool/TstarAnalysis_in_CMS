@@ -17,13 +17,6 @@ PlotList  availiablePlots;
 //------------------------------------------------------------------------------
 bool initPlotList()
 {
-   availiablePlots.insert( PlotPair( ChiSquareMass , PlotDef() ));
-   availiablePlots[ChiSquareMass].setBinCount( 29 );
-   availiablePlots[ChiSquareMass].setXMax( 3000. );
-   availiablePlots[ChiSquareMass].setXMin( 100.  );
-   availiablePlots[ChiSquareMass].setTitle( "Mass of tg system"  );
-   availiablePlots[ChiSquareMass].setXtitle( "M_{tg} (GeV/c^{2})" );
-   availiablePlots[ChiSquareMass].makeYtitle( "GeV/c^{2}" );
 
    availiablePlots.insert( PlotPair( MET , PlotDef() ));
    availiablePlots[MET].setBinCount( 30 );
@@ -49,15 +42,13 @@ bool initPlotList()
    availiablePlots[JetEta].setXtitle("Jet #eta");
    availiablePlots[JetEta].makeYtitle("");
    
-   /*
-   availiablePlots.insert( PlotPair( "JetCount" , PlotDef() ));
-   availiablePlots["JetCount"].setBinCount( 10 );
-   availiablePlots["JetCount"].setXMax( 15. );
-   availiablePlots["JetCount"].setXMin( 5.   );
-   availiablePlots["JetCount"].setTitle( "No. of Events with N Jets" );
-   availiablePlots["JetCount"].setXtitle( "No. of Jets" );
-   availiablePlots["JetCount"].makeYtitle( "" );
-   */
+   availiablePlots.insert( PlotPair( JetCount , PlotDef() ));
+   availiablePlots[JetCount].setBinCount( 10 );
+   availiablePlots[JetCount].setXMax( 15. );
+   availiablePlots[JetCount].setXMin( 5.   );
+   availiablePlots[JetCount].setTitle( "No. of Events with N Jets" );
+   availiablePlots[JetCount].setXtitle( "No. of Jets" );
+   availiablePlots[JetCount].makeYtitle( "" );
 
    availiablePlots.insert( PlotPair( LeptonPt , PlotDef() ));
    availiablePlots[LeptonPt].setBinCount( 30 );
@@ -92,7 +83,38 @@ bool initPlotList()
    availiablePlots[VertexCount].setTitle( "Num of Vertices" );
    availiablePlots[VertexCount].setXtitle( "Number of vertices" );
    availiablePlots[VertexCount].makeYtitle( "" );
+   
+   availiablePlots.insert( PlotPair( ChiSquareTstarMass , PlotDef() ));
+   availiablePlots[ChiSquareTstarMass].setBinCount( 29 );
+   availiablePlots[ChiSquareTstarMass].setXMax( 3000. );
+   availiablePlots[ChiSquareTstarMass].setXMin( 100.  );
+   availiablePlots[ChiSquareTstarMass].setTitle( "Mass of tg system"  );
+   availiablePlots[ChiSquareTstarMass].setXtitle( "M_{tg} (GeV/c^{2})" );
+   availiablePlots[ChiSquareTstarMass].makeYtitle( "GeV/c^{2}" );
+   
+   availiablePlots.insert( PlotPair( ChiSquareTMass , PlotDef() ));
+   availiablePlots[ChiSquareTMass].setBinCount( 45 );
+   availiablePlots[ChiSquareTMass].setXMax( 500. );
+   availiablePlots[ChiSquareTMass].setXMin( 50.  );
+   availiablePlots[ChiSquareTMass].setTitle( "Mass of tg system"  );
+   availiablePlots[ChiSquareTMass].setXtitle( "M_{tg} (GeV/c^{2})" );
+   availiablePlots[ChiSquareTMass].makeYtitle( "GeV/c^{2}" );
 
+   availiablePlots.insert( PlotPair( HitFitTstarMass , PlotDef() ));
+   availiablePlots[HitFitTstarMass].setBinCount( 29 );
+   availiablePlots[HitFitTstarMass].setXMax( 3000. );
+   availiablePlots[HitFitTstarMass].setXMin( 100.  );
+   availiablePlots[HitFitTstarMass].setTitle( "Mass of tg system"  );
+   availiablePlots[HitFitTstarMass].setXtitle( "M_{tg} (GeV/c^{2})" );
+   availiablePlots[HitFitTstarMass].makeYtitle( "GeV/c^{2}" );
+   
+   availiablePlots.insert( PlotPair( HitFitTMass , PlotDef() ));
+   availiablePlots[HitFitTMass].setBinCount( 45 );
+   availiablePlots[HitFitTMass].setXMax( 500. );
+   availiablePlots[HitFitTMass].setXMin( 50.  );
+   availiablePlots[HitFitTMass].setTitle( "Mass of tg system"  );
+   availiablePlots[HitFitTMass].setXtitle( "M_{tg} (GeV/c^{2})" );
+   availiablePlots[HitFitTMass].makeYtitle( "GeV/c^{2}" );
    return true;
 }
 

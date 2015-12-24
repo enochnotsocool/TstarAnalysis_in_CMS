@@ -38,6 +38,7 @@ public:
    void makeBasicPlots();
    void makeDataToBGPlot( const PlotName& );
    void makeSignalPlot( const PlotName& );
+   void makeInSampleComparison( const SampleName&, const PlotName&, const PlotName& );
 
    // File Reading functions 
    void SetCrossSections( const std::string& filename );
@@ -64,7 +65,7 @@ private:
    //----- Helper function for constructor  ---------------------------------------
    void initSamples();
 
-   //----- Helper function for combined plotting  ---------------------------------
+   //----- Data to BC comparison plot  --------------------------------------------
    const  std::string makeHistTitle( const PlotName& ) const;
    void   addMCToStack( SampleMgr* , const PlotName& );
    float  getHistScale( SampleMgr* ) const;
@@ -73,6 +74,7 @@ private:
    void   setCombinedTotalErrors();
    void   setCombinedRelativeErrors();
 
+   //----- Signal Channel Plots  --------------------------------------------------
 };
 
 #endif // __COMBINEMGR_H__

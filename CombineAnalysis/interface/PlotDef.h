@@ -12,13 +12,19 @@
 #include <map>
 
 enum PlotName {
-   ChiSquareMass = 0,
-   MET  = 1,
-   JetPt = 2,
-   JetEta = 3,
-   LeptonPt = 4,
-   LeptonEta = 5,
-   VertexCount = 6,
+   JetCount = 0,
+   JetPt = 1,
+   JetEta = 2,
+   LeptonPt = 10,
+   LeptonEta = 11,
+   MET  = 20,
+   VertexCount = 21,
+   
+   ChiSquareTstarMass = 50,
+   ChiSquareTMass = 51, 
+
+   HitFitTstarMass = 60,
+   HitFitTMass = 61 ,
 
    NUMBER_OF_PLOTS
 };

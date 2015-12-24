@@ -11,7 +11,7 @@
 #ifndef __BASEFILTER_H__
 #define __BASEFILTER_H__
 
-#include "MiniAODAnalysis/BaseFilter/interface/MiniAODFilter.h"
+#include "TstarAnalysis/BaseClasses/interface/MiniAODFilter.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
 #include "TstarAnalysis/BaseClasses/interface/ObjectSelection.h"
 #include "FWCore/Common/interface/TriggerNames.h"

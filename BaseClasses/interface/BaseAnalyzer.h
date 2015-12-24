@@ -8,7 +8,7 @@
 #ifndef __BASEANALYZER_H__
 #define __BASEANALYZER_H__
 
-#include "MiniAODAnalysis/BaseAnalyzer/interface/MiniAODAnalyzer.h"
+#include "TstarAnalysis/BaseClasses/interface/MiniAODAnalyzer.h"
 #include "TstarAnalysis/BaseClasses/interface/TypeDefs.h"
 #include "TstarAnalysis/BaseClasses/interface/ObjectSelection.h"
 
