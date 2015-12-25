@@ -35,16 +35,18 @@ public:
    void setLumi( const float );
    bool setSignalMass( const SampleName& );
    SampleMgr* sample( const SampleName& );
-   void makeBasicPlots();
-   void makeDataToBGPlot( const PlotName& );
-   void makeSignalPlot( const PlotName& );
-   void makeInSampleComparison( const SampleName&, const PlotName&, const PlotName& );
+   void MakeBasicPlots();
+   void MakeDataToBGPlot( const PlotName& );
+   void MakeSignalPlot( const PlotName& );
+   void MakeInSampleComparison( const SampleName&, const PlotName&, const PlotName& );
 
    // File Reading functions 
+   void ParseCMDFile( const std::string& filename );
    void SetCrossSections( const std::string& filename );
    void SetSelectionEfficiency( const std::string& filename );
    void SetSampleWideWeights( const std::string& filename );
    void SetSampleInputs( const std::string& filename );
+
 
 private:
    TFile*     _outputFile;

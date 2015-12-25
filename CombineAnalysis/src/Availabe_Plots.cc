@@ -93,8 +93,8 @@ bool initPlotList()
    availiablePlots[ChiSquareTstarMass].makeYtitle( "GeV/c^{2}" );
    
    availiablePlots.insert( PlotPair( ChiSquareTMass , PlotDef() ));
-   availiablePlots[ChiSquareTMass].setBinCount( 45 );
-   availiablePlots[ChiSquareTMass].setXMax( 500. );
+   availiablePlots[ChiSquareTMass].setBinCount( 20 );
+   availiablePlots[ChiSquareTMass].setXMax( 450. );
    availiablePlots[ChiSquareTMass].setXMin( 50.  );
    availiablePlots[ChiSquareTMass].setTitle( "Mass of tg system"  );
    availiablePlots[ChiSquareTMass].setXtitle( "M_{tg} (GeV/c^{2})" );
@@ -109,8 +109,8 @@ bool initPlotList()
    availiablePlots[HitFitTstarMass].makeYtitle( "GeV/c^{2}" );
    
    availiablePlots.insert( PlotPair( HitFitTMass , PlotDef() ));
-   availiablePlots[HitFitTMass].setBinCount( 45 );
-   availiablePlots[HitFitTMass].setXMax( 500. );
+   availiablePlots[HitFitTMass].setBinCount( 20 );
+   availiablePlots[HitFitTMass].setXMax( 450. );
    availiablePlots[HitFitTMass].setXMin( 50.  );
    availiablePlots[HitFitTMass].setTitle( "Mass of tg system"  );
    availiablePlots[HitFitTMass].setXtitle( "M_{tg} (GeV/c^{2})" );
@@ -118,4 +118,9 @@ bool initPlotList()
    return true;
 }
 
+
+bool CheckPlotName( const PlotName x )
+{
+   return availiablePlots.find( x ) != availiablePlots.end() ;
+}
 

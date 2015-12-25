@@ -17,6 +17,57 @@
 
 using namespace std;
 
+//------------------------------------------------------------------------------ 
+//   Parsing CMD files
+//------------------------------------------------------------------------------
+void CombineMgr::ParseCMDFile( const string& filename ) 
+{
+   ifstream input( filename );
+   string line;
+
+   cout << "Begin File Reading!" << endl;
+   while( getline(input,line) ){
+      cout << "Raw input: " << line << endl;
+      istringstream iss( line );
+      vector<string> tokens{
+         istream_iterator<string>{iss},
+         istream_iterator<string>{}};
+      if( tokens.empty() ){ continue; }
+
+      string cmd = tokens[0];
+      if( cmd == "SetCrossSections" && tokens.size() == 2 ){
+         SetCrossSections( tokens[1] );
+      } else if( cmd == "SetSampleInputs" && tokens.size() == 2 ){
+         SetSampleInputs( tokens[1] );
+      } else if( cmd == "SetSampleWideWeights" && tokens.size() == 2 ){
+         SetSampleWideWeights( tokens[1] );
+      } else if( cmd == "SetSelectionEfficiency" && tokens.size() == 2 ){
+         SetSelectionEfficiency( tokens[1] );
+      } else if( cmd == "ParseCMDFile" && tokens.size() == 2 ){
+         ParseCMDFile( tokens[1] );
+      } else if( cmd == "MakeBasicPlots" && tokens.size() == 1 ){
+         MakeBasicPlots();
+      } else if( cmd == "MakeDataToBGPlot" && tokens.size() == 2 ){
+         MakeDataToBGPlot( PlotNameFromString( tokens[1] ) );
+      } else if( cmd == "MakeSignalPlot" && tokens.size() == 2 ){
+         MakeSignalPlot( PlotNameFromString( tokens[1] ) );
+      } else if( cmd == "MakeInSampleComparison" && tokens.size() == 4 ){
+         MakeInSampleComparison( SampleFromString( tokens[1] ),
+               PlotNameFromString( tokens[2] ),
+               PlotNameFromString( tokens[3] ) );
+      }
+      else {
+         cerr << "Skipping unrecognised command/options " << endl;
+         for( const string& x : tokens ){
+            cerr << x << " " ;
+         } cerr << endl;
+      }
+   }
+}
+
+//------------------------------------------------------------------------------ 
+//   Configuration file Reading
+//------------------------------------------------------------------------------
 bool ParseSampleLine( const string& , SampleName&, Parameter& );
 
 void CombineMgr::SetCrossSections( const std::string& filename )

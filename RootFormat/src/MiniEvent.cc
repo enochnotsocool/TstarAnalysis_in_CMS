@@ -44,7 +44,7 @@ void MiniEvent::SetPileUp( const unsigned x ) {  _pileup = x ; }
 unsigned MiniEvent::PileUp() const { return _pileup; }
 
 double MiniEvent::TotalEventWeight() const { return _totalEventWeight; }
-
+void MiniEvent::SetTotalWeight(const double x){ _totalEventWeight = x ; }
 
 //------------------------------------------------------------------------------ 
 //   Particle List Member functions

@@ -90,7 +90,7 @@ SampleMgr* CombineMgr::sample( const SampleName& name )
    return NULL;
 }
 
-void CombineMgr::makeBasicPlots()
+void CombineMgr::MakeBasicPlots()
 {
    _dataSample->makeBasicPlots();
    for( const auto& pair : _MCsignalMap ) {

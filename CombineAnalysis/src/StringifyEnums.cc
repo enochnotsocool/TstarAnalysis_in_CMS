@@ -28,6 +28,23 @@ std::string Stringify( const PlotName x )
    return "";
 }
 
+PlotName PlotNameFromString( const string& x )
+{
+   if( x == "ChiSquareTstarMass" ) { return ChiSquareTstarMass; }
+   if( x == "ChiSquareTMass"     ) { return ChiSquareTMass   ; } 
+   if( x == "HitFitTstarMass"    ) { return HitFitTstarMass  ; } 
+   if( x == "HitFitTMass"        ) { return HitFitTMass      ; } 
+   if( x == "JetPt"              ) { return JetPt            ; } 
+   if( x == "JetEta"             ) { return JetEta           ; } 
+   if( x == "JetCount"           ) { return JetCount         ; } 
+   if( x == "LeptonPt"           ) { return LeptonPt         ; } 
+   if( x == "LeptonEta"          ) { return LeptonEta        ; } 
+   if( x == "MET"                ) { return MET              ; } 
+   if( x == "VertexCount"        ) { return VertexCount      ; }
+   return PLOTNAME_END;
+
+}
+
 std::string Stringify( const SampleName x) 
 {
    if( x == TTW_Lepton    ) { return "TTW_Lepton"; } 

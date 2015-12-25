@@ -30,13 +30,10 @@ void SampleMgr::makeBasicPlots()
    for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
       _chain->GetEntry(i);
       
-      if( i%100 == 0 ){
-         printf( "[%s] Event %lld/%lld .... " , Stringify(_name).c_str() , i+1 , _chain->GetEntries() );}
+      printf( "[%s] Event [%6lld/%6lld]: ....\r" , Stringify(_name).c_str() , i+1 , _chain->GetEntries() );
 
       eventWeight = _event->TotalEventWeight();
       
-      printf( "\t MET:%lf, ChiTstar:%lf, HitFitTstar:%lf\r", 
-            _event->MET() , _chisq->TstarMass() , _hitfit->TstarMass() );
 
       //----- Kinematic plots  -------------------------------------------------------
       Hist( MET )->Fill( _event->MET() , eventWeight  );
@@ -73,8 +70,7 @@ float SampleMgr::getEventWeightedCount() const
    float ans = 0;
    for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
       _chain->GetEntry(i);
-      ans += 1;
-      // ans += eventBranches._eventWeight;
+      ans += _event->TotalEventWeight();
    }
    return ans; 
 }

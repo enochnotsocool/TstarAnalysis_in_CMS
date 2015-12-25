@@ -39,7 +39,7 @@ void ggChannel_Ntuplizer::addCustomVariables( const edm::Event& iEvent )
    _chisqSolver.ClearAll();
    _hitfitter.ClearAll();
    if( _debug > 1 ) { cerr << "\t[1] Adding custom variables" << endl ; } 
-   //_eventBranches.eventWeight = ComputeEventWeight( iEvent );
+   _event->SetTotalWeight( ComputeEventWeight(iEvent) );
 
    RunChiSquare();
    RunHitFit(); 

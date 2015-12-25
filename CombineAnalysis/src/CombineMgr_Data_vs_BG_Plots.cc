@@ -13,6 +13,8 @@
 #include <iostream>
 #include <algorithm>
 
+using namespace std;
+
 //------------------------------------------------------------------------------ 
 //   Defining font size
 //------------------------------------------------------------------------------
@@ -26,8 +28,12 @@ static float tempScale;
 //------------------------------------------------------------------------------ 
 //   Public method implementation
 //------------------------------------------------------------------------------
-void CombineMgr::makeDataToBGPlot( const PlotName& target )
+void CombineMgr::MakeDataToBGPlot( const PlotName& target )
 {
+   if( !CheckPlotName( target ) ) {
+      cerr << "Error: Plot " << Stringify(target) << "not avaliable" << endl;
+      return;
+   }
    std::string targetName=Stringify( target );
    printf( "making plot %s\n" , targetName.c_str() );
    _stackHist = new THStack( (targetName+"sh").c_str() , (makeHistTitle(target)).c_str() );
@@ -143,7 +149,7 @@ void CombineMgr::addMCToStack( SampleMgr* sample, const PlotName& target )
 {
    tempHist = (TH1F*)( sample->Hist( target )->Clone() );
    if( tempHist->Integral() == 0 ){ 
-      std::cerr << "Warning Skipping over empty data set: " << sample->name() << std::endl ;
+      std::cerr << "Warning Skipping over empty data set: " << sample->NameString() << std::endl ;
       return ;
    }
    tempScale = getHistScale( sample );

@@ -26,7 +26,7 @@ enum PlotName {
    HitFitTstarMass = 60,
    HitFitTMass = 61 ,
 
-   NUMBER_OF_PLOTS
+   PLOTNAME_END
 };
 
 class PlotDef {
@@ -64,5 +64,7 @@ typedef std::map<const PlotName, PlotDef>  PlotList;
 extern PlotList availiablePlots;
 extern bool     initPlotList();
 extern std::string Stringify( const PlotName );
+extern PlotName PlotNameFromString( const std::string& );
+extern bool CheckPlotName( const PlotName );
 
 #endif // __PLOTDEF_H__

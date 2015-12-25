@@ -172,13 +172,26 @@ const hitfit::Fit_Result& HitFitter::getBestResult() const
    if( _debug ) { cout << "Getting Best Results out of" << _resultList.size() << endl; }
    for( unsigned i = 0; i < _resultList.size() ; ++i ){
       this_ChiSquare = _resultList[i].chisq() ;
+      if( _debug ) {
+         if( this_ChiSquare <= 0. ){
+            cout << "Found negative results at " << i << endl;
+         } else if( this_ChiSquare > 100000000000. ){
+            cout << "Found Huge chi square at " << i << endl;
+         }
+      }
       if( this_ChiSquare < min_ChiSquare && this_ChiSquare > 0.0 ){
          if( _debug > 2 ) { cout << "Best Result at" << i << endl; }
          min_index = i;
          min_ChiSquare = this_ChiSquare;
       }
    }
-   return _resultList[min_index];
+   if( min_index < _resultList.size() ) {
+      if( _debug ) { cout << "Returning index "  << min_index << endl;  }
+      return _resultList[min_index];
+   } else {
+      cerr << "Warning! Legal Results found! Returning first in list" << endl;
+      return _resultList[0];
+   }
 }
 
 //------------------------------------------------------------------------------ 
