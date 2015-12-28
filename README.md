@@ -15,7 +15,13 @@ cd CMSSW_7_4_15_patch1/src/
 cmsenv
 
 git cms-merge-topic ikrav:egm_id_7.4.12_v1
-git clone https://github.com/ntuhep/ModifiedHitFit.git bpkFrameWork/ModifiedHitFit
+
+git clone https://github.com/ntuhep/bpkFrameWork.git
+cd bpkFrameWork 
+git submodule init ModifiedHitFit 
+git submodule update
+cd ../
+
 git clone https://github.com/enochnotsocool/TstarAnalysis_in_CMS.git TstarAnalysis
 scram b -j 8
 ```
