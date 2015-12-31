@@ -24,6 +24,7 @@ public:
    inline float AbsoluteLowerError() const { return _lowerError; }
    inline float RelativeUpperError() const { return _upperError/_centralValue; }
    inline float RelativeLowerError() const { return _lowerError/_centralValue; }
+   inline float RelativeAvgError() const { return ((_upperError+_lowerError)/2.) /_centralValue;}
 
    void SetCentralValue( const float x ){ _centralValue = x; } 
    void SetUpperError( const float x ) { _upperError = x ; }

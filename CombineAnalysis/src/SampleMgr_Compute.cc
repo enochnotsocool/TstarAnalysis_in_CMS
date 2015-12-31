@@ -20,6 +20,7 @@
 void SampleMgr::makeBasicPlots()
 {
    float eventWeight ;
+   bool  updateEventWeightCount = (_eventWeightCount == 0.0 );
    printf( "Making basic plots for %s\n", Stringify(_name).c_str() );
 
    printf( "Sanity check for _histMap...\n" );
@@ -33,7 +34,8 @@ void SampleMgr::makeBasicPlots()
       printf( "[%s] Event [%6lld/%6lld]: ....\r" , Stringify(_name).c_str() , i+1 , _chain->GetEntries() );
 
       eventWeight = _event->TotalEventWeight();
-      
+      if( updateEventWeightCount ){
+         _eventWeightCount+= eventWeight; } 
 
       //----- Kinematic plots  -------------------------------------------------------
       Hist( MET )->Fill( _event->MET() , eventWeight  );
@@ -62,17 +64,21 @@ void SampleMgr::makeBasicPlots()
 }
 
 float SampleMgr::getRawEventCount() const {
-   return _chain->GetEntries();
+   if( _rawEventsCount == 0.0 ) {
+      _rawEventsCount = _chain->GetEntries();
+   }
+   return _rawEventsCount;
 }
 
 float SampleMgr::getEventWeightedCount() const 
 {
-   float ans = 0;
-   for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
-      _chain->GetEntry(i);
-      ans += _event->TotalEventWeight();
+   if( _eventWeightCount == 0.0 ){ 
+      for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
+         _chain->GetEntry(i);
+         _eventWeightCount += _event->TotalEventWeight();
+      }
    }
-   return ans; 
+   return _eventWeightCount; 
 }
 
 float SampleMgr::getAverageEventWeight() const 

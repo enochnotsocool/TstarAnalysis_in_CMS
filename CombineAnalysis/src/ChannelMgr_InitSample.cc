@@ -5,7 +5,7 @@
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
-#include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h"
+#include "TstarAnalysis/CombineAnalysis/interface/ChannelMgr.h"
 #include "TstarAnalysis/CombineAnalysis/interface/PlotDef.h"
 #include <iostream>
 
@@ -26,7 +26,7 @@
 #define ADD_BG_SAMPLE( NAME )                                             \
    _MCbackgroundMap.insert( SamplePair( NAME , new SampleMgr( NAME ) )); \
 
-void CombineMgr::initSamples() 
+void ChannelMgr::initSamples() 
 {
    std::cout << "Adding data sample!" << std::endl;
    //----- Setting update  --------------------------------------------------------
@@ -94,18 +94,5 @@ void CombineMgr::initSamples()
 
    _MCbackgroundMap[TTJets]->setColor( TTJETS_FILL_COLOR );
    _MCbackgroundMap[TTJets]->setLineColor( LINE_COLOR );
-
-
-   _signalLegend = new TLegend( 0.75 , 0.55 , 0.95 , 0.95 );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M0700]->Hist(JetPt) , "M_{t^{*}} 700  GeV/c^{2}" , "l" );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M0800]->Hist(JetPt) , "M_{t^{*}} 800  GeV/c^{2}" , "l" );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M0900]->Hist(JetPt) , "M_{t^{*}} 900  GeV/c^{2}" , "l" );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M1000]->Hist(JetPt) , "M_{t^{*}} 1000 GeV/c^{2}" , "l" );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M1100]->Hist(JetPt) , "M_{t^{*}} 1100 GeV/c^{2}" , "l" );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M1200]->Hist(JetPt) , "M_{t^{*}} 1200 GeV/c^{2}" , "l" );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M1300]->Hist(JetPt) , "M_{t^{*}} 1300 GeV/c^{2}" , "l" );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M1400]->Hist(JetPt) , "M_{t^{*}} 1400 GeV/c^{2}" , "l" );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M1500]->Hist(JetPt) , "M_{t^{*}} 1500 GeV/c^{2}" , "l" );
-   _signalLegend->AddEntry( _MCsignalMap[Tstar_M1600]->Hist(JetPt) , "M_{t^{*}} 1600 GeV/c^{2}" , "l" );
 
 }

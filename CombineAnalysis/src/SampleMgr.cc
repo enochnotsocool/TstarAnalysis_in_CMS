@@ -110,7 +110,11 @@ void SampleMgr::addFile( const std::string& filename )
 
 TH1F* SampleMgr::Hist( const PlotName& histname ) 
 { 
-   return _histMap[histname]; 
+   return _histMap.at(histname); 
+}
+const TH1F* SampleMgr::Hist( const PlotName& name ) const
+{
+   return _histMap.at(name);
 }
 
 void SampleMgr::setColor( const Color_t& c )

@@ -8,26 +8,9 @@
 #ifndef __PLOTDEF_H__
 #define __PLOTDEF_H__
 
+#include "TstarAnalysis/CombineAnalysis/interface/Enums.h"
 #include <string>
 #include <map>
-
-enum PlotName {
-   JetCount = 0,
-   JetPt = 1,
-   JetEta = 2,
-   LeptonPt = 10,
-   LeptonEta = 11,
-   MET  = 20,
-   VertexCount = 21,
-   
-   ChiSquareTstarMass = 50,
-   ChiSquareTMass = 51, 
-
-   HitFitTstarMass = 60,
-   HitFitTMass = 61 ,
-
-   PLOTNAME_END
-};
 
 class PlotDef {
 public:
@@ -63,8 +46,5 @@ typedef std::map<const PlotName, PlotDef>  PlotList;
 
 extern PlotList availiablePlots;
 extern bool     initPlotList();
-extern std::string Stringify( const PlotName );
-extern PlotName PlotNameFromString( const std::string& );
-extern bool CheckPlotName( const PlotName );
 
 #endif // __PLOTDEF_H__

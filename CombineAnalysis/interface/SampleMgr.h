@@ -21,47 +21,6 @@
 
 typedef std::map<const PlotName,TH1F*>  HistMap; 
 
-enum SampleName { 
-   // Background MC
-   TTW_Lepton = 0,
-   TTW_Quark  = 1,
-   TTZ_Lepton = 2,
-   TTZ_Quark  = 3,
-
-   WJets = 10,
-   ZJets = 11,
-   WW    = 12,
-   WZ    = 13,
-   ZZ    = 14,
-
-   SingleT_S = 20,
-   SingleT_T = 21,
-   SingleT_TW = 22,
-   SingleTbar_TW = 23,
-
-   TTJets = 30,
-   
-   // Single MC
-   Tstar_M0700 = 100,
-   Tstar_M0800 = 101,
-   Tstar_M0900 = 102, 
-   Tstar_M1000 = 103,
-   Tstar_M1100 = 104,
-   Tstar_M1200 = 105,
-   Tstar_M1300 = 106,
-   Tstar_M1400 = 107,
-   Tstar_M1500 = 108,
-   Tstar_M1600 = 109,
-   
-   // Data 
-   Data = 1000,
-
-   DUMMY_END
-};
-
-extern std::string Stringify( const SampleName );
-SampleName SampleFromString( const std::string& );
-
 class SampleMgr {
 public:
    SampleMgr( const SampleName& );
@@ -82,6 +41,7 @@ public:
    //----- ROOT object interaction  -----------------------------------------------
    void  addFile( const std::string& );
    TH1F* Hist( const PlotName& );
+   const TH1F* Hist( const PlotName& ) const;
    void  setColor( const Color_t& );
    void  setLineColor( const Color_t& );
    void  setFillColor( const Color_t& , const float=1.0 );
@@ -103,6 +63,8 @@ private:
    Parameter    _cross_section;
    Parameter    _selection_eff;
    Parameter    _sample_weight;
+   mutable double  _rawEventsCount;
+   mutable double  _eventWeightCount;
    
    //----- File Reading data members  ---------------------------------------------
    TChain*          _chain;

@@ -1,3 +1,11 @@
+# Sample-wide weighting
+# This is obtained from the Monte Carlo MiniAODs from the LHE Level weights
+# For documentation of how these numbers are obtained look at the MCWeighter 
+# classes
+# 
+# Format
+# [Sample]      [Weight]
+
 TTJets          0.3316595185022218
 
 SingleTbar_TW   1.0  
@@ -16,13 +24,13 @@ TTW_Quark       0.5160054870474026
 TTZ_Lepton      0.46479899497487437
 TTZ_Quark       0.46479899497487437
 
-Tstar_M1000        0.5  
-Tstar_M1100        0.5  
-Tstar_M1200        0.5  
-Tstar_M1300        0.5  
-Tstar_M1400        0.5  
-Tstar_M1500        0.5  
-Tstar_M1600        0.5  
-Tstar_M0700        0.5  
-Tstar_M0800        0.5  
-Tstar_M0900        0.5  
+Tstar_M1000     1.0  
+Tstar_M1100     1.0  
+Tstar_M1200     1.0  
+Tstar_M1300     1.0  
+Tstar_M1400     1.0  
+Tstar_M1500     1.0  
+Tstar_M1600     1.0  
+Tstar_M0700     1.0  
+Tstar_M0800     1.0  
+Tstar_M0900     1.0  

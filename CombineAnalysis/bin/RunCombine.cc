@@ -21,10 +21,7 @@ int main( int argc, char* argv[] )
       Usage();
       return -1;
    } 
-   initPlotList();
-   cmbMgr = new CombineMgr( argv[1] );
-   cmbMgr->ParseCMDFile( argv[2] );
-   delete cmbMgr;
+   cmbMgr = new CombineMgr;
    return 0;
 }
 

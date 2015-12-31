@@ -5,12 +5,13 @@
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
 *******************************************************************************/
-#include "TstarAnalysis/CombineAnalysis/interface/PlotDef.h"
-#include "TstarAnalysis/CombineAnalysis/interface/SampleMgr.h"
-
+#include "TstarAnalysis/CombineAnalysis/interface/Enums.h"
 using namespace std;
 
-std::string Stringify( const PlotName x )
+//------------------------------------------------------------------------------ 
+//   Plot Functions
+//------------------------------------------------------------------------------
+string Stringify( const PlotName x )
 {
    if( x == ChiSquareTstarMass ) { return "t+g inveriant Mass (#chi^{2} Method)"; }
    if( x == ChiSquareTMass ) { return "t Mass (#chi^{2} Method)"; }
@@ -45,6 +46,9 @@ PlotName PlotNameFromString( const string& x )
 
 }
 
+//------------------------------------------------------------------------------ 
+//   Sample Functions
+//------------------------------------------------------------------------------
 std::string Stringify( const SampleName x) 
 {
    if( x == TTW_Lepton    ) { return "TTW_Lepton"; } 
@@ -106,4 +110,18 @@ SampleName SampleFromString( const std::string& input )
    return DUMMY_END;
 }
 
+//------------------------------------------------------------------------------ 
+//   Channel functions
+//------------------------------------------------------------------------------
+string Stringify( const ChannelName input )
+{
+   if( input == ggMuon ) { return "ggMuon"; }
+   return "";
+}
+
+ChannelName ChannelFromString( const string& input )
+{
+   if( input == "ggMuon" ) { return ggMuon; }
+   return CHANNEL_END;
+}
 

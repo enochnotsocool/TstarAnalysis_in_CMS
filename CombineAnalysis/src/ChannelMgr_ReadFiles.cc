@@ -1,12 +1,12 @@
 /*******************************************************************************
  *
- *  Filename    : CombineMgr_ReadFiles.cc
+ *  Filename    : ChannelMgr_ReadFiles.cc
  *  Description : Reading settings for combine analysis
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
  *
 *******************************************************************************/
-#include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h"
+#include "TstarAnalysis/CombineAnalysis/interface/ChannelMgr.h"
 #include "TstarAnalysis/CombineAnalysis/interface/Parameter.h"
 #include <fstream>
 #include <sstream>
@@ -18,22 +18,24 @@
 using namespace std;
 
 //------------------------------------------------------------------------------ 
+//   Helper functions
+//------------------------------------------------------------------------------
+bool BreakLineToWords( const string& , vector<string>& );
+bool ParseSampleLine( const string& , SampleName&, Parameter& );
+
+//------------------------------------------------------------------------------ 
 //   Parsing CMD files
 //------------------------------------------------------------------------------
-void CombineMgr::ParseCMDFile( const string& filename ) 
+
+void ChannelMgr::ParseCMDFile( const string& filename ) 
 {
    ifstream input( filename );
    string line;
+   vector<string> tokens;
 
-   cout << "Begin File Reading!" << endl;
    while( getline(input,line) ){
-      cout << "Raw input: " << line << endl;
-      istringstream iss( line );
-      vector<string> tokens{
-         istream_iterator<string>{iss},
-         istream_iterator<string>{}};
-      if( tokens.empty() ){ continue; }
-
+      if( !BreakLineToWords( line, tokens ) ) { continue; }
+      
       string cmd = tokens[0];
       if( cmd == "SetCrossSections" && tokens.size() == 2 ){
          SetCrossSections( tokens[1] );
@@ -68,22 +70,23 @@ void CombineMgr::ParseCMDFile( const string& filename )
 //------------------------------------------------------------------------------ 
 //   Configuration file Reading
 //------------------------------------------------------------------------------
-bool ParseSampleLine( const string& , SampleName&, Parameter& );
 
-void CombineMgr::SetCrossSections( const std::string& filename )
+void ChannelMgr::SetCrossSections( const std::string& filename )
 {
    ifstream input( filename );
    string   line;
    vector<string> tokens;
-   istringstream sstream;
    
    SampleName name;
    Parameter  para;
    
    //----- Getting Luminocity  ----------------------------------------------------
-   getline( input , line );
-   sstream.str( line );
-   sstream >> _totalLumi ; 
+   while( getline( input , line ) ){
+      if( ParseSampleLine( line,name,para ) ){
+         _totalLumi = para.CentralValue();
+         break;
+      }
+   }
 
    //----- Parsing Sample List   --------------------------------------------------
    while( getline(input, line ) ){
@@ -93,7 +96,7 @@ void CombineMgr::SetCrossSections( const std::string& filename )
    }
 }
 
-void CombineMgr::SetSampleWideWeights( const std::string& filename )
+void ChannelMgr::SetSampleWideWeights( const std::string& filename )
 {
    ifstream input( filename );
    string line;
@@ -106,7 +109,7 @@ void CombineMgr::SetSampleWideWeights( const std::string& filename )
    }
 }
 
-void CombineMgr::SetSelectionEfficiency( const std::string& filename )
+void ChannelMgr::SetSelectionEfficiency( const std::string& filename )
 {
    ifstream input( filename );
    string line;
@@ -119,23 +122,20 @@ void CombineMgr::SetSelectionEfficiency( const std::string& filename )
    } 
 }
 
-void CombineMgr::SetSampleInputs( const std::string& filename )
+void ChannelMgr::SetSampleInputs( const std::string& filename )
 {
    ifstream input( filename );
+   vector<string> tokens;
    string line;
-   string namestring;
-   string filestring;
    SampleName name;
    while( getline(input,line) ){
-      istringstream iss(line);
-      iss >> namestring >> filestring ;
-      name = SampleFromString( namestring );
-      sample(name)->addFile( filestring );
+      if( !BreakLineToWords(line,tokens) ){ continue; }
+      if( tokens.size() < 2 ) { continue; }
+      name = SampleFromString( tokens[0] );
+      if( name == DUMMY_END ){ continue; } 
+      sample(name)->addFile( tokens[1] );
    }  
 }
-
-
-
 
 //------------------------------------------------------------------------------ 
 //   Helper functions
@@ -148,17 +148,28 @@ float StrToFloat( const string& x )
    return ans;
 }
 
+bool BreakLineToWords( const string& line, vector<string>& words )
+{
+   vector<string> temp;
+   istringstream iss(line);
+   copy( istream_iterator<string>(iss),
+         istream_iterator<string>(),
+         back_inserter(temp));
+   words = temp;
+   // Comment handling
+   if( words.empty() ) { return false; }
+   if( words[0][0] == '#' ) { return false; }
+   return true;
+}
+
 bool ParseSampleLine( const string& line, SampleName& x , Parameter& y )
 {
    vector<string> tokens; 
-   istringstream iss( line );
    float centralValue;
    float upperError;
-   float lowerError; 
+   float lowerError;
 
-   copy( istream_iterator<string>(iss),
-         istream_iterator<string>(),
-         back_inserter(tokens));
+   if(! BreakLineToWords( line, tokens )) { return false; }
 
    if( tokens.size() < 2 ) { return false; }
    x = SampleFromString( tokens[0] );
