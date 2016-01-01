@@ -9,6 +9,8 @@
 #include "TstarAnalysis/CombineAnalysis/interface/PlotDef.h"
 #include <iostream>
 
+using namespace std;
+
 #define LINE_COLOR          kBlack
 #define SIGNAL_FILL_COLOR   kWhite
 #define TTJETS_FILL_COLOR   (kBlue-6)
@@ -95,4 +97,7 @@ void ChannelMgr::initSamples()
    _MCbackgroundMap[TTJets]->setColor( TTJETS_FILL_COLOR );
    _MCbackgroundMap[TTJets]->setLineColor( LINE_COLOR );
 
+   cout << "Sanity check for contents in maps:" << endl;
+   cout << "\tMC Signals: " << _MCsignalMap.size() << endl;
+   cout << "\tMC Backgrounds: " << _MCbackgroundMap.size() << endl;
 }

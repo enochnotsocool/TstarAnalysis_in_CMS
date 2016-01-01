@@ -24,14 +24,19 @@ public:
    virtual ~CombineMgr ();
 
    ChannelMgr* Channel( const ChannelName& ) ;
+
+   void ParseCMDFile( const std::string& );
+   void PassFile( const ChannelName&, const std::string& );
    void MakeCombine();
    void RunCombine();
    void PlotResults();
 
 private:
    ChannelMap   _channelList;
-   std::vector<const HC_Process*>            _processList;
+   std::vector<const HC_Process*>  _processList;
    std::map<const NuisancePar,std::map<const HC_Process*,float> > _uncertaintlyList;
+
+   void SetChannel( const std::string& , const std::string& );
 };
 
 #endif // __COMBINEMGR_H__

@@ -6,6 +6,7 @@
  *  
 *******************************************************************************/
 #include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h" 
+#include "TstarAnalysis/CombineAnalysis/interface/PlotDef.h"
 #include <iostream>
 
 using namespace std;
@@ -16,18 +17,21 @@ void Usage();
 
 int main( int argc, char* argv[] ) 
 {
-   if( argc != 3 ){
+   if( argc != 2 ){
       cerr << "Error: Mismatch of required arguments" << endl;
       Usage();
       return -1;
    } 
+   initPlotList();
    cmbMgr = new CombineMgr;
+   cmbMgr->ParseCMDFile( argv[1] );
+
    return 0;
 }
 
 void Usage()
 {
-   cout << "./RunCombine <Output filename> <CMD filename>" << endl;
+   cout << "./RunCombine <CMD filename>" << endl;
 }
 
 

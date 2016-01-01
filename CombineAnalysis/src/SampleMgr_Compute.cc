@@ -23,7 +23,7 @@ void SampleMgr::makeBasicPlots()
    bool  updateEventWeightCount = (_eventWeightCount == 0.0 );
    printf( "Making basic plots for %s\n", Stringify(_name).c_str() );
 
-   printf( "Sanity check for _histMap...\n" );
+   printf( "Sanity check for _histMap[%lu histograms]...\n", _histMap.size() );
    for( const auto& pair : _histMap ){
       printf("%s %p\n" , Stringify(pair.first).c_str() , pair.second );
    }

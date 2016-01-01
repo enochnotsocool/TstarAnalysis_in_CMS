@@ -17,7 +17,6 @@ PlotList  availiablePlots;
 //------------------------------------------------------------------------------
 bool initPlotList()
 {
-
    availiablePlots.insert( PlotPair( MET , PlotDef() ));
    availiablePlots[MET].setBinCount( 30 );
    availiablePlots[MET].setXMax( 600. );

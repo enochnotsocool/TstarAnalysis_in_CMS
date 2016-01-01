@@ -8,12 +8,10 @@
 *******************************************************************************/
 #include "TstarAnalysis/CombineAnalysis/interface/ChannelMgr.h"
 #include "TstarAnalysis/CombineAnalysis/interface/Parameter.h"
+#include "TstarAnalysis/Utils/interface/Utils.h"
 #include <fstream>
-#include <sstream>
 #include <vector>
 #include <string>
-#include <algorithm>
-#include <iterator>
 
 using namespace std;
 
@@ -26,7 +24,6 @@ bool ParseSampleLine( const string& , SampleName&, Parameter& );
 //------------------------------------------------------------------------------ 
 //   Parsing CMD files
 //------------------------------------------------------------------------------
-
 void ChannelMgr::ParseCMDFile( const string& filename ) 
 {
    ifstream input( filename );
@@ -70,7 +67,6 @@ void ChannelMgr::ParseCMDFile( const string& filename )
 //------------------------------------------------------------------------------ 
 //   Configuration file Reading
 //------------------------------------------------------------------------------
-
 void ChannelMgr::SetCrossSections( const std::string& filename )
 {
    ifstream input( filename );
@@ -140,28 +136,6 @@ void ChannelMgr::SetSampleInputs( const std::string& filename )
 //------------------------------------------------------------------------------ 
 //   Helper functions
 //------------------------------------------------------------------------------
-float StrToFloat( const string& x )
-{
-   float ans;
-   istringstream iss( x );
-   iss >> ans;
-   return ans;
-}
-
-bool BreakLineToWords( const string& line, vector<string>& words )
-{
-   vector<string> temp;
-   istringstream iss(line);
-   copy( istream_iterator<string>(iss),
-         istream_iterator<string>(),
-         back_inserter(temp));
-   words = temp;
-   // Comment handling
-   if( words.empty() ) { return false; }
-   if( words[0][0] == '#' ) { return false; }
-   return true;
-}
-
 bool ParseSampleLine( const string& line, SampleName& x , Parameter& y )
 {
    vector<string> tokens; 

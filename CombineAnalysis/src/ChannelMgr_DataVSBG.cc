@@ -40,7 +40,7 @@ void ChannelMgr::MakeDataToBGPlot( const PlotName& target )
    THStack* bg_stack  = new THStack( (targetName+"_stack").c_str() , histName.c_str() );
    TH1F*    totError  = new TH1F( (targetName+"tot_err").c_str(), histName.c_str(), bins, xmin, xmax );
    TH1F*    data      = (TH1F*)_dataSample->Hist(target)->Clone();
-   TH1F*    relError  = NULL;
+   TH1F*    relError  = NULL;//Generated in functions makeBGStack()
    TH1F*    dataRatio = NULL;//Generating in function makeDataBGRatio()
    TLegend* combineLegend = new TLegend( 0.75 , 0.75 , 0.95 , 0.95 );
    TLine*  l              = new TLine( xmin , 0.0 , xmax , 0.0 );
@@ -49,7 +49,6 @@ void ChannelMgr::MakeDataToBGPlot( const PlotName& target )
    makeBGStack( bg_stack, totError, relError ,target );
    makeCombinedLegend( combineLegend, totError, target );
    makeDataBGRatio( dataRatio, data, totError );
-   setFontStyle( data );
    matchHeights( data, totError );
 
    //----- Making Total Plot  -----------------------------------------------------
@@ -99,7 +98,7 @@ void ChannelMgr::MakeDataToBGPlot( const PlotName& target )
 //------------------------------------------------------------------------------ 
 //   Private helper function implementation
 //------------------------------------------------------------------------------
-void ChannelMgr::makeBGStack( THStack* stack, TH1F* total, TH1F* rel, const PlotName& target ) const
+void ChannelMgr::makeBGStack( THStack*& stack, TH1F*& total, TH1F*& rel, const PlotName& target ) const
 {
    const SampleMgr* sample;
    TH1F*     tempHist;
@@ -111,7 +110,7 @@ void ChannelMgr::makeBGStack( THStack* stack, TH1F* total, TH1F* rel, const Plot
       tempHist = (TH1F*)( sample->Hist( target )->Clone() );
       if( tempHist->Integral() == 0 ){ 
          std::cerr << "Warning Skipping over empty data set: " << sample->NameString() << std::endl ;
-         return ;
+         continue ;
       }
       tempScale = getHistScale( sample );
       tempHist->Scale( tempScale ) ; 
@@ -140,7 +139,9 @@ void ChannelMgr::makeBGStack( THStack* stack, TH1F* total, TH1F* rel, const Plot
       rel->SetBinError( i , binError/binContent ); 
    }
    // Default styling
-   setFontStyle( dynamic_cast<TH1F*>(stack) ); 
+   cout << "Setting style for THStack" << endl;
+   //setFontStyle( stack ); 
+   cout << "Setting style for total error hist" << endl;
    setFontStyle( total ); 
    // Additional styling 
    total->SetFillStyle(3004);
@@ -149,7 +150,7 @@ void ChannelMgr::makeBGStack( THStack* stack, TH1F* total, TH1F* rel, const Plot
    total->SetFillColor(1);
 }
 
-void ChannelMgr::makeDataBGRatio( TH1F* ratio, const TH1F* data, const TH1F* bg ) const
+void ChannelMgr::makeDataBGRatio( TH1F*& ratio, const TH1F* data, const TH1F* bg ) const
 {
    ratio = (TH1F*)data->Clone();
    ratio->Add( bg , -1 );

@@ -64,7 +64,7 @@ private:
    SampleMgr*  _currentSignal;
    
    //----- Variables for combined plotting  ---------------------------------------
-   static float _totalLumi = 0. ;
+   static float _totalLumi;
 
    //----- Helper function for constructor  ---------------------------------------
    void initSamples();
@@ -72,8 +72,9 @@ private:
    //----- Data to BC comparison plot  --------------------------------------------
    TFile* openPlotFile() const;
    const  std::string makeHistTitle( const PlotName& ) const;
-   void   makeBGStack( THStack*, TH1F*, TH1F*, const PlotName& ) const;
-   void   makeDataBGRatio(TH1F*, const TH1F*, const TH1F* ) const; 
+   void   makeBGStack( THStack*& , TH1F*& , TH1F*& , const PlotName& ) const;
+   void   makeDataBGRatio(TH1F*&, const TH1F*, const TH1F* ) const; 
+   void   setFontStyle( THStack* ) const ;
    void   setFontStyle( TH1F* ) const;
    void   setXAxisFont( TH1F* ) const;
    void   matchHeights( TH1F*, TH1F* ) const;

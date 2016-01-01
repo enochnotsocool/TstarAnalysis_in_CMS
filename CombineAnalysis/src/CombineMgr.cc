@@ -6,14 +6,22 @@
  *  
 *******************************************************************************/
 #include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h"
+#include "TstarAnalysis/Utils/interface/Utils.h"
+#include <fstream>
 
 using namespace std;
 
+//------------------------------------------------------------------------------ 
+//   Declaring Global variables
+//------------------------------------------------------------------------------
 CombineMgr*  cmbMgr = NULL;
 
+//------------------------------------------------------------------------------ 
+//   Constructor
+//------------------------------------------------------------------------------
 CombineMgr::CombineMgr()
 {
-   _channelList.insert( ChannelPair(ggMuon, new ChannelMgr(ggMuon)));
+   _channelList.insert( ChannelPair(ggMuon, new ChannelMgr(ggMuon)) );
 }
 
 CombineMgr::~CombineMgr()
@@ -26,6 +34,33 @@ CombineMgr::~CombineMgr()
    }
 }
 
+//------------------------------------------------------------------------------ 
+//   File Parser
+//------------------------------------------------------------------------------
+void CombineMgr::ParseCMDFile( const string& filename )
+{
+   ifstream input( filename );
+   string cmd;
+   string line;
+   vector<string> tokens;
+
+   while( getline( input, line ) ){
+      if( !BreakLineToWords( line, tokens ) ) { continue; }
+      
+      cmd = tokens[0];
+      if( cmd == "SetChannel" && tokens.size() == 3 ){
+         SetChannel( tokens[1], tokens[2] ); 
+      } 
+      else {
+         cerr << "Error! Unrecognised command \"" << cmd << "\"" << endl;
+         continue;
+      }
+   }
+}
+
+//------------------------------------------------------------------------------ 
+//   Access Members
+//------------------------------------------------------------------------------
 ChannelMgr* CombineMgr::Channel( const ChannelName& x ){
    return _channelList[x];
 } 
@@ -48,6 +83,7 @@ void CombineMgr::MakeCombine()
    }
    TH1F* hist = (TH1F*)_channelList[ggMuon]->sample( Data )->Hist( ChiSquareTstarMass )->Clone();
    hist->Write();
+   shapeFile->Close();
    delete shapeFile;
    
    //----- Making datacard  -------------------------------------------------------
@@ -76,7 +112,18 @@ void CombineMgr::MakeCombine()
    }
    fprintf(datacard, "\n" );
    fprintf( datacard , "----------------------------------\n" );
-
-
-
 }
+
+//------------------------------------------------------------------------------ 
+//   Helper private functions
+//------------------------------------------------------------------------------
+void CombineMgr::SetChannel( const string& x , const string& filename )
+{
+   const ChannelName name = ChannelFromString( x );
+   if( name == CHANNEL_END ) { 
+      cerr << "Error! Unrecognized channel " << x << endl;
+      return; 
+   }
+   _channelList[name]->ParseCMDFile( filename );
+}
+

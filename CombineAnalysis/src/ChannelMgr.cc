@@ -13,6 +13,8 @@
 //------------------------------------------------------------------------------ 
 //   Constructor and destructor
 //------------------------------------------------------------------------------
+float ChannelMgr::_totalLumi = 0.0;
+
 ChannelMgr::ChannelMgr( const ChannelName x )
 {
    _name = x ;
@@ -102,6 +104,6 @@ bool ChannelMgr::setSignalMass( const SampleName& input )
 
 TFile* ChannelMgr::openPlotFile() const 
 {
-   return new TFile( (Stringify(_name)+"-plots").c_str() , "UPDATE" );
+   return new TFile( (Stringify(_name)+"-plots.root").c_str() , "UPDATE" );
 }
 
