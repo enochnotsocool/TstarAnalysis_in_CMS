@@ -50,6 +50,8 @@ void CombineMgr::ParseCMDFile( const string& filename )
       cmd = tokens[0];
       if( cmd == "SetChannel" && tokens.size() == 3 ){
          SetChannel( tokens[1], tokens[2] ); 
+      } else if( cmd == "MakeCombine" && tokens.size() == 1 ){
+         MakeCombine();
       } 
       else {
          cerr << "Error! Unrecognised command \"" << cmd << "\"" << endl;
@@ -61,58 +63,11 @@ void CombineMgr::ParseCMDFile( const string& filename )
 //------------------------------------------------------------------------------ 
 //   Access Members
 //------------------------------------------------------------------------------
-ChannelMgr* CombineMgr::Channel( const ChannelName& x ){
+ChannelMgr* CombineMgr::Channel( const ChannelName& x )
+{
    return _channelList[x];
 } 
 
-void CombineMgr::MakeCombine()
-{
-   for( auto& channelpair : _channelList ){
-      channelpair.second->MakeLimitProcesses( _processList );
-   }
-   for( const auto process : _processList ){
-      for( const auto npair : process->GetNuisance() ){
-         _uncertaintlyList[npair.first][process] = npair.second;
-      } 
-   }
-   //----- Making input file for system  ------------------------------------------
-   TFile* shapeFile = new TFile( "Shapes.root" , "RECREATE" );
-   for( const auto& process : _processList ){
-      TH1F* hist = (TH1F*)process->GetShape()->Clone( (process->ObjName()).c_str() );
-      hist->Write();
-   }
-   TH1F* hist = (TH1F*)_channelList[ggMuon]->sample( Data )->Hist( ChiSquareTstarMass )->Clone();
-   hist->Write();
-   shapeFile->Close();
-   delete shapeFile;
-   
-   //----- Making datacard  -------------------------------------------------------
-   FILE*  datacard = fopen( "datacard.txt" , "w" );
-   fprintf( datacard , "imax %lu\n", _channelList.size() );
-   fprintf( datacard , "jmax *\n" );
-   fprintf( datacard , "kmax *\n" );
-   fprintf( datacard , "----------------------------------\n" );
-
-   for( const auto& process : _processList ){
-      fprintf( datacard , "shape %s %s Shapes.root %s\n",
-            Stringify(process->GetProcess()).c_str(),
-            Stringify(process->GetChannel()).c_str(),
-            (process->ObjName()).c_str() );
-   }
-   fprintf( datacard , "----------------------------------\n" );
-
-   fprintf( datacard , "bin  " );
-   for( auto& channelpair : _channelList ){
-      printf( "  %s" , Stringify(channelpair.second->Name()).c_str());
-   } 
-   fprintf(datacard, "\n" );
-   fprintf( datacard , "observation  " );
-   for( auto& channelpair : _channelList ){
-      printf( " %lf" , channelpair.second->sample(Data)->getRawEventCount() );
-   }
-   fprintf(datacard, "\n" );
-   fprintf( datacard , "----------------------------------\n" );
-}
 
 //------------------------------------------------------------------------------ 
 //   Helper private functions

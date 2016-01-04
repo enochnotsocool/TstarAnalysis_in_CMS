@@ -44,17 +44,20 @@ enum SampleName
    TTW_Quark  = 2,
    TTZ_Lepton = 3,
    TTZ_Quark  = 4,
+   TT_PLUS_BOSON = 5,
 
    WJets = 11,
    ZJets = 12,
    WW    = 13,
    WZ    = 14,
    ZZ    = 15,
+   BOSONS = 16,
 
    SingleT_S = 21,
    SingleT_T = 22,
    SingleT_TW = 23,
    SingleTbar_TW = 24,
+   SINGLE_T = 25,
 
    TTJets = 31,
    

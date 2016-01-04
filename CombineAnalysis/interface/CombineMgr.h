@@ -37,6 +37,13 @@ private:
    std::map<const NuisancePar,std::map<const HC_Process*,float> > _uncertaintlyList;
 
    void SetChannel( const std::string& , const std::string& );
+
+   void makeShapeFile();
+   void makeHeader(FILE*);
+   void makeShapeMarker(FILE*);
+   void makeChannelYield(FILE*);
+   void makeProcessYield(FILE*);
+   void makeNuissanceTable(FILE*);
 };
 
 #endif // __COMBINEMGR_H__

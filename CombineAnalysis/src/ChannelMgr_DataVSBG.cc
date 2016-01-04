@@ -147,7 +147,7 @@ void ChannelMgr::makeBGStack( THStack*& stack, TH1F*& total, TH1F*& rel, const P
    total->SetFillStyle(3004);
    total->SetFillColor(1);
    rel->SetFillStyle(3004);
-   total->SetFillColor(1);
+   rel->SetFillColor(1);
 }
 
 void ChannelMgr::makeDataBGRatio( TH1F*& ratio, const TH1F* data, const TH1F* bg ) const

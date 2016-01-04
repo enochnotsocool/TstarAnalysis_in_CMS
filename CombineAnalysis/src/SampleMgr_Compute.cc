@@ -14,24 +14,23 @@
 #include "TstarAnalysis/RootFormat/interface/ChiSquareResult.h"
 #include "TstarAnalysis/RootFormat/interface/HitFitResult.h"
 
+#include <iostream>
+using namespace std;
+
 //------------------------------------------------------------------------------ 
 //   SampleMgr method implementation
 //------------------------------------------------------------------------------
 void SampleMgr::makeBasicPlots()
 {
    float eventWeight ;
+   long long n = _chain->GetEntries();
    bool  updateEventWeightCount = (_eventWeightCount == 0.0 );
-   printf( "Making basic plots for %s\n", Stringify(_name).c_str() );
+   cout << "Making basic plots for " << Stringify(_name) << endl;
 
-   printf( "Sanity check for _histMap[%lu histograms]...\n", _histMap.size() );
-   for( const auto& pair : _histMap ){
-      printf("%s %p\n" , Stringify(pair.first).c_str() , pair.second );
-   }
-
-   for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
+   for( long long i = 0 ; i < n ; ++i ){
       _chain->GetEntry(i);
       
-      printf( "[%s] Event [%6lld/%6lld]: ....\r" , Stringify(_name).c_str() , i+1 , _chain->GetEntries() );
+      cout << "\rRunning event: " << i+1 << "/" << n << "..." << flush ;
 
       eventWeight = _event->TotalEventWeight();
       if( updateEventWeightCount ){
@@ -60,10 +59,11 @@ void SampleMgr::makeBasicPlots()
       Hist( HitFitTstarMass )->Fill( _hitfit->TstarMass() , eventWeight );
       Hist( HitFitTMass )->Fill( _hitfit->LeptonicTop().Mag() , eventWeight );
    }
-   puts("Done!\n");
+   cout << "Done!" << endl;
 }
 
-float SampleMgr::getRawEventCount() const {
+float SampleMgr::getRawEventCount() const 
+{
    if( _rawEventsCount == 0.0 ) {
       _rawEventsCount = _chain->GetEntries();
    }

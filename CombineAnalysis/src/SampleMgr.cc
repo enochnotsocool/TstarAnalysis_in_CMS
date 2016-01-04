@@ -47,7 +47,8 @@ SampleMgr::SampleMgr( const SampleName& name )
          Hist( plotname )->SetMarkerStyle( 21 );
       }
    }
-  
+   _rawEventsCount=0.;
+   _eventWeightCount=0.;
    _event = new MiniEvent;
    _chisq = new ChiSquareResult;
    _hitfit = new HitFitResult;

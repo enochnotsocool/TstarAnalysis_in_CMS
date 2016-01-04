@@ -12,7 +12,9 @@ using namespace std;
 HC_Process::HC_Process( const ChannelName x, const SampleName y)
 {
    _channelName = x;
-   _processName = y; 
+   _processName = y;
+   _shape_hist = NULL;
+   _rate = 0.;
 }
 HC_Process::~HC_Process(){}
 

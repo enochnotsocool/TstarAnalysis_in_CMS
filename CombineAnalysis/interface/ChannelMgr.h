@@ -81,10 +81,15 @@ private:
    void   makeCombinedLegend( TLegend*, const TH1F*, const PlotName& );
    float  getHistScale( const SampleMgr* ) const;
 
-
    //----- Signal Channel Plots  --------------------------------------------------
    void makeSignalLegend( TLegend*, const PlotName& );
+
+   //----- Limit calculation helper functions  ------------------------------------
+   void makeSignalProcess( HC_Process* const );
+   void makeBGLimitProcess( HC_Process* const, const SampleName&, const SampleName&);
+   void normalizeProcessShape( HC_Process* const );
 };
+
 
 #endif // __CHANNELMGR_H__
 
