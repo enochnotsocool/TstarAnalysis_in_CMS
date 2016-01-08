@@ -72,11 +72,12 @@ enum SampleName
    Tstar_M1400 = -8,
    Tstar_M1500 = -9,
    Tstar_M1600 = -10,
+   SIGNAL_END = -11,
    
    // Data 
    Data = 1000,
 
-   DUMMY_END
+   DUMMY_END = 1000000
 };
 extern std::string Stringify( const SampleName );
 extern SampleName SampleFromString( const std::string& );

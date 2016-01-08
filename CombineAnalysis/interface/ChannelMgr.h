@@ -15,6 +15,7 @@
 #include "TstarAnalysis/CombineAnalysis/interface/PlotDef.h"
 #include "TstarAnalysis/CombineAnalysis/interface/Parameter.h"
 #include "TstarAnalysis/CombineAnalysis/interface/HC_Process.h"
+#include "TstarAnalysis/CombineAnalysis/interface/NuisancePar.h"
 #include <map>
 #include <string>
 #include "TFile.h"
@@ -38,6 +39,7 @@ public:
    void setLumi( const float );
    bool setSignalMass( const SampleName& );
    SampleMgr* sample( const SampleName& );
+   const SampleMgr* sample( const SampleName& ) const;
    
    // Plotting commands
    void MakeBasicPlots();
@@ -46,10 +48,11 @@ public:
    void MakeInSampleComparison( const SampleName&, const PlotName&, const PlotName& );
 
    // Limit-Calculation
-   void MakeLimitProcesses( std::vector<const HC_Process*>& );
+   void MakeLimitRequirements( const SampleName& );
+   std::string shapeFileName( const SampleName& ) const ;
+   std::string cardFileName( const SampleName& ) const ;
 
    // File Reading functions 
-   void ParseCMDFile( const std::string& filename );
    void SetCrossSections( const std::string& filename );
    void SetSelectionEfficiency( const std::string& filename );
    void SetSampleWideWeights( const std::string& filename );
@@ -57,14 +60,23 @@ public:
 
 
 private:
+   //------------------------------------------------------------------------------ 
+   //   Private data members
+   //------------------------------------------------------------------------------
    ChannelName _name;
    SampleMap   _MCsignalMap; 
    SampleMap   _MCbackgroundMap;
    SampleMgr*  _dataSample;
    SampleMgr*  _currentSignal;
-   
-   //----- Variables for combined plotting  ---------------------------------------
    static float _totalLumi;
+  
+   std::vector<const HC_Process*>  _processList;
+   std::map<const NuisancePar,std::map<const HC_Process*,float> > _uncertaintlyList;
+   
+
+   //------------------------------------------------------------------------------ 
+   //   Private member functions
+   //------------------------------------------------------------------------------
 
    //----- Helper function for constructor  ---------------------------------------
    void initSamples();
@@ -85,9 +97,20 @@ private:
    void makeSignalLegend( TLegend*, const PlotName& );
 
    //----- Limit calculation helper functions  ------------------------------------
+   // Data type management
+   void makeProcessList( const SampleName& );
+   void makeNuissanceList();
    void makeSignalProcess( HC_Process* const );
    void makeBGLimitProcess( HC_Process* const, const SampleName&, const SampleName&);
    void normalizeProcessShape( HC_Process* const );
+   // File writing 
+   void makeShapeFile(const SampleName& ) const ;
+   void makeCard_Header(const SampleName&) const ;
+   void makeCard_ShapeMarker(const SampleName&) const ;
+   void makeCard_ChannelYield(const SampleName&) const ;
+   void makeCard_ProcessYield(const SampleName&) const ;
+   void makeCard_NuissanceTable(const SampleName&) const ;
+   void clearList();
 };
 
 

@@ -26,24 +26,17 @@ public:
    ChannelMgr* Channel( const ChannelName& ) ;
 
    void ParseCMDFile( const std::string& );
-   void PassFile( const ChannelName&, const std::string& );
-   void MakeCombine();
-   void RunCombine();
-   void PlotResults();
+   void RunCombine( const ChannelName&, const SampleName&, const std::string& );
+   void MakeLimitPlots();
 
 private:
    ChannelMap   _channelList;
-   std::vector<const HC_Process*>  _processList;
-   std::map<const NuisancePar,std::map<const HC_Process*,float> > _uncertaintlyList;
 
    void SetChannel( const std::string& , const std::string& );
+   int  MassNumber( const SampleName& );
+   std::string  MassNumberString( const SampleName& );
+   std::string  LimitFile( const SampleName& , const std::string& );
 
-   void makeShapeFile();
-   void makeHeader(FILE*);
-   void makeShapeMarker(FILE*);
-   void makeChannelYield(FILE*);
-   void makeProcessYield(FILE*);
-   void makeNuissanceTable(FILE*);
 };
 
 #endif // __COMBINEMGR_H__

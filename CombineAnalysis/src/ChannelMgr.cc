@@ -82,6 +82,17 @@ SampleMgr* ChannelMgr::sample( const SampleName& name )
    return NULL;
 }
 
+const SampleMgr* ChannelMgr::sample( const SampleName& name ) const
+{
+   static SampleMap::const_iterator it;
+   if( name == _dataSample->name() ) {return _dataSample;}
+   it = _MCsignalMap.find(name);
+   if( it != _MCsignalMap.end() ) { return it->second; }
+   it = _MCbackgroundMap.find(name);
+   if( it != _MCbackgroundMap.end() ) { return it->second; }
+   return NULL;
+}
+
 void ChannelMgr::MakeBasicPlots()
 {
    _dataSample->makeBasicPlots();

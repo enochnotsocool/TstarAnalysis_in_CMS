@@ -18,51 +18,7 @@ using namespace std;
 //------------------------------------------------------------------------------ 
 //   Helper functions
 //------------------------------------------------------------------------------
-bool BreakLineToWords( const string& , vector<string>& );
 bool ParseSampleLine( const string& , SampleName&, Parameter& );
-
-//------------------------------------------------------------------------------ 
-//   Parsing CMD files
-//------------------------------------------------------------------------------
-void ChannelMgr::ParseCMDFile( const string& filename ) 
-{
-   ifstream input( filename );
-   string line;
-   vector<string> tokens;
-
-   while( getline(input,line) ){
-      if( !BreakLineToWords( line, tokens ) ) { continue; }
-      
-      string cmd = tokens[0];
-      if( cmd == "SetCrossSections" && tokens.size() == 2 ){
-         SetCrossSections( tokens[1] );
-      } else if( cmd == "SetSampleInputs" && tokens.size() == 2 ){
-         SetSampleInputs( tokens[1] );
-      } else if( cmd == "SetSampleWideWeights" && tokens.size() == 2 ){
-         SetSampleWideWeights( tokens[1] );
-      } else if( cmd == "SetSelectionEfficiency" && tokens.size() == 2 ){
-         SetSelectionEfficiency( tokens[1] );
-      } else if( cmd == "ParseCMDFile" && tokens.size() == 2 ){
-         ParseCMDFile( tokens[1] );
-      } else if( cmd == "MakeBasicPlots" && tokens.size() == 1 ){
-         MakeBasicPlots();
-      } else if( cmd == "MakeDataToBGPlot" && tokens.size() == 2 ){
-         MakeDataToBGPlot( PlotNameFromString( tokens[1] ) );
-      } else if( cmd == "MakeSignalPlot" && tokens.size() == 2 ){
-         MakeSignalPlot( PlotNameFromString( tokens[1] ) );
-      } else if( cmd == "MakeInSampleComparison" && tokens.size() == 4 ){
-         MakeInSampleComparison( SampleFromString( tokens[1] ),
-               PlotNameFromString( tokens[2] ),
-               PlotNameFromString( tokens[3] ) );
-      }
-      else {
-         cerr << "Skipping unrecognised command/options " << endl;
-         for( const string& x : tokens ){
-            cerr << x << " " ;
-         } cerr << endl;
-      }
-   }
-}
 
 //------------------------------------------------------------------------------ 
 //   Configuration file Reading
