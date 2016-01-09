@@ -18,7 +18,7 @@ using namespace std;
 //------------------------------------------------------------------------------ 
 //   Public method implementation
 //------------------------------------------------------------------------------
-void ChannelMgr::MakeDataToBGPlot( const PlotName& target )
+void ChannelMgr::MakeDataToBGPlot( const PlotName& target ) const
 {
    if( !CheckPlotName( target ) ) {
       cerr << "Error: Plot " << Stringify(target) << "not avaliable" << endl;
@@ -28,6 +28,7 @@ void ChannelMgr::MakeDataToBGPlot( const PlotName& target )
    // Declaring Helper variables;
    const string   targetName = Stringify( target );
    const string   histName   = makeHistTitle(target);
+   const string   savepath   = plotfilepath( targetName );
    const PlotDef& def        = availiablePlots[target];
    const unsigned bins       = def.BinCount();
    const double   xmin       = def.XMin();
@@ -35,7 +36,6 @@ void ChannelMgr::MakeDataToBGPlot( const PlotName& target )
    printf( "making plot %s\n" , targetName.c_str() );
 
    // Declaring Plots entities 
-   TFile* plotfile = openPlotFile();
    TCanvas* canvas    = new TCanvas( (targetName+"c").c_str() , targetName.c_str() );
    THStack* bg_stack  = new THStack( (targetName+"_stack").c_str() , histName.c_str() );
    TH1F*    totError  = new TH1F( (targetName+"tot_err").c_str(), histName.c_str(), bins, xmin, xmax );
@@ -78,9 +78,9 @@ void ChannelMgr::MakeDataToBGPlot( const PlotName& target )
    l->Draw("same");
    canvas->cd();
 
-   //----- Cleaning up  -----------------------------------------------------------
+   //----- Save and clean up  -----------------------------------------------------
    printf("Writing to file....");
-   canvas->Write();
+   canvas->SaveAs( savepath.c_str() );
    delete bg_stack;
    delete totError;
    delete relError;
@@ -89,9 +89,6 @@ void ChannelMgr::MakeDataToBGPlot( const PlotName& target )
    delete pad2;
    delete canvas;
    delete l;
-
-   plotfile->Close();
-   delete plotfile;
    printf("Done!\n");
 }
 
@@ -188,13 +185,13 @@ float ChannelMgr::getHistScale( const SampleMgr* sample ) const
    return ans;
 }
 
-void ChannelMgr::makeCombinedLegend( TLegend* x, const TH1F* err, const PlotName& target )
+void ChannelMgr::makeCombinedLegend( TLegend* x, const TH1F* err, const PlotName& target ) const
 {
-   x->AddEntry( _MCsignalMap[Tstar_M1000]->Hist(target) , "t^{*} signal" , "f" );
-   x->AddEntry( _MCbackgroundMap[TTJets]->Hist(target) , "t#bar{t} + Jets ", "f");
-   x->AddEntry( _MCbackgroundMap[SingleT_S]->Hist(target) , "Single top" , "f" );
-   x->AddEntry( _MCbackgroundMap[WJets]->Hist(target) , "Bosons" , "f" );
-   x->AddEntry( _MCbackgroundMap[TTW_Lepton]->Hist(target) , "t#bar{t} + Boson" , "f" );
+   x->AddEntry( _MCsignalMap.at(Tstar_M1000)->Hist(target) , "t^{*} signal" , "f" );
+   x->AddEntry( _MCbackgroundMap.at(TTJets)->Hist(target) , "t#bar{t} + Jets ", "f");
+   x->AddEntry( _MCbackgroundMap.at(SingleT_S)->Hist(target) , "Single top" , "f" );
+   x->AddEntry( _MCbackgroundMap.at(WJets)->Hist(target) , "Bosons" , "f" );
+   x->AddEntry( _MCbackgroundMap.at(TTW_Lepton)->Hist(target) , "t#bar{t} + Boson" , "f" );
    x->AddEntry( err , "Error" , "f" );
    x->AddEntry( _dataSample->Hist(target) , "Data" , "lp" );
 }

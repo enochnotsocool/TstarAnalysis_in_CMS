@@ -14,24 +14,24 @@
 //------------------------------------------------------------------------------
 enum PlotName 
 {
-   JetCount = 0,
-   JetPt = 1,
-   JetEta = 2,
-   LeptonPt = 10,
-   LeptonEta = 11,
-   MET  = 20,
-   VertexCount = 21,
-   
-   ChiSquareTstarMass = 50,
-   ChiSquareTMass = 51, 
+   JetCount           = 0,
+   JetPt              = 1,
+   JetEta             = 2,
+   LeptonPt           = 10,
+   LeptonEta          = 11,
+   MET                = 20,
+   VertexCount        = 21,
 
-   HitFitTstarMass = 60,
-   HitFitTMass = 61 ,
+   ChiSquareTstarMass = 50,
+   ChiSquareTMass     = 51,
+
+   HitFitTstarMass    = 60,
+   HitFitTMass        = 61 ,
 
    PLOTNAME_END
 };
-extern std::string Stringify( const PlotName );
-extern PlotName PlotNameFromString( const std::string& );
+extern std::string  Stringify( const PlotName );
+extern PlotName     PlotNameFromString( const std::string& );
 extern bool CheckPlotName( const PlotName );
 
 //------------------------------------------------------------------------------ 
@@ -81,6 +81,8 @@ enum SampleName
 };
 extern std::string Stringify( const SampleName );
 extern SampleName SampleFromString( const std::string& );
+extern bool SignalSample( const SampleName );
+
 
 //------------------------------------------------------------------------------ 
 //   Channel Names

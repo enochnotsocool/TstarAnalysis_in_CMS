@@ -25,12 +25,12 @@ void SampleMgr::makeBasicPlots()
    float eventWeight ;
    long long n = _chain->GetEntries();
    bool  updateEventWeightCount = (_eventWeightCount == 0.0 );
-   cout << "Making basic plots for " << Stringify(_name) << endl;
 
+   cout << "\r[" <<Stringify(_name) << "]: " << flush ;
    for( long long i = 0 ; i < n ; ++i ){
       _chain->GetEntry(i);
       
-      cout << "\rRunning event: " << i+1 << "/" << n << "..." << flush ;
+      cout << "\r[" <<Stringify(_name) << "]: Running event: " << i+1 << "/" << n << "..." << flush ;
 
       eventWeight = _event->TotalEventWeight();
       if( updateEventWeightCount ){

@@ -87,7 +87,7 @@ bool initPlotList()
    availiablePlots[ChiSquareTstarMass].setBinCount( 29 );
    availiablePlots[ChiSquareTstarMass].setXMax( 3000. );
    availiablePlots[ChiSquareTstarMass].setXMin( 100.  );
-   availiablePlots[ChiSquareTstarMass].setTitle( "Mass of tg system"  );
+   availiablePlots[ChiSquareTstarMass].setTitle( "Mass of tg system (#Chi^{2} Sorting)"  );
    availiablePlots[ChiSquareTstarMass].setXtitle( "M_{tg} (GeV/c^{2})" );
    availiablePlots[ChiSquareTstarMass].makeYtitle( "GeV/c^{2}" );
    
@@ -95,15 +95,15 @@ bool initPlotList()
    availiablePlots[ChiSquareTMass].setBinCount( 20 );
    availiablePlots[ChiSquareTMass].setXMax( 450. );
    availiablePlots[ChiSquareTMass].setXMin( 50.  );
-   availiablePlots[ChiSquareTMass].setTitle( "Mass of tg system"  );
-   availiablePlots[ChiSquareTMass].setXtitle( "M_{tg} (GeV/c^{2})" );
+   availiablePlots[ChiSquareTMass].setTitle( "Mass of top (#Chi^{2} Sorting)"  );
+   availiablePlots[ChiSquareTMass].setXtitle( "M_{t} (GeV/c^{2})" );
    availiablePlots[ChiSquareTMass].makeYtitle( "GeV/c^{2}" );
 
    availiablePlots.insert( PlotPair( HitFitTstarMass , PlotDef() ));
    availiablePlots[HitFitTstarMass].setBinCount( 29 );
    availiablePlots[HitFitTstarMass].setXMax( 3000. );
    availiablePlots[HitFitTstarMass].setXMin( 100.  );
-   availiablePlots[HitFitTstarMass].setTitle( "Mass of tg system"  );
+   availiablePlots[HitFitTstarMass].setTitle( "Mass of tg system (HitFit Package)"  );
    availiablePlots[HitFitTstarMass].setXtitle( "M_{tg} (GeV/c^{2})" );
    availiablePlots[HitFitTstarMass].makeYtitle( "GeV/c^{2}" );
    
@@ -111,8 +111,8 @@ bool initPlotList()
    availiablePlots[HitFitTMass].setBinCount( 20 );
    availiablePlots[HitFitTMass].setXMax( 450. );
    availiablePlots[HitFitTMass].setXMin( 50.  );
-   availiablePlots[HitFitTMass].setTitle( "Mass of tg system"  );
-   availiablePlots[HitFitTMass].setXtitle( "M_{tg} (GeV/c^{2})" );
+   availiablePlots[HitFitTMass].setTitle( "Mass of top (Hit FitPackage)"  );
+   availiablePlots[HitFitTMass].setXtitle( "M_{t} (GeV/c^{2})" );
    availiablePlots[HitFitTMass].makeYtitle( "GeV/c^{2}" );
    return true;
 }

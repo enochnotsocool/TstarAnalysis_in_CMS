@@ -10,6 +10,8 @@
 #include "TstarAnalysis/CombineAnalysis/interface/ChannelMgr.h"
 #include <iostream>
 
+using namespace std;
+
 //------------------------------------------------------------------------------ 
 //   Constructor and destructor
 //------------------------------------------------------------------------------
@@ -113,8 +115,9 @@ bool ChannelMgr::setSignalMass( const SampleName& input )
    return true;
 }
 
-TFile* ChannelMgr::openPlotFile() const 
+const string ChannelMgr::plotfilepath( const string& name ) const
 {
-   return new TFile( (Stringify(_name)+"-plots.root").c_str() , "UPDATE" );
+   return "./data/plots/" + Stringify(_name) + "/" + name + ".eps";
 }
+
 

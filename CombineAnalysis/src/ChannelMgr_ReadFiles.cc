@@ -23,7 +23,7 @@ bool ParseSampleLine( const string& , SampleName&, Parameter& );
 //------------------------------------------------------------------------------ 
 //   Configuration file Reading
 //------------------------------------------------------------------------------
-void ChannelMgr::SetCrossSections( const std::string& filename )
+void ChannelMgr::SetCrossSection( const std::string& filename )
 {
    ifstream input( filename );
    string   line;
@@ -48,7 +48,7 @@ void ChannelMgr::SetCrossSections( const std::string& filename )
    }
 }
 
-void ChannelMgr::SetSampleWideWeights( const std::string& filename )
+void ChannelMgr::SetSampleWideWeight( const std::string& filename )
 {
    ifstream input( filename );
    string line;
@@ -74,7 +74,7 @@ void ChannelMgr::SetSelectionEfficiency( const std::string& filename )
    } 
 }
 
-void ChannelMgr::SetSampleInputs( const std::string& filename )
+void ChannelMgr::SetSampleInput( const std::string& filename )
 {
    ifstream input( filename );
    vector<string> tokens;

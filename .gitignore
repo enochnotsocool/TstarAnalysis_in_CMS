@@ -17,8 +17,10 @@ log*
 *.gz
 *.zip
 *.tgz
+*.eps
 **/LSF*
 **/Log*
+
 # Specific file exclusion 
 # [relative/path/to/file]
 

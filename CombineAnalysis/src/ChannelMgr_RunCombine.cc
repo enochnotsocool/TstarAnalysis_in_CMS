@@ -1,35 +1,35 @@
 /*******************************************************************************
  *
- *  Filename    : CombineMgr_RunCommand.cc
+ *  Filename    : ChannelMgr_RunCommand.cc
  *  Description : Running the Higgs combine package from 
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
 *******************************************************************************/
-#include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h"
+#include "TstarAnalysis/CombineAnalysis/interface/ChannelMgr.h"
 #include <stdlib.h>
 
 using namespace std;
 
-void CombineMgr::RunCombine( const ChannelName& ch, const SampleName& massPoint, const string& method )
+void ChannelMgr::RunCombine( const SampleName& massPoint, const string& method )
 {
-   ChannelMgr* channel = _channelList.at(ch);
-   string cardfile = channel->cardFileName(massPoint);
-   string limitfile = LimitFile(massPoint,method);
+   const string cardfile   = cardFileName(massPoint);
+   const string raw_path   = raw_combineoutput(massPoint,method);
+   const string store_path = store_combineoutput(massPoint,method);
    char cmd[1024] ;
 
-   sprintf( cmd , "( combine -M %s -m %s %s ; mv %s ./data/limits/ )&" , 
+   sprintf( cmd , "( combine -M %s -m %s %s &> /dev/null ; mv %s %s )&" , 
          method.c_str(),
          MassNumberString(massPoint).c_str(),
          cardfile.c_str(),
-         limitfile.c_str() );
+         raw_path.c_str(),
+         store_path.c_str() );
    
    cout << "Running Command ["<< cmd  <<"]" <<endl; 
-
    system( cmd );
 }
 
 
-int CombineMgr::MassNumber( const SampleName& massPoint )
+int ChannelMgr::MassNumber( const SampleName& massPoint ) const
 {
    if( massPoint == Tstar_M0700 ) { return 700; }
    if( massPoint == Tstar_M0800 ) { return 800; }
@@ -44,7 +44,7 @@ int CombineMgr::MassNumber( const SampleName& massPoint )
    return -1;
 }
 
-string CombineMgr::MassNumberString( const SampleName& massPoint )
+string ChannelMgr::MassNumberString( const SampleName& massPoint )const
 {
    if( massPoint == Tstar_M0700 ) { return "700" ; }
    if( massPoint == Tstar_M0800 ) { return "800" ; }
@@ -59,10 +59,16 @@ string CombineMgr::MassNumberString( const SampleName& massPoint )
    return ""                                    ;
 }
 
-string CombineMgr::LimitFile( const SampleName& massPoint, const string& method )
+string ChannelMgr::raw_combineoutput( const SampleName& massPoint, const string& method ) const
 {
-   string limitfile 
+   string ans  
       = "higgsCombineTest." + method + ".mH" + MassNumberString(massPoint) + ".root"; 
-   return limitfile; 
+   return ans; 
 }
 
+string ChannelMgr::store_combineoutput( const SampleName& massPoint, const string& method ) const
+{
+   string ans 
+      = "./data/limits/" + Stringify(_name) + "_" + MassNumberString(massPoint) + "_" + method + ".root";
+   return ans;
+}

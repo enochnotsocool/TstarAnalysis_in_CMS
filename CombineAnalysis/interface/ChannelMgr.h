@@ -40,23 +40,27 @@ public:
    bool setSignalMass( const SampleName& );
    SampleMgr* sample( const SampleName& );
    const SampleMgr* sample( const SampleName& ) const;
-   
-   // Plotting commands
+
+   // Saving histograms
    void MakeBasicPlots();
-   void MakeDataToBGPlot( const PlotName& );
-   void MakeSignalPlot( const PlotName& );
-   void MakeInSampleComparison( const SampleName&, const PlotName&, const PlotName& );
+ 
+   // Plotting commands
+   void MakeDataToBGPlot( const PlotName& ) const ;
+   void MakeSignalPlot( const PlotName& ) const ;
+   void MakeInSampleComparison( const SampleName&, const PlotName&, const PlotName& ) const;
 
    // Limit-Calculation
-   void MakeLimitRequirements( const SampleName& );
+   void MakeLimitRequirement( const SampleName& );
+   void RunCombine( const SampleName&, const std::string& );
+   void MakeLimitPlot() const;
    std::string shapeFileName( const SampleName& ) const ;
    std::string cardFileName( const SampleName& ) const ;
 
    // File Reading functions 
-   void SetCrossSections( const std::string& filename );
+   void SetCrossSection( const std::string& filename );
    void SetSelectionEfficiency( const std::string& filename );
-   void SetSampleWideWeights( const std::string& filename );
-   void SetSampleInputs( const std::string& filename );
+   void SetSampleWideWeight( const std::string& filename );
+   void SetSampleInput( const std::string& filename );
 
 
 private:
@@ -72,7 +76,7 @@ private:
   
    std::vector<const HC_Process*>  _processList;
    std::map<const NuisancePar,std::map<const HC_Process*,float> > _uncertaintlyList;
-   
+
 
    //------------------------------------------------------------------------------ 
    //   Private member functions
@@ -82,19 +86,19 @@ private:
    void initSamples();
 
    //----- Data to BC comparison plot  --------------------------------------------
-   TFile* openPlotFile() const;
-   const  std::string makeHistTitle( const PlotName& ) const;
-   void   makeBGStack( THStack*& , TH1F*& , TH1F*& , const PlotName& ) const;
-   void   makeDataBGRatio(TH1F*&, const TH1F*, const TH1F* ) const; 
-   void   setFontStyle( THStack* ) const ;
-   void   setFontStyle( TH1F* ) const;
-   void   setXAxisFont( TH1F* ) const;
-   void   matchHeights( TH1F*, TH1F* ) const;
-   void   makeCombinedLegend( TLegend*, const TH1F*, const PlotName& );
-   float  getHistScale( const SampleMgr* ) const;
+   const std::string plotfilepath( const std::string& ) const;
+   const std::string makeHistTitle( const PlotName& ) const;
+   void  makeBGStack( THStack*& , TH1F*& , TH1F*& , const PlotName& ) const;
+   void  makeDataBGRatio(TH1F*&, const TH1F*, const TH1F* ) const; 
+   void  setFontStyle( THStack* ) const ;
+   void  setFontStyle( TH1F* ) const;
+   void  setXAxisFont( TH1F* ) const;
+   void  matchHeights( TH1F*, TH1F* ) const;
+   void  makeCombinedLegend( TLegend*, const TH1F*, const PlotName& ) const ;
+   float getHistScale( const SampleMgr* ) const;
 
    //----- Signal Channel Plots  --------------------------------------------------
-   void makeSignalLegend( TLegend*, const PlotName& );
+   void makeSignalLegend( TLegend*, const PlotName& ) const;
 
    //----- Limit calculation helper functions  ------------------------------------
    // Data type management
@@ -103,6 +107,7 @@ private:
    void makeSignalProcess( HC_Process* const );
    void makeBGLimitProcess( HC_Process* const, const SampleName&, const SampleName&);
    void normalizeProcessShape( HC_Process* const );
+   
    // File writing 
    void makeShapeFile(const SampleName& ) const ;
    void makeCard_Header(const SampleName&) const ;
@@ -111,6 +116,11 @@ private:
    void makeCard_ProcessYield(const SampleName&) const ;
    void makeCard_NuissanceTable(const SampleName&) const ;
    void clearList();
+   
+   int  MassNumber( const SampleName& )const;
+   std::string MassNumberString( const SampleName& )const;
+   std::string raw_combineoutput( const SampleName& , const std::string& )const;
+   std::string store_combineoutput( const SampleName&, const std::string& )const;
 };
 
 

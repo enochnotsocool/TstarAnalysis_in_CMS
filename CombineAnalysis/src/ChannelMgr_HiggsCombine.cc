@@ -13,7 +13,7 @@
 
 using namespace std;
 
-void ChannelMgr::MakeLimitRequirements( const SampleName& massPoint )
+void ChannelMgr::MakeLimitRequirement( const SampleName& massPoint )
 {
    makeProcessList( massPoint );
    makeNuissanceList();

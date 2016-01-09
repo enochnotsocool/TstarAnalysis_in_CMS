@@ -10,33 +10,67 @@
 #define __COMBINEMGR_H__
 
 #include "TstarAnalysis/CombineAnalysis/interface/Enums.h"
-#include "TstarAnalysis/CombineAnalysis/interface/HC_Process.h"
-#include "TstarAnalysis/CombineAnalysis/interface/NuisancePar.h"
 #include "TstarAnalysis/CombineAnalysis/interface/ChannelMgr.h"
+#include <vector>
 #include <map>
 
+//------------------------------------------------------------------------------ 
+//   Forwards declaration for classes (and typedefs)
+//------------------------------------------------------------------------------
 typedef std::pair<const ChannelName,ChannelMgr*> ChannelPair;
 typedef std::map<const ChannelName,ChannelMgr*> ChannelMap;
 
+class CombineMgr;
+class CombineCMD;
+
+//------------------------------------------------------------------------------ 
+//   Combine command interface manager
+//------------------------------------------------------------------------------
 class CombineMgr{
 public:
    CombineMgr();
    virtual ~CombineMgr ();
 
+   bool InitCommands();
    ChannelMgr* Channel( const ChannelName& ) ;
+   const ChannelMgr* Channel( const ChannelName& ) const;
+   ChannelMgr* Channel( const std::string& );
+   const ChannelMgr* Channel( const std::string& ) const;
 
    void ParseCMDFile( const std::string& );
-   void RunCombine( const ChannelName&, const SampleName&, const std::string& );
-   void MakeLimitPlots();
 
 private:
-   ChannelMap   _channelList;
+   ChannelMap  _channelList;
+   std::vector<const CombineCMD*>   _cmdList;
 
-   void SetChannel( const std::string& , const std::string& );
-   int  MassNumber( const SampleName& );
-   std::string  MassNumberString( const SampleName& );
-   std::string  LimitFile( const SampleName& , const std::string& );
-
+   bool  addCommand( const CombineCMD* );
+   const CombineCMD* command( const std::string& ) const; 
 };
+
+//------------------------------------------------------------------------------ 
+//   Base class for commands
+//------------------------------------------------------------------------------
+class CombineCMD
+{
+public:
+   CombineCMD(){}
+   virtual ~CombineCMD(){}
+   virtual const std::string cmd() const = 0;
+   virtual bool execute( const std::vector<std::string>& ) const = 0;
+};
+
+//------------------------------------------------------------------------------ 
+//   Macros short hand for declaring new command
+//------------------------------------------------------------------------------
+#define DEFINE_CMD( COMMAND )                                        \
+   class COMMAND : public CombineCMD {                               \
+   public:                                                           \
+      COMMAND(){}                                                    \
+      virtual ~COMMAND(){}                                           \
+      virtual const std::string cmd() const { return #COMMAND ; }    \
+      virtual bool execute( const std::vector<std::string>& ) const; \
+   };
+
+
 
 #endif // __COMBINEMGR_H__

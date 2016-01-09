@@ -21,6 +21,14 @@ float StrToFloat( const string& x )
    return ans;
 }
 
+int StrToInt( const string& x )
+{
+   int ans;
+   istringstream iss(x);
+   iss >> ans;
+   return ans;
+}
+
 bool BreakLineToWords( const string& line, vector<string>& words )
 {
    vector<string> temp;

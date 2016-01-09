@@ -14,6 +14,8 @@
 //----- utils_string.cc  -------------------------------------------------------
 extern bool  BreakLineToWords( const std::string&, std::vector<std::string>& );
 extern float StrToFloat( const std::string& );
+extern int   StrToInt( const std::string& );
 
+const std::string currentDateTime();
 
 #endif // __UTILS_H__

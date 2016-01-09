@@ -19,19 +19,18 @@ using namespace std;
 //------------------------------------------------------------------------------
 string Stringify( const PlotName x )
 {
-   if( x == ChiSquareTstarMass ) { return "t+g inveriant Mass (#chi^{2} Method)"; }
-   if( x == ChiSquareTMass ) { return "t Mass (#chi^{2} Method)"; }
-
-   if( x == HitFitTstarMass ) { return "t+g invariant mass (HitFit Package)"; }
-   if( x == HitFitTMass) { return "t Mass (HitFit Pacakge)"; }
-
-   if( x == JetPt        ) { return "JetPt"; }
-   if( x == JetEta       ) { return "JetEta"; }
-   if( x == JetCount     ) { return "JetCount"; }
-   if( x == LeptonPt     ) { return "LeptonPt"; }
-   if( x == LeptonEta    ) { return "LeptonEta"; }
-   if( x == MET          ) { return "MET"; }
-   if( x == VertexCount  ) { return "VertexCount"; } 
+   
+   ENUM_TO_STRING( x , JetPt              );
+   ENUM_TO_STRING( x , JetEta             );
+   ENUM_TO_STRING( x , JetCount           );
+   ENUM_TO_STRING( x , LeptonPt           );
+   ENUM_TO_STRING( x , LeptonEta          );
+   ENUM_TO_STRING( x , MET                );
+   ENUM_TO_STRING( x , VertexCount        );
+   ENUM_TO_STRING( x , ChiSquareTstarMass );
+   ENUM_TO_STRING( x , ChiSquareTMass     );
+   ENUM_TO_STRING( x , HitFitTstarMass    );
+   ENUM_TO_STRING( x , HitFitTMass        );
    return "";
 }
 

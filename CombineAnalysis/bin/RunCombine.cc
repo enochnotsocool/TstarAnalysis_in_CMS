@@ -17,21 +17,28 @@ void Usage();
 
 int main( int argc, char* argv[] ) 
 {
-   if( argc != 2 ){
+   if( argc < 2 ){
       cerr << "Error: Mismatch of required arguments" << endl;
       Usage();
       return -1;
    } 
    initPlotList();
    cmbMgr = new CombineMgr;
-   cmbMgr->ParseCMDFile( argv[1] );
+   if( !cmbMgr->InitCommands() ){
+      delete cmbMgr;
+      return 1;
+   }
+   for( int i = 1 ; i < argc; ++i ){ 
+      cmbMgr->ParseCMDFile( argv[i] );
+   }
 
+   delete cmbMgr;
    return 0;
 }
 
 void Usage()
 {
-   cout << "./RunCombine <CMD filename>" << endl;
+   cout << "./RunCombine.out <CMD filename1> [CMD filename2...]" << endl;
 }
 
 
