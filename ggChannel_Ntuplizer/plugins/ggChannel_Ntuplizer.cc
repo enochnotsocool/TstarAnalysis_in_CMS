@@ -11,9 +11,19 @@ using namespace std;
 
 ggChannel_Ntuplizer::ggChannel_Ntuplizer(const edm::ParameterSet& iConfig ):
    BaseAnalyzer(iConfig),
-   _hitfitter( iConfig )
+   _chisqSolver(iConfig),
+   _hitfitter( iConfig ),
+   _runChiSq( iConfig.getParameter<bool>("RunChiSquare" ) ),
+   _runHitFit(iConfig.getParameter<bool>("RunHitFit" ) )
 {
-   _hitfitBranches.registerVariables( _tree );
+   if( _runChiSq ){
+      _chisqResult  = new ChiSquareResult;
+      _tree->Branch( "ChiSquareResult" , "ChiSquareResult" , &_chisqResult , 32000 , 99 );
+   }
+   if( _runHitFit ){
+      _hitfitResult = new HitFitResult;
+      _tree->Branch( "HitFitResult", "HitFitResult", &_hitfitResult, 32000, 99 );
+   }
 }
 
 ggChannel_Ntuplizer::~ggChannel_Ntuplizer(){}
@@ -26,11 +36,13 @@ void ggChannel_Ntuplizer::endJob(){}
 //------------------------------------------------------------------------------
 void ggChannel_Ntuplizer::addCustomVariables( const edm::Event& iEvent )
 {
+   _chisqSolver.ClearAll();
+   _hitfitter.ClearAll();
    if( _debug > 1 ) { cerr << "\t[1] Adding custom variables" << endl ; } 
-   // _eventBranches.chiSqMass   = ComputeChiSqMass();
-   _eventBranches.eventWeight = ComputeEventWeight( iEvent );
+   _event->SetTotalWeight( ComputeEventWeight(iEvent) );
 
-   RunHitFit();
+   RunChiSquare();
+   RunHitFit(); 
 }
 
 

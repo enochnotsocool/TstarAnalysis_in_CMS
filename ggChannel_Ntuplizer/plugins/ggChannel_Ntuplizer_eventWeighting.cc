@@ -6,7 +6,7 @@
  *
 *******************************************************************************/
 #include "TstarAnalysis/ggChannel_Ntuplizer/interface/ggChannel_Ntuplizer.h"
-#include "TstarAnalysis/Constants/interface/Constants.h"
+#include "TstarAnalysis/MCWeighter/interface/MCWeights.h"
 #include <iostream>
 
 float ggChannel_Ntuplizer::ComputeEventWeight( const edm::Event& iEvent )
@@ -14,7 +14,7 @@ float ggChannel_Ntuplizer::ComputeEventWeight( const edm::Event& iEvent )
    if( iEvent.isRealData() ) { return 1.0; }
    float ans = 1.0 ; 
    //----- PileUp weighting  ------------------------------------------------------
-   ans *= PileUpWeight[ _eventBranches.pileUp ] ;
+   ans *= PileUpWeight( _event->PileUp() ) ;
 
    return ans;
 }

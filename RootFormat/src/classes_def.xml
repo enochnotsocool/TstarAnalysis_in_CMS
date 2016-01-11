@@ -1,0 +1,16 @@
+<lcgdict>
+   <selection>
+      <class name="MiniParticle"/>
+      <class name="MiniJet"/>
+      <class name="MiniMuon"/>
+      <class name="MiniElectron" />
+      <class name="std::vector<MiniJet>" />
+      <class name="std::vector<MiniMuon>" />
+      <class name="std::vector<MiniElectron>" />
+      <class name="MiniEvent"/>
+      <class name="ChiSquareResult"/>
+      <class name="HitFitResult"/> 
+   </selection>
+   <exclusion>
+   </exclusion>
+</lcgdict>

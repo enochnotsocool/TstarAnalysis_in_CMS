@@ -8,9 +8,24 @@ options = opts.VarParsing ('analysis')
 
 COpts.initOptions( options );
 
-options.setDefault('sample', 'file:/wk_cms/yichen/TstarAnalysis/filtered_MiniAODs/SignalMC.root')
+options.setDefault('sample', 'file:/wk_cms/yichen/TstarAnalysis/gg_MuonSignal_MiniAODs/TstarTstarToTgluonTgluon_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1.root')
 options.setDefault('DataProcessing', "MC25ns_MiniAODv2" )
 options.setDefault('Debug', 10 )
+options.setDefault('outputLabel','ntuple.root')
+options.setDefault('maxEvents' , 20 )
+
+options.register( 'RunChiSq',
+      True,
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.bool,
+      'Whether to run chi square sorting method' )
+
+options.register( 'RunHitFit',
+      True,
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.bool,
+      'Whether to run HitFit method' )
+
 
 options.parseArguments()
 
@@ -71,6 +86,8 @@ process.ntuplizer = cms.EDAnalyzer(
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
       Debug = cms.untracked.int32( options.Debug ),
+      RunChiSquare = cms.bool( options.RunChiSq ),
+      RunHitFit = cms.bool( options.RunHitFit )
    )
 
 

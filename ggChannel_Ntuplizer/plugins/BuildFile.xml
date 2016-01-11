@@ -4,8 +4,10 @@
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
 <use name="TopQuarkAnalysis/TopHitFit" />
-<use name="TstarAnalysis/Constants" />
 <use name="TstarAnalysis/BaseClasses" />
+<use name="TstarAnalysis/RootFormat" />
+<use name="TstarAnalysis/MCWeighter" />
 <use name="TstarAnalysis/ggChannel_Ntuplizer" />
 <flags CXXFLAGS="-g"/>
+<flags CPPDEFINES="CMSSW"/>
 <flags EDM_PLUGIN="1"/>

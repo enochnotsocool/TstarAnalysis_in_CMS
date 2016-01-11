@@ -8,6 +8,8 @@
 <use name="DataFormats/PatCandidates"/>
 <use name="bpkFrameWork/ModifiedHitFit" />
 <use name="TopQuarkAnalysis/TopHitFit" />
+<use name="TstarAnalysis/RootFormat" />
+<use name="TstarAnalysis/BaseClasses" />
 <export><lib name="1"/></export>
 
 

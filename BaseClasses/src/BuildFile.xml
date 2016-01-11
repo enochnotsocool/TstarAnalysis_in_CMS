@@ -7,7 +7,8 @@
 <use name="DataFormats/VertexReco"/>
 <use name="DataFormats/ParticleFlowReco"/>
 <use name="DataFormats/PatCandidates"/>
-<use name="MiniAODAnalysis/BaseFilter" />
-<use name="MiniAODAnalysis/BaseAnalyzer" />
+<use name="CommonTools/UtilAlgos" />
 <use name="TstarAnalysis/RootFormat"/>
+
+<flags CPPDEFINES="CMSSW"/>
 <export><lib name="1"/></export>

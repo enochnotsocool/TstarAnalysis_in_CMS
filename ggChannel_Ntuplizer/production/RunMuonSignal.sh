@@ -22,9 +22,16 @@ for file in $(ls $InputDir) ; do
       DataProcessing="MC25ns_MiniAODv2"
    fi
 
-   outputfile=$file
-   cmsRun ggChannel_Ntuplizer_cfg.py \
-      sample="file:///${InputDir}/$file" \
+   outputfile=${file%%_4f*}
+   outputfile=${outputfile%%_5f*}
+   outputfile=${outputfile%%_Tune*}
+   outputfile=${outputfile}.root
+   echo $outputfile 
+
+   logfile=log_MuonSignal_${outputfile%.root}.txt
+   cmsRun ggChannel_Ntuplizer_cfg.py       \
+      maxEvents=-1                         \
+      sample="file:///${InputDir}/$file"   \
       outputLabel="$TargetDir/$outputfile" \
-      DataProcessing=$DataProcessing &
+      DataProcessing=$DataProcessing &> $logfile &
 done
