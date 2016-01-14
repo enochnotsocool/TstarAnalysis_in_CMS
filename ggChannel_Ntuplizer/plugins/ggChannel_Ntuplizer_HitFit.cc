@@ -29,7 +29,7 @@ void ggChannel_Ntuplizer::RunHitFit()
 
    _hitfitter.RunPermutations();
 
-   _hitfitResult->MakeResult( _hitfitter.getBestResult() );
+  _event->GetHitFit().MakeResult( _hitfitter.getBestResult() );
 }
 
 void HitFitResult::MakeResult( const hitfit::Fit_Result& x )

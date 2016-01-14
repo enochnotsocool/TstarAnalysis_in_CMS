@@ -22,10 +22,7 @@ for file in $(ls $InputDir) ; do
       DataProcessing="MC25ns_MiniAODv2"
    fi
 
-   outputfile=${file%%_4f*}
-   outputfile=${outputfile%%_5f*}
-   outputfile=${outputfile%%_Tune*}
-   outputfile=${outputfile}.root
+   outputfile=${file%%.root}_Ntuple.root
    echo $outputfile 
 
    logfile=log_MuonSignal_${outputfile%.root}.txt

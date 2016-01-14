@@ -30,10 +30,8 @@ protected:
 
 private:
    ChiSquareSolver  _chisqSolver;
-   ChiSquareResult* _chisqResult;
 
    HitFitter     _hitfitter;
-   HitFitResult* _hitfitResult;
 
    // Flags of operation 
    const bool  _runChiSq;

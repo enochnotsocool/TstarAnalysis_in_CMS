@@ -1,6 +1,7 @@
 <use name="ROOT" />
 <use name="TstarAnalysis/RootFormat" />
-<use name="TstarAnalysis/Utils"/>
+<use name="CMSSW_Utils/Utils_Functions"/>
+<use name="CMSSW_Utils/Utils_Types"/>
 <lib>
    <Flags CXXFLAGS="-lGui -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -pthread -lm -ldl -rdynamic"/>
    <Flags CXXFLAGS="-g"/>

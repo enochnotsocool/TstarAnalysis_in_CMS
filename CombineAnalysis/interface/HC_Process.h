@@ -19,32 +19,25 @@ typedef std::map<const NuisancePar,float> NuisanceMap;
 class HC_Process
 {
 public:
-   HC_Process(const ChannelName, const SampleName);
+   HC_Process(const std::string&, const std::string& );
    virtual ~HC_Process ();
    
-   ChannelName GetChannel() const ;
-   SampleName  GetProcess() const ;
-   std::string ObjName() const;
+   const std::string& GetChannel() const { return _channelName; }
+   const std::string& GetProcess() const { return _processName; }
+   const std::string ObjName() const { return _channelName+"_"+_processName; }
 
-   void   SetShape( TH1F* x );
-   TH1F*  GetShape() const ;
-   void   SetRate( double x );
-   double GetRate() const ;
-   void   AddNuisance( const NuisancePar& x , float y ); 
-   NuisanceMap& GetNuisance() ;
-   const NuisanceMap& GetNuisance() const;
+   void   Noramlize();
+   void   SetShape( TH1F* x ) { _shape_hist = x; }
+   TH1F*  GetShape() const { return _shape_hist; }
+   void   SetRate( double x ) { _rate = x ; }
+   double GetRate() const { return _rate; }
 
-   // Required for maps
-   bool operator==( const HC_Process& ) const;
-   bool operator<( const HC_Process& ) const;
-   bool operator>( const HC_Process& ) const;
 private:
-   ChannelName  _channelName;
-   SampleName   _processName;
+   const std::string&  _channelName;
+   const std::string&  _processName;
    TH1F*   _shape_hist;
    // TH1F* _shape_systematics;
    double  _rate;
-   NuisanceMap _nuisance;
 };
 
 #endif // __HC_PROCESS_H__

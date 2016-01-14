@@ -16,10 +16,14 @@
 #include "TstarAnalysis/RootFormat/interface/MiniJet.h"
 #include "TstarAnalysis/RootFormat/interface/MiniMuon.h"
 #include "TstarAnalysis/RootFormat/interface/MiniElectron.h"
+#include "TstarAnalysis/RootFormat/interface/ChiSquareResult.h"
+#include "TstarAnalysis/RootFormat/interface/HitFitResult.h"
 #else
 #include "MiniJet.h"
 #include "MiniMuon.h"
 #include "MiniElectron.h"
+#include "ChiSquareResult.h"
+#include "HitFitResult.h"
 #endif
 
 class MiniEvent 
@@ -49,6 +53,10 @@ public:
    std::vector<MiniJet>&  JetList();
    std::vector<MiniMuon>& MuonList() ;
    std::vector<MiniElectron>& ElectronList();
+
+   ChiSquareResult& GetChiSquare();
+   HitFitResult& GetHitFit();
+
    void AddJet( const MiniJet& );
    void AddMuon( const MiniMuon& );
    void AddElectron( const MiniElectron& );
@@ -70,6 +78,9 @@ private:
    std::vector<MiniJet>      _jetList;
    std::vector<MiniMuon>     _muonList;
    std::vector<MiniElectron> _electronList;
+
+   ChiSquareResult _chisqresult;
+   HitFitResult    _hitfitresult;
 };
 
 #endif // __MINIEVENT_H__

@@ -7,7 +7,7 @@
 *******************************************************************************/
 #include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h"
 #include "TstarAnalysis/CombineAnalysis/interface/CombineCommands.h"
-#include "TstarAnalysis/Utils/interface/Utils.h"
+#include "CMSSW_Utils/Utils_Functions/interface/Utils.h"
 
 #include <fstream>
 #include <iostream>
@@ -24,13 +24,13 @@ CombineMgr*  cmbMgr = NULL;
 //------------------------------------------------------------------------------
 CombineMgr::CombineMgr()
 {
-   _channelList.insert( ChannelPair(ggMuon, new ChannelMgr(ggMuon)) );
+   _channelList.push_back( new ChannelMgr( "ggMuon" , "\\mu channel" ) );
 }
 
 CombineMgr::~CombineMgr()
 {
-   for( auto& channelpair : _channelList ){
-      delete channelpair.second;
+   for( auto& channel : _channelList ){
+      delete channel;
    }
    for( auto cmd : _cmdList ){
       delete cmd;
@@ -39,7 +39,7 @@ CombineMgr::~CombineMgr()
 
 bool CombineMgr::InitCommands()
 {
-   if( !addCommand( new SetCrossSection        ) ||
+   if( 
        !addCommand( new SetSelectionEfficiency ) ||
        !addCommand( new SetSampleWideWeight    ) ||
        !addCommand( new SetSampleInput         ) ||
@@ -47,6 +47,7 @@ bool CombineMgr::InitCommands()
        !addCommand( new MakeDataBGPlot         ) ||
        !addCommand( new MakeSignalPlot         ) ||
        !addCommand( new MakeLimitRequirement   ) ||
+       !addCommand( new MakeLatexSummary       ) ||
        !addCommand( new RunCombine             ) ||
        !addCommand( new WaitCMD                ) ||
        !addCommand( new MakeLimitPlot          )    ) {
@@ -83,32 +84,23 @@ void CombineMgr::ParseCMDFile( const string& filename )
 //------------------------------------------------------------------------------ 
 //   Access Members
 //------------------------------------------------------------------------------
-ChannelMgr* CombineMgr::Channel( const ChannelName& x )
-{
-   if( _channelList.find(x) != _channelList.end() ){
-      return _channelList.at(x);
-   } else {
-      return NULL;
-   }
-} 
-
-const ChannelMgr* CombineMgr::Channel( const ChannelName& x ) const
-{
-   if( _channelList.find(x) != _channelList.end() ){
-      return _channelList.at(x);
-   } else {
-      return NULL;
-   }
-}
 
 ChannelMgr* CombineMgr::Channel( const string& x )
 {
-   return Channel( ChannelFromString(x) );
+   for( auto& channel : _channelList ){
+      if( channel->Name() == x ){
+         return channel; }
+   }
+   return NULL;
 }
 
 const ChannelMgr* CombineMgr::Channel( const string& x ) const 
 {
-   return Channel( ChannelFromString(x) );
+   for( const auto& channel : _channelList ){
+      if( channel->Name() == x ){
+         return channel; }
+   }
+   return NULL;
 }
 
 const CombineCMD* CombineMgr::command( const string& x ) const

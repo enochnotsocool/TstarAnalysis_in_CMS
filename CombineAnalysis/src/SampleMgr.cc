@@ -6,156 +6,131 @@
  *
 *******************************************************************************/
 #include "TstarAnalysis/CombineAnalysis/interface/SampleMgr.h"
+#include "CMSSW_Utils/Utils_Functions/interface/Utils.h"
 #include "TChainElement.h"
 #include <iostream>
 #include <stdio.h>
 
-//------------------------------------------------------------------------------ 
-//   Helper variables
-//------------------------------------------------------------------------------
-static PlotName   plotname;
-static std::string  xtitle;
-static std::string  ytitle;
-static unsigned int binCount;
-static float xmax;
-static float xmin;
+using namespace std;
 
 //------------------------------------------------------------------------------ 
 //   Constructor and desctructor
 //------------------------------------------------------------------------------
-SampleMgr::SampleMgr( const SampleName& name ) 
+SampleMgr::SampleMgr( const string& name, const string& latex ) :
+   _name(name),_latex_name(latex)
 {
-   _name   = name ;
-   _chain  = new TChain( "ntuplizer/TstarAnalysis" );
-   setSampleWeight( 1. );
-   setCrossSection( 1. );
-   setSelectionEff( 0. );
+   _histList = availablePlots;
 
-   _histMap.clear();
-   for( const auto& pair : availiablePlots  ){
-      plotname = pair.first;
-      binCount = pair.second.BinCount();
-      xmax     = pair.second.XMax();
-      xmin     = pair.second.XMin();
-      xtitle   = pair.second.Xtitle();
-      ytitle   = pair.second.Ytitle();
-      addHist( plotname , binCount , xmin , xmax );
-      Hist( plotname )->SetLineColor( kBlack );
-      Hist( plotname )->GetXaxis()->SetTitle( xtitle.c_str() );
-      Hist( plotname )->GetYaxis()->SetTitle( ytitle.c_str() );
-      if( _name == Data ){
-         Hist( plotname )->SetMarkerStyle( 21 );
-      }
-   }
    _rawEventsCount=0.;
    _eventWeightCount=0.;
    _event = new MiniEvent;
-   _chisq = new ChiSquareResult;
-   _hitfit = new HitFitResult;
+   _chain  = new TChain( "ntuplizer/TstarAnalysis" );
    _chain->SetBranchAddress( "MiniEvent" , &_event );
-   _chain->SetBranchAddress( "ChiSquareResult" , &_chisq );
-   _chain->SetBranchAddress( "HitFitResult" , &_hitfit );
+}
+
+SampleMgr::SampleMgr( const SampleMgr& x ):
+   _name(x._name),
+   _latex_name(x._latex_name),
+   _histList(x._histList),
+   _cross_section(x._cross_section),
+   _selection_eff(x._selection_eff),
+   _sample_weight(x._sample_weight),
+   _rawEventsCount(x._rawEventsCount),
+   _eventWeightCount(x._eventWeightCount)
+{
+   _event = new MiniEvent;
+   _chain = new TChain( "ntuplizer/TstarAnalysis");
+   _chain->SetBranchAddress( "MiniEvent" , &_event );
 }
 
 SampleMgr::~SampleMgr()
 {
-   for( auto hist_pair : _histMap ){
-      delete hist_pair.second;
-   }
+   _histList.Clear();
+   delete _event;
+   delete _chain;
 }
 
 //------------------------------------------------------------------------------ 
-//   Basic access functions
+//   Advanced Access member function
 //------------------------------------------------------------------------------
-const SampleName& SampleMgr::name() const{ return _name ; }
-float SampleMgr::crossSection() const { return _cross_section.CentralValue();}
-void  SampleMgr::setCrossSection( const Parameter& x ){ _cross_section = x ; }
-float SampleMgr::selectionEff() const { return _selection_eff.CentralValue();}
-void  SampleMgr::setSelectionEff( const Parameter& x ){ _selection_eff = x ; }
-float SampleMgr::sampleWeight() const { return _sample_weight.CentralValue();}
-void  SampleMgr::setSampleWeight( const float x ){ _sample_weight.SetCentralValue(x) ; }
-
-void SampleMgr::Print( float totalLumi ) const 
+Parameter SampleMgr::ExpectedYield( const double total_lumi ) const
 {
-   std::cout << "--------------------------------------------" << std::endl;
-   std::cout << "   Name:           " << Stringify(_name) << std::endl;
-   std::cout << "   Files:          " << std::endl;
-   printFileList();
-   std::cout << "   Event Count:    " << getRawEventCount() << std::endl;
-   if( _name != Data ){
-      std::cout << "   Weighted Count: " << getTotalWeightedCount() << std::endl;
-      std::cout << "      Event Based Average: "  << getAverageEventWeight() << std::endl;
-      std::cout << "      Sample Weight:       "  << sampleWeight() << std::endl;
-      std::cout << "   XSection:    " << _cross_section << std::endl;
-      std::cout << "   Efficiency:  " << _selection_eff << std::endl;
-      std::cout << "   Exp. Yield:  " << getExpectedYield(totalLumi) << std::endl;
-   }
-   std::cout << "--------------------------------------------\n" << std::endl;
+   return total_lumi * CrossSection() * SelectionEff() * SampleWeight() 
+      * (GetWeightedEventCount() / GetRawEventCount()) ; 
 }
 
-void SampleMgr::PrintTable( const float totalLumi ) const 
+double SampleMgr::GetHistogramScale(const double total_lumi ) const
 {
-   if( _name != Data ){
-//      printf( "%s & $%d$ & $%lf^{%lf}_{%lf}$  &  $%lf^{%lf}_{%lf} $    &     & \\\\n"
+   double ans = ExpectedYield( total_lumi ).CentralValue();
+   ans /= GetWeightedEventCount();
+   return ans;
+}
+
+double SampleMgr::GetRawEventCount() const 
+{
+   if( _rawEventsCount == 0.0 ) {
+      _rawEventsCount = _chain->GetEntries();
    }
+   return _rawEventsCount;
+}
+
+double SampleMgr::GetWeightedEventCount() const 
+{
+   if( _eventWeightCount == 0.0 ){ 
+      for( long long i = 0 ; i < _chain->GetEntries() ; ++i ){
+         _chain->GetEntry(i);
+         _eventWeightCount += _event->TotalEventWeight();
+      }
+   }
+   return _eventWeightCount; 
 }
 
 //------------------------------------------------------------------------------ 
 //   ROOT object interaction functions
 //------------------------------------------------------------------------------
-void SampleMgr::addFile( const std::string& filename )
+void SampleMgr::AddFile( const std::string& filename )
 {
-   printf("Adding file %s to sample %s\n" , filename.c_str() , Stringify(_name).c_str() );
+   printf("Adding file %s to sample %s\n" , filename.c_str() , _name.c_str() );
    _chain->Add( filename.c_str() );
 }
 
-TH1F* SampleMgr::Hist( const PlotName& histname ) 
-{ 
-   return _histMap.at(histname); 
-}
-const TH1F* SampleMgr::Hist( const PlotName& name ) const
+void SampleMgr::SetFillColor( const Color_t& c , const float alpha = 1.0 )
 {
-   return _histMap.at(name);
-}
-
-void SampleMgr::setColor( const Color_t& c )
-{
-   setFillColor( c );
-   setLineColor( c );
-}
-
-void SampleMgr::setFillColor( const Color_t& c , const float alpha )
-{
-   for( auto histpair : _histMap ){
-      histpair.second->SetFillColorAlpha( c , alpha );
+   for( auto& hist : _histList ){
+      hist.SetFillColor(c,alpha);
    }
-   _fillColor = c;
 }
 
-void SampleMgr::setLineColor( const Color_t& c )
+void SampleMgr::SetLineColor( const Color_t& c )
 {
-   for( auto histpair : _histMap ){
-      histpair.second->SetLineColor( c  );
+   for( auto& hist : _histList ){
+      hist.SetLineColor(c);
    }
-   _lineColor = c ;
 }
 
 //------------------------------------------------------------------------------ 
-//   Root object interaction helper private functions
+//   Private data members
 //------------------------------------------------------------------------------
-void SampleMgr::addHist( const PlotName& histname , int nbin , float xmin , float xmax )
+const string SampleMgr::MakeLatexName() const 
 {
-   std::string temp = Stringify(_name) + Stringify(histname);
-   TH1F* newhist = new TH1F( temp.c_str() , temp.c_str() , nbin , xmin , xmax );
-   _histMap[ histname ] = newhist ;
+   string ans = _latex_name;
+   ConvertToRegularLatex( ans );
+   return ans;
+}
+const string SampleMgr::MakeRootTitle() const 
+{
+   string ans = _latex_name;
+   ConvertToRootFlavorLatex( ans );
+   return ans;
 }
 
-void SampleMgr::printFileList() const
-{
-   TObjArray* fileElements = _chain->GetListOfFiles();
-   TIter next(fileElements);
-   TChainElement* chEl = 0;
-   while (( chEl=(TChainElement*)next() )) {
-      printf("      %s\n", chEl->GetTitle());
-   }
-}
+
+// void SampleMgr::printFileList() const
+// {
+//    TObjArray* fileElements = _chain->GetListOfFiles();
+//    TIter next(fileElements);
+//    TChainElement* chEl = 0;
+//    while (( chEl=(TChainElement*)next() )) {
+//       printf("      %s\n", chEl->GetTitle());
+//    }
+// }

@@ -8,6 +8,8 @@
  *
 *******************************************************************************/
 #include "TstarAnalysis/CombineAnalysis/interface/ChannelMgr.h"
+
+#include "CMSSW_Utils/Utils_Functions/interface/Utils.h"
 #include <iostream>
 
 using namespace std;
@@ -17,107 +19,73 @@ using namespace std;
 //------------------------------------------------------------------------------
 float ChannelMgr::_totalLumi = 0.0;
 
-ChannelMgr::ChannelMgr( const ChannelName x )
+ChannelMgr::ChannelMgr( const string& name, const string& latex ):
+   _name(name), 
+   _latex_name(latex),
+   _dataSample("Data","Data"),
+   _MCSampleTable(availableSamples)
 {
-   _name = x ;
-   initSamples();
 }
 
 ChannelMgr::~ChannelMgr()
 {
-   for( auto pair : _MCsignalMap     ) { delete pair.second; }
-   for( auto pair : _MCbackgroundMap ) { delete pair.second; }
-   delete _dataSample;
 }
 
 //------------------------------------------------------------------------------ 
-//   Public method implementation
+//   Private member functions - Access helpers
 //------------------------------------------------------------------------------
-void ChannelMgr::Print() const 
+const string ChannelMgr::MakeRootName() const 
 {
-   std::cout << "*****************************************************" << std::endl;
-   std::cout << "Channel Manager" << std::endl;
-   std::cout << "Luminocity : " << _totalLumi  << std::endl;
-   printAllSamples(); 
-   std::cout << "*****************************************************" << std::endl;
+   string ans = _latex_name;
+   ConvertToRootFlavorLatex(ans);
+   return ans;
 }
 
-void ChannelMgr::printSample( const SampleName& name ) 
+const string ChannelMgr::MakeLatexName() const 
 {
-   sample( name )->Print(_totalLumi);
+   string ans = _latex_name;
+   ConvertToRegularLatex(ans);
+   return ans;
 }
 
-void ChannelMgr::printTable() const 
+SampleMgr& ChannelMgr::Sample( const string& input )
 {
-   _dataSample->Print( _totalLumi );
-   printf( "Sample Name & Raw Events & XSection & Eff & Weight & Exp. Yeild \\\\\n" );
-   for( const auto& pair: _MCbackgroundMap ){
-      pair.second->PrintTable( _totalLumi ); 
+   if( input == "Data" ) return _dataSample;
+   return _MCSampleTable.Sample(input);
+}
+
+const SampleMgr& ChannelMgr::Sample( const string& input ) const
+{
+   if( input == "Data" ) return _dataSample;
+   return _MCSampleTable.Sample(input);
+}
+
+bool ChannelMgr::HasSample( const string& input ) const
+{
+   if( input == "Data" ) return true;
+   return _MCSampleTable.HasSample(input);
+}
+
+bool ChannelMgr::HasSample( const string& listname, const string& samplename ) const
+{
+   for( const auto& list : _MCSampleTable ){
+      if( list.Name() != listname ) { 
+         continue; }
+      for( const auto& sample : list ){
+         if( sample.Name() == samplename ){
+            return true; }
+      }
    }
-}
-
-
-void ChannelMgr::printAllSamples() const 
-{
-   Parameter total_background(0.);
-   std::cout << "\n*** Data Samples ************************************" << std::endl;
-   _dataSample->Print( _totalLumi );
-   std::cout << "\n*** MC Signals   ************************************" << std::endl;
-   for( const auto& pair : _MCsignalMap ) {
-      pair.second->Print( _totalLumi ); }
-   std::cout << "\n*** MC Background ***********************************" << std::endl;
-   for( const auto& pair : _MCbackgroundMap ){
-      pair.second->Print( _totalLumi );
-      total_background += pair.second->getExpectedYield( _totalLumi );
-   }
-   std::cout << "\n*** MC Background: " << total_background << "Events" << std::endl;
-}
-
-SampleMgr* ChannelMgr::sample( const SampleName& name )
-{
-   static SampleMap::iterator it;
-   if( name == _dataSample->name() ) {return _dataSample;}
-   it = _MCsignalMap.find(name);
-   if( it != _MCsignalMap.end() ) { return it->second; }
-   it = _MCbackgroundMap.find(name);
-   if( it != _MCbackgroundMap.end() ) { return it->second; }
-   return NULL;
-}
-
-const SampleMgr* ChannelMgr::sample( const SampleName& name ) const
-{
-   static SampleMap::const_iterator it;
-   if( name == _dataSample->name() ) {return _dataSample;}
-   it = _MCsignalMap.find(name);
-   if( it != _MCsignalMap.end() ) { return it->second; }
-   it = _MCbackgroundMap.find(name);
-   if( it != _MCbackgroundMap.end() ) { return it->second; }
-   return NULL;
+   _MCSampleTable.Print();
+   return false;
 }
 
 void ChannelMgr::MakeBasicPlots()
 {
-   _dataSample->makeBasicPlots();
-   for( const auto& pair : _MCsignalMap ) {
-      pair.second->makeBasicPlots(); }
-   for( const auto& pair : _MCbackgroundMap ){
-      pair.second->makeBasicPlots(); }
+   _dataSample.MakeBasicPlots();
+   for( auto& list : _MCSampleTable ){
+      for( auto& sample : list ){
+         sample.MakeBasicPlots();
+      }
+   }
 }
-
-void ChannelMgr::setLumi( const float x ){ _totalLumi = x ; }
-
-bool ChannelMgr::setSignalMass( const SampleName& input )
-{
-   static SampleMap::iterator it;
-   it = _MCsignalMap.find( input );
-   if( it == _MCsignalMap.end() ) return false;
-   _currentSignal = it->second ;
-   return true;
-}
-
-const string ChannelMgr::plotfilepath( const string& name ) const
-{
-   return "./data/plots/" + Stringify(_name) + "/" + name + ".eps";
-}
-
-

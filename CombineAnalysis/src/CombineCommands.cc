@@ -7,7 +7,7 @@
 *******************************************************************************/
 #include "TstarAnalysis/CombineAnalysis/interface/CombineCommands.h"
 #include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h"
-#include "TstarAnalysis/Utils/interface/Utils.h"
+#include "CMSSW_Utils/Utils_Functions/interface/Utils.h"
 #include <iostream>
 #include <stdlib.h>
 #include <memory>
@@ -27,15 +27,6 @@ bool PlotNotFound( const string& );
 //------------------------------------------------------------------------------ 
 //   Defining command execution
 //------------------------------------------------------------------------------
-bool SetCrossSection::execute( const vector<string>& options ) const
-{
-   if( !HasExactOptionCount( options, 2 ) ) { return false; }
-   ChannelMgr* channel = cmbMgr->Channel( options[0] );
-   if( channel == NULL ){ return ChannelNotFound( options[0] ); }
-
-   channel->SetCrossSection( options[1] );
-   return true;
-}
 
 bool SetSelectionEfficiency::execute( const vector<string>& options ) const
 {
@@ -52,7 +43,7 @@ bool SetSampleWideWeight::execute( const vector<string>& options ) const
    if( !HasExactOptionCount( options, 2 ) ) { return false; }
    ChannelMgr* channel = cmbMgr->Channel( options[0] );
    if( channel == NULL ){ return ChannelNotFound( options[0] ); }
-   channel->SetSampleWideWeight( options[1] );
+   channel->SetSampleWeight( options[1] );
    return true;
 }
 
@@ -79,9 +70,8 @@ bool MakeDataBGPlot::execute( const vector<string>& options ) const
    if( !HasExactOptionCount( options, 2 ) ) { return false; }
    ChannelMgr* channel = cmbMgr->Channel( options[0] );
    if( channel == NULL ){ return ChannelNotFound(options[0]); }
-   const PlotName x = PlotNameFromString( options[1] );
-   if( x == PLOTNAME_END ) { return PlotNotFound(options[1]); } 
-   channel->MakeDataToBGPlot( x );
+   if( !availablePlots.HasHistogram(options[1]) ) { return PlotNotFound(options[1]); } 
+   channel->MakeDataBGPlot( options[1] );
    return true;
 }
 
@@ -90,9 +80,8 @@ bool MakeSignalPlot::execute( const vector<string>& options ) const
    if( !HasExactOptionCount( options, 2 ) ) { return false; }
    ChannelMgr* channel = cmbMgr->Channel( options[0] );
    if( channel == NULL ){ return ChannelNotFound(options[0]); }
-   const PlotName x = PlotNameFromString( options[1] );
-   if( x == PLOTNAME_END ) { return PlotNotFound(options[1]); } 
-   channel->MakeSignalPlot( x );
+   if( !availablePlots.HasHistogram(options[1]) ) { return PlotNotFound(options[1]); } 
+   channel->MakeSignalPlot( options[1] );
    return true;
 }
 
@@ -101,9 +90,8 @@ bool MakeLimitRequirement::execute( const vector<string>& options ) const
    if( !HasExactOptionCount( options, 2 ) ) { return false; }
    ChannelMgr* channel = cmbMgr->Channel( options[0] );
    if( channel == NULL ){ return ChannelNotFound(options[0]); }
-   const SampleName x = SampleFromString( options[1] );
-   if( !SignalSample(x) ) { return PlotNotFound(options[1]); } 
-   channel->MakeLimitRequirement( x );
+   if( channel->HasSample("Signal",options[1]) ) { return PlotNotFound(options[1]); } 
+   channel->MakeLimitRequirement( options[1] );
    return true;
 }
 
@@ -112,13 +100,10 @@ bool RunCombine::execute( const vector<string>& options ) const
    if( !HasExactOptionCount( options, 3 ) ) { return false; }
    ChannelMgr* channel = cmbMgr->Channel( options[0] );
    if( channel == NULL ){ return ChannelNotFound(options[0]); }
-   const SampleName x = SampleFromString( options[1] );
-   if( !SignalSample(x) ) { return PlotNotFound(options[1]); } 
-   channel->RunCombine( x , options[2] );
+   if( !channel->HasSample("Signal",options[1]) ) { return PlotNotFound(options[1]); } 
+   channel->RunCombine( options[1] , options[2] );
    return true; 
 }
-
-
 
 bool MakeLimitPlot::execute( const vector<string>& options ) const
 {
@@ -126,6 +111,15 @@ bool MakeLimitPlot::execute( const vector<string>& options ) const
    ChannelMgr* channel = cmbMgr->Channel( options[0] );
    if( channel == NULL ){ return ChannelNotFound(options[0]); }
    channel->MakeLimitPlot();
+   return true; 
+}
+
+bool MakeLatexSummary::execute( const vector<string>& options )const
+{
+   if( !HasExactOptionCount( options, 1) ) { return false; }
+   ChannelMgr* channel = cmbMgr->Channel( options[0] );
+   if( channel == NULL ){ return ChannelNotFound(options[0]); }
+   channel->MakeLatexSummary();
    return true; 
 }
 

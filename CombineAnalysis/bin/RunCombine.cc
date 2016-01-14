@@ -5,11 +5,14 @@
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *  
 *******************************************************************************/
-#include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h" 
-#include "TstarAnalysis/CombineAnalysis/interface/PlotDef.h"
+#include "TstarAnalysis/CombineAnalysis/interface/HistMgr.h"
+#include "TstarAnalysis/CombineAnalysis/interface/SampleMgr.h"
+#include "TstarAnalysis/CombineAnalysis/interface/SampleListing.h"
+#include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h"
 #include <iostream>
 
 using namespace std;
+
 
 extern CombineMgr* cmbMgr;
 
@@ -21,8 +24,9 @@ int main( int argc, char* argv[] )
       cerr << "Error: Mismatch of required arguments" << endl;
       Usage();
       return -1;
-   } 
-   initPlotList();
+   }
+   availablePlots.InitFromFile("./data/settings/define_plot.asc" );
+   availableSamples.InitFromFile("./data/settings/define_sample.asc");
    cmbMgr = new CombineMgr;
    if( !cmbMgr->InitCommands() ){
       delete cmbMgr;
@@ -34,6 +38,7 @@ int main( int argc, char* argv[] )
 
    delete cmbMgr;
    return 0;
+
 }
 
 void Usage()

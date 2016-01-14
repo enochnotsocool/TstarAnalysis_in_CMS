@@ -1,0 +1,5 @@
+<use name="ROOT" />
+<use name="CMSSW_Utils/Utils_Functions" />
+<bin name="make_settings.out" file="make_settings.cc" />
+<flags CXXFLAGS="-g" />
+

@@ -9,16 +9,12 @@
 #ifndef __COMBINEMGR_H__
 #define __COMBINEMGR_H__
 
-#include "TstarAnalysis/CombineAnalysis/interface/Enums.h"
 #include "TstarAnalysis/CombineAnalysis/interface/ChannelMgr.h"
 #include <vector>
-#include <map>
 
 //------------------------------------------------------------------------------ 
 //   Forwards declaration for classes (and typedefs)
 //------------------------------------------------------------------------------
-typedef std::pair<const ChannelName,ChannelMgr*> ChannelPair;
-typedef std::map<const ChannelName,ChannelMgr*> ChannelMap;
 
 class CombineMgr;
 class CombineCMD;
@@ -32,15 +28,13 @@ public:
    virtual ~CombineMgr ();
 
    bool InitCommands();
-   ChannelMgr* Channel( const ChannelName& ) ;
-   const ChannelMgr* Channel( const ChannelName& ) const;
    ChannelMgr* Channel( const std::string& );
    const ChannelMgr* Channel( const std::string& ) const;
 
    void ParseCMDFile( const std::string& );
 
 private:
-   ChannelMap  _channelList;
+   std::vector<ChannelMgr*> _channelList;
    std::vector<const CombineCMD*>   _cmdList;
 
    bool  addCommand( const CombineCMD* );

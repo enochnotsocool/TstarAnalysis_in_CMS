@@ -23,6 +23,6 @@ void ggChannel_Ntuplizer::RunChiSquare()
 
    _chisqSolver.RunPermutations();
 
-   *(_chisqResult) = _chisqSolver.BestResult();
+   _event->GetChiSquare() = _chisqSolver.BestResult();
 
 }

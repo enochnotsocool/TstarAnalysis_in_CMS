@@ -13,18 +13,32 @@
 
 using namespace std;
 
-void ChannelMgr::MakeLimitRequirement( const SampleName& massPoint )
-{
-   makeProcessList( massPoint );
-   makeNuissanceList();
+//------------------------------------------------------------------------------ 
+//   Helper static variables 
+//------------------------------------------------------------------------------
+const string    limit_base = "ChiSquareTstarMass";
+const HistMgr&  FormatRef() { return availablePlots[limit_base]; }
 
-   makeShapeFile( massPoint );
-   
-   makeCard_Header(massPoint);
-   makeCard_ShapeMarker(massPoint);
-   makeCard_ChannelYield(massPoint);
-   makeCard_ProcessYield(massPoint);
-   makeCard_NuissanceTable(massPoint);
+//------------------------------------------------------------------------------ 
+//   ChannelMgr member functions
+//------------------------------------------------------------------------------
+void ChannelMgr::MakeLimitRequirement( const string& massPoint )
+{
+   if( !HasSample( "Signal", massPoint ) ){
+      cerr << "Error! Mass Point (" << massPoint << ") not found!" << endl;
+      _MCSampleTable.Print();
+      return;      
+   }
+
+   _processList.push_back( MakeSignalProcess(massPoint) );
+   for( const auto& list : _MCSampleTable ){
+      if( list.Name()=="Signal" ) { continue; }
+      _processList.push_back( MakeBGProcess( list ) );
+   }
+   MakeNuissanceMap();
+
+   MakeShapeFile( massPoint );
+   MakeCardFile( massPoint );
 
    clearList();
 }
@@ -32,201 +46,144 @@ void ChannelMgr::MakeLimitRequirement( const SampleName& massPoint )
 //------------------------------------------------------------------------------ 
 //   Process generation private member functions
 //------------------------------------------------------------------------------
-void ChannelMgr::makeProcessList( const SampleName& massPoint )
+const HC_Process* ChannelMgr::MakeSignalProcess( const string& massPoint ) const
 {
+   cout << "Making signal process of (" << massPoint << ")" << endl;
+   HC_Process* proc = new HC_Process( _name , massPoint );
+   const SampleMgr& sig = Sample(massPoint);
 
-   if( _MCsignalMap.find(massPoint) == _MCsignalMap.end() ){
-      cerr << "Error, mass point " << Stringify(massPoint) << "not found" << endl;
-      return ;
-   }
-   // Making signal process
-   HC_Process* signal = new HC_Process( _name , massPoint );
-   makeSignalProcess( signal );
+   proc->SetShape( (TH1F*)sig.Hist( limit_base )->Clone() );
+   proc->SetRate( sig.ExpectedYield(_totalLumi).CentralValue() );
+   proc->Noramlize();
 
-   // Making Background process 
-   HC_Process* ttjets  = new HC_Process( _name, TTJets );
-   HC_Process* singlet = new HC_Process( _name, SINGLE_T );
-   HC_Process* bosons  = new HC_Process( _name, BOSONS );
-   HC_Process* ttBoson = new HC_Process( _name, TT_PLUS_BOSON );
-
-   makeBGLimitProcess( ttjets, TTJets, TTJets);
-   makeBGLimitProcess( singlet, SingleT_S, SingleTbar_TW );
-   makeBGLimitProcess( bosons , WJets, ZZ );  
-   makeBGLimitProcess( ttBoson, TTW_Lepton, TTZ_Quark ); 
- 
-   // Inserting into List
-   _processList.push_back( signal );
-   _processList.push_back( ttjets );
-   _processList.push_back( singlet );
-   _processList.push_back( bosons );
-   _processList.push_back( ttBoson );
+   return proc;
 }
 
-void ChannelMgr::makeBGLimitProcess( HC_Process* const proc, const SampleName& first, const SampleName& last)
+const HC_Process* ChannelMgr::MakeBGProcess( const SampleList& list ) const 
 {
-   const PlotDef& def = availiablePlots[ChiSquareTstarMass];
-   const string  name = Stringify(proc->GetChannel()) +"_" + Stringify(proc->GetProcess()) ;
-   TH1F* temp = NULL;
-   Parameter totalbg(0,0,0);
+   HC_Process* proc = new HC_Process( _name , list.Name() );
+   const string name = proc->ObjName() ;
+   unsigned bin = FormatRef().BinCount();
+   double  xmin = FormatRef().XMin();
+   double  xmax = FormatRef().XMax();
    double scale = 0.0;
+   const TH1F* temp = NULL;
+   Parameter totalbg(0,0,0);
 
-   proc->SetShape( new TH1F( name.c_str(), name.c_str() , def.BinCount() , def.XMin() , def.XMax() ) );
-   
-   for( auto it= _MCbackgroundMap.find( first ); it!=_MCbackgroundMap.end() && it->first <= last ; ++it ){
-      temp = it->second->Hist( ChiSquareTstarMass );
+   proc->SetShape( new TH1F( name.c_str(), name.c_str() , bin , xmin , xmax ) );
+
+   for( const auto& sample : list ){
+      temp = sample.Hist( limit_base );
       if( temp->Integral() != 0 ){
-         scale = getHistScale( it->second );
+         scale = sample.GetHistogramScale( _totalLumi );
          proc->GetShape()->Add( temp, scale );
-         totalbg+= it->second->getExpectedYield( _totalLumi );
-         cout << name << " " << totalbg << endl; 
+         totalbg += sample.ExpectedYield( _totalLumi );
       }
    }
    proc->SetRate( totalbg.CentralValue() );
-   normalizeProcessShape( proc );
-   
-   //----- Adding Nuisance parameter  ---------------------------------------------
-   NuisancePar norm( (name+"_Norm").c_str() , "lnN" );
-   proc->AddNuisance( norm , 1 + totalbg.RelativeAvgError() );
-   
-   NuisancePar lumi( "lumi" , "lnN" );
-   proc->AddNuisance( lumi , 1.05 );
+   proc->Noramlize();
+
+   return proc;
 }
 
-void ChannelMgr::makeSignalProcess( HC_Process* const proc )
+void ChannelMgr::MakeNuissanceMap()
 {
-   const SampleMgr* const sample = _MCsignalMap.at( proc->GetProcess() );
-   proc->SetShape( (TH1F*)sample->Hist( ChiSquareTstarMass )->Clone() );
-   proc->SetRate( sample->getExpectedYield(_totalLumi).CentralValue() );
-   normalizeProcessShape( proc );
-   NuisancePar lumi( "lumi" , "lnN" );
-   proc->AddNuisance( lumi , 1.05 );
-}
+   //----- Make Normalization Part  -----------------------------------------------  
+   for( const auto& process : _processList ){
+      const string newname = process->ObjName() + "_Norm" ;
+      const NuisancePar norm( newname, "lnN" );
+      const string procname = process->GetProcess();
+      Parameter nu;
+      if( HasSample("Signal",procname) ){
+         nu = Sample(procname).ExpectedYield(_totalLumi);
+      } else {
+         nu = _MCSampleTable[procname].ExpectedYield(_totalLumi);
+      }
+      _nuissanceMap[norm][process] = nu;
+   }
 
-void ChannelMgr::normalizeProcessShape( HC_Process* const proc )
-{
-   proc->GetShape()->Scale( proc->GetRate() / proc->GetShape()->Integral() );
-}
-
-//------------------------------------------------------------------------------ 
-//   Nuisance list generation
-//------------------------------------------------------------------------------
-void ChannelMgr::makeNuissanceList()
-{
-   for( const auto process : _processList ){
-      for( const auto npair : process->GetNuisance() ){
-         _uncertaintlyList[npair.first][process] = npair.second;
-      } 
+   //----- Making Luminocity Part  ------------------------------------------------
+   const NuisancePar lumi( "Lumi" , "lnN" );
+   const Parameter nu_lumi( _totalLumi , _totalLumi*0.05 , _totalLumi*0.05 );
+   for( const auto& process : _processList ){
+      _nuissanceMap[lumi][process] = nu_lumi;
    }
 }
 
-//------------------------------------------------------------------------------ 
-//   File making member functions
-//------------------------------------------------------------------------------
-string ChannelMgr::shapeFileName( const SampleName& massPoint ) const
-{
-   string name = "./data/shapes/Shape_";
-   name += Stringify( _name );
-   name += Stringify( massPoint );
-   name += ".root";
-   return name;
-}
 
-string ChannelMgr::cardFileName( const SampleName& massPoint ) const 
+void ChannelMgr::MakeShapeFile( const string& massPoint ) const
 {
-   string name = "./data/cards/datacard_";
-   name += Stringify( _name );
-   name += Stringify( massPoint );
-   name += ".txt";
-   return name;
-}
-
-void ChannelMgr::makeShapeFile( const SampleName& massPoint ) const
-{
-   string filename = shapeFileName(massPoint);
+   string filename = ShapeFilePath(massPoint);
    TFile* shapeFile = new TFile( filename.c_str() , "RECREATE" );
    for( const auto& process : _processList ){
       string shapename = process->ObjName();
       TH1F* hist = (TH1F*)process->GetShape()->Clone( shapename.c_str() );
       hist->Write();
    }
-   TH1F* hist = (TH1F*)sample( Data )->Hist( ChiSquareTstarMass )->Clone("data_obs");
+   TH1F* hist = (TH1F*)Sample("Data").Hist(limit_base)->Clone("data_obs");
    hist->Write();
    shapeFile->Close();
    delete shapeFile;
 }
 
 
-void ChannelMgr::makeCard_Header(const SampleName& massPoint ) const
+void ChannelMgr::MakeCardFile(const string& massPoint ) const
 {
-   FILE* datacard = fopen( cardFileName(massPoint).c_str() , "w" );
+   FILE* datacard = fopen( CardeFilePath(massPoint).c_str() , "w" );
+   const string channel   = _name;
+   const string shapefile = ShapeFilePath(massPoint) ;
+
+   //----- Header Part  -----------------------------------------------------------
    fprintf( datacard , "imax 1\n" );
    fprintf( datacard , "jmax *\n" );
    fprintf( datacard , "kmax *\n" );
    fprintf( datacard , "-------------------------------\n" );
-   fclose( datacard );
-}
 
-void ChannelMgr::makeCard_ShapeMarker(const SampleName& massPoint) const 
-{
-   FILE* datacard = fopen( cardFileName(massPoint).c_str() , "a" );
-   const string channel   = Stringify(_name);
-   const string shapefile = shapeFileName(massPoint) ;
-
+   //----- Shape File Part  -------------------------------------------------------
    fprintf( datacard, "shapes %15s %15s %25s %30s\n",
          "data_obs", channel.c_str(), shapefile.c_str(),  "data_obs");
    for( const auto& process : _processList ){
       fprintf( datacard , "shapes %15s %15s %25s %30s\n",
-            Stringify(process->GetProcess()).c_str(),
-            Stringify(process->GetChannel()).c_str(),
+            process->GetProcess().c_str(),
+            process->GetChannel().c_str(),
             shapefile.c_str(),
             (process->ObjName()).c_str() );
    }
    fprintf( datacard , "-------------------------------\n" );
-   fclose( datacard );
-}
-
-void ChannelMgr::makeCard_ChannelYield(const SampleName& massPoint ) const 
-{
-   FILE* datacard = fopen( cardFileName(massPoint).c_str() , "a" );
-   fprintf( datacard , "%-15s %15s\n" , 
-         "bin" , Stringify(_name).c_str());
-   fprintf( datacard , "%-15s %15lf\n", 
-         "observation",  sample(Data)->getRawEventCount() );
+  
+   //----- Normalization Part  ----------------------------------------------------
+   fprintf( datacard , "%-15s %15s\n" , "bin" , channel.c_str());
+   fprintf( datacard , "%-15s %15lf\n", "observation",  Sample("Data").GetRawEventCount() );
    fprintf( datacard , "-------------------------------\n" );
-   fclose(datacard);
-}
-
-void ChannelMgr::makeCard_ProcessYield(const SampleName& massPoint) const 
-{
-   FILE* datacard = fopen( cardFileName(massPoint).c_str() , "a" );
+   
    fprintf( datacard, "%-45s", "bin" );
    for( const auto& process : _processList ){
-      fprintf( datacard, "%20s", Stringify(process->GetChannel()).c_str() );
+      fprintf( datacard, "%20s", process->GetChannel().c_str() );
    } fprintf( datacard, "\n" );
 
    fprintf( datacard, "%-45s", "process" );
    for( const auto& process : _processList ){
-      fprintf( datacard, "%20s", Stringify(process->GetProcess()).c_str() );
+      fprintf( datacard, "%20s", process->GetProcess().c_str() );
    } fprintf( datacard, "\n" );
-   
+
+   int id = 1;
    fprintf( datacard, "%-45s", "process" );
    for( const auto& process : _processList ){
-      fprintf( datacard, "%20d", process->GetProcess() );
+      if( HasSample( "Signal" , process->GetProcess() ) ){
+         fprintf( datacard, "%20d", -id );
+      } else {
+         fprintf( datacard, "%20d", +id ); 
+      }++id;
    } fprintf( datacard, "\n" );
-   
+
    fprintf( datacard, "%-45s", "rate" );
    for( const auto& process : _processList ){
       fprintf( datacard, "%20lf", process->GetRate() );
    } fprintf( datacard, "\n" );
    fprintf( datacard , "-------------------------------\n" );
-   fclose(datacard);
-}
-
-
-void ChannelMgr::makeCard_NuissanceTable(const SampleName& massPoint ) const 
-{
-   FILE* datacard = fopen( cardFileName(massPoint).c_str() , "a" );
-   for( const auto& np_pair : _uncertaintlyList ){
+   
+   //----- Nuisance Parameter Part  -----------------------------------------------
+   for( const auto& np_pair : _nuissanceMap ){
       const auto& np  = np_pair.first;
       const auto& map = np_pair.second;
       fprintf( datacard, "%-30s %14s", np.Name().c_str() , np.Type().c_str() );
@@ -234,7 +191,7 @@ void ChannelMgr::makeCard_NuissanceTable(const SampleName& massPoint ) const
          if( map.find( process ) == map.end() ){
             fprintf( datacard , "%20s", "-" );
          } else {
-            fprintf( datacard, "%20lf" , map.at(process) );
+            fprintf( datacard, "%20s" , map.at(process).MakeCardFormat().c_str() );
          }
       }
       fprintf( datacard , "\n" );
@@ -253,5 +210,5 @@ void ChannelMgr::clearList()
       delete process;
    }
    _processList.clear();
-   _uncertaintlyList.clear();
+   _nuissanceMap.clear();
 }

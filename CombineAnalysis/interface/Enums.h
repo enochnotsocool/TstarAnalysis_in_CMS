@@ -44,22 +44,40 @@ enum SampleName
    TTW_Quark  = 2,
    TTZ_Lepton = 3,
    TTZ_Quark  = 4,
-   TT_PLUS_BOSON = 5,
+   T_PLUS_BOSON_FIRST = 1,
+   T_PLUS_BOSON_LAST   = 4,
 
-   WJets = 11,
-   ZJets = 12,
-   WW    = 13,
-   WZ    = 14,
-   ZZ    = 15,
-   BOSONS = 16,
+   WJets_HT100_200    = 11,
+   WJets_HT200_400    = 12,
+   WJets_HT400_600    = 13,
+   WJets_HT600_800    = 14,
+   WJets_HT800_1200   = 15,
+   WJets_HT1200_2500  = 16,
+   WJets_HT2500_Inf   = 17,
+   ZJets_HT100_200    = 18,
+   ZJets_HT200_400    = 19,
+   ZJets_HT400_600    = 20,
+   ZJets_HT600_Inf    = 21,
+   SINGLE_BOSON_FIRST = 11,
+   SINGLE_BOSON_LAST  = 21,
 
-   SingleT_S = 21,
-   SingleT_T = 22,
-   SingleT_TW = 23,
-   SingleTbar_TW = 24,
-   SINGLE_T = 25,
+   WW    = 22,
+   WZ    = 23,
+   ZZ    = 24,
+   DI_BOSON_FIRST = 22,
+   DI_BOSON_LAST   = 24,
 
-   TTJets = 31,
+   BOSON_FIRST = SINGLE_BOSON_FIRST,
+   BOSON_LAST  = DI_BOSON_LAST,
+
+   SingleT_S = 31,
+   SingleT_T = 32,
+   SingleT_TW = 33,
+   SingleTbar_TW = 34,
+   SINGLE_T_FIRST = 31,
+   SINGLE_T_LAST = 34,
+
+   TTJets = 41,
    
    // Single MC
    Tstar_M0700 = -1,
@@ -72,6 +90,8 @@ enum SampleName
    Tstar_M1400 = -8,
    Tstar_M1500 = -9,
    Tstar_M1600 = -10,
+   SIGNAL_FIRST = Tstar_M1600,
+   SIGNAL_LAST  = Tstar_M0700,
    SIGNAL_END = -11,
    
    // Data 
@@ -81,6 +101,7 @@ enum SampleName
 };
 extern std::string Stringify( const SampleName );
 extern SampleName SampleFromString( const std::string& );
+extern std::string LatexName( const SampleName );
 extern bool SignalSample( const SampleName );
 
 

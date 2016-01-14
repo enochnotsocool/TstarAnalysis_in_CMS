@@ -12,7 +12,6 @@
 
 
 //----- Sample initializing functions  -----------------------------------------
-DEFINE_CMD( SetCrossSection );
 DEFINE_CMD( SetSelectionEfficiency );
 DEFINE_CMD( SetSampleWideWeight );
 DEFINE_CMD( SetSampleInput );
@@ -20,6 +19,7 @@ DEFINE_CMD( SetSampleInput );
 DEFINE_CMD( MakeBasicPlots );
 DEFINE_CMD( MakeDataBGPlot );
 DEFINE_CMD( MakeSignalPlot );
+DEFINE_CMD( MakeLatexSummary );
 
 DEFINE_CMD( MakeLimitRequirement );
 DEFINE_CMD( RunCombine );

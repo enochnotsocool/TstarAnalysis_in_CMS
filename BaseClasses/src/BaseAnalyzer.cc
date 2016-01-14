@@ -93,6 +93,6 @@ void BaseAnalyzer::processEvent( const edm::Event& iEvent , const edm::EventSetu
    addElectron();
    addJet();
    addCustomVariables(iEvent);
-
    _tree->Fill();
+   _event->ClearLists();
 }
