@@ -16,7 +16,7 @@ static string plot_dir   = "./data/plots/";
 static string latex_dir  = "./data/latex/" ; 
 static string shape_dir  = "./data/shapes/";
 static string card_dir   = "./data/cards/" ;
-static string combine_dir = "./data/limits" ;
+static string combine_dir = "./data/limits/" ;
 
 static string shape_prefix = "Shape_";
 static string card_prefix  = "datacard_";

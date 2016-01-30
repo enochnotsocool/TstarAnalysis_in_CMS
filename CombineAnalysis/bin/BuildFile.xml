@@ -1,4 +1,0 @@
-<use name="root" />
-<use name="TstarAnalysis/CombineAnalysis" />
-<bin name="RunCombine.out" file="RunCombine.cc" />
-<flags CXXFLAGS="-g" />

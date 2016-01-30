@@ -22,12 +22,13 @@ class CombineCMD;
 //------------------------------------------------------------------------------ 
 //   Combine command interface manager (boost python: don't use reference)
 //------------------------------------------------------------------------------
-class CombineMgr{
+class CombineMgr
+{
 public:
    CombineMgr();
    virtual ~CombineMgr ();
 
-   bool InitCommands();
+   bool HasChannel( const std::string& ) const ;
    ChannelMgr* Channel( const std::string& );
    const ChannelMgr* Channel( const std::string& ) const;
 
@@ -40,19 +41,19 @@ public:
    void SetChannelWeights( const std::string, const std::string );
    void SetChannelColors( const std::string, const std::string );
 
+   void MakeBasicPlots();
+   void MakeDataBGPlot( const std::string , const std::string );
+   
+   void HC_MakeRequirements( const std::string );
+   void HC_RunCombine( const std::string, const std::string );
+   void HC_PlotLimit( const std::string, const std::string)  const;
+
    std::vector<std::string> AvailablePlots() const ;
    std::vector<std::string> AvailableSamples() const ;
    std::vector<std::string> AvailableChannels() const ;
 
-   void RunInterface();
-   void ParseCMDFile( const std::string& );
-
 private:
    std::vector<ChannelMgr*> _channelList;
-   std::vector<const CombineCMD*>   _cmdList;
-
-   bool  addCommand( const CombineCMD* );
-   const CombineCMD* command( const std::string& ) const; 
 };
 
 //------------------------------------------------------------------------------ 

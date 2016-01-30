@@ -178,21 +178,22 @@ bool HistList::InitFromFile( const std::string& cfgfile )
    string line;
    vector<string> tokens;
    
-   cout << "Initializing plots from file (" << cfgfile << ") ..." << endl; 
    while( getline(file,line) ){
-      cout << "\rReading line " << ++line_num << flush;
+      ++line_num;
       if(!BreakLineToWords(line,tokens,"|")){ continue; }
       for( auto& token : tokens ){
          StripTrailingSpace(token); }
 
-      for( const auto& token : tokens ){
-         cout << token << ";" ;
-      } cout << endl;
-      if( tokens.size() != 7 ){
-         continue;
-      } 
+      if( tokens.size() != 7 ){ continue; }
+
       const string& name      = tokens[0];
       const string& latexname = tokens[1];
+      if( HasHistogram( name ) ){
+         cerr << "Warning! Skipping over duplicate histogram at line (" << line_num << ")!" << endl;
+         continue;
+      } else {
+         cerr << "Making new Plot (" << name << ") , latex name: (" << latexname << ")" << endl;
+      }
       const string& xtitle    = tokens[2];
       const string& xunits    = tokens[3];
       unsigned bincount       = StrToInt( tokens[4] );

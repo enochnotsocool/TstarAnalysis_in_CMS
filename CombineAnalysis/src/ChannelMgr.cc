@@ -76,7 +76,6 @@ bool ChannelMgr::HasSample( const string& listname, const string& samplename ) c
             return true; }
       }
    }
-   _MCSampleTable.Print();
    return false;
 }
 

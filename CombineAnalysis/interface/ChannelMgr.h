@@ -55,9 +55,7 @@ public:
 
    void MakeLimitRequirement( const std::string& ); // ChannelMgr_HiggsCombine.cc
    void RunCombine( const std::string&, const std::string& ); // ChannelMgr_RunCombine.cc
-   void MakeLimitPlot() const;
-
-   // File Reading functions 
+   void MakeLimitPlot( const std::string& ) const;
 
 private:
    //------------------------------------------------------------------------------ 

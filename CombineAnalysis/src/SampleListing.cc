@@ -187,7 +187,6 @@ bool SampleTable::InitFromFile( const std::string&  cfgfile )
    vector<string> tokens;
 
    while( getline(file,line) ){
-      cout << "\rReading file " << cfgfile << " at line " << ++line_num << flush;
       if( !BreakLineToWords(line,tokens,"|" ) ) { continue; }
       for( auto& token : tokens ){
          StripTrailingSpace(token);}
@@ -199,16 +198,16 @@ bool SampleTable::InitFromFile( const std::string&  cfgfile )
       const string listname  = tokens[0];
       const string listlatex = tokens[1];
       if( !HasList(listname) ){
-         // cerr << "Adding new list: " << listname << " " << listlatex << endl;
+         cerr << "Adding new list: " << listname << " " << listlatex << endl;
          AddList( SampleList(listname,listlatex) );
       }
       const string samplename  = tokens[2];
       const string samplelatex = tokens[3];
       if( (*this)[listname].HasSample(samplename) ){
-         // cerr << "\rWarning! Skipping duplicate sample at line (" << line_num << ")!"<< endl;
+         cerr << "Warning! Skipping duplicate sample at line (" << line_num << ")!"<< endl;
          continue;
       } else {
-         //cerr << "Adding new sample: " << samplename << " " << samplelatex << endl;
+         cerr << "Adding new sample: " << samplename << " " << samplelatex << endl;
          (*this)[listname].AddSample( SampleMgr(samplename,samplelatex) );
       }
       const double crs = StrToFloat( tokens[4] );

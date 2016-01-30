@@ -11,8 +11,8 @@
 
 #include <fstream>
 #include <iostream>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include <stdlib.h>
+#include <memory>
 
 using namespace std;
 
@@ -32,9 +32,6 @@ CombineMgr::~CombineMgr()
 {
    for( auto& channel : _channelList ){
       delete channel;
-   }
-   for( auto cmd : _cmdList ){
-      delete cmd;
    }
 }
 
@@ -57,15 +54,20 @@ void CombineMgr::InitChannels( const string filename )
    string line;
    vector<string> tokens;
    
-   cout << "Initializing plots from file (" << filename << ") ..." << endl; 
    while( getline(file,line) ){
-      cout << "\rReading line " << ++line_num << flush;
       if(!BreakLineToWords(line,tokens,"|")){ continue; }
       for( auto& token : tokens ){ StripTrailingSpace(token); }
 
       if( tokens.size() != 2 ){ continue; } 
       const string& name      = tokens[0];
       const string& latexname = tokens[1];
+      if( HasChannel(name) ){
+         cerr << "Warning! Skipping over duplicate channel (" << name 
+              << ") at line (" << line_num << ") of file (" << filename << ")" << endl;
+         continue;
+      } else {
+         cerr << "Making new channel (" << name << ")" << endl;
+      }
       _channelList.push_back( new ChannelMgr(name,latexname) );
    }
 }
@@ -90,8 +92,10 @@ vector<string> CombineMgr::AvailablePlots() const
 vector<string> CombineMgr::AvailableSamples() const 
 {
    vector<string> ans;
-   for( const auto& sample : availableSamples ){
-      ans.push_back( sample.Name() ); }
+   for( const auto& sampleList : availableSamples ){
+      for( const auto& sample : sampleList ){
+         ans.push_back( sample.Name() ); }
+   }
    return ans;
 }
 vector<string> CombineMgr::AvailableChannels() const 
@@ -102,51 +106,66 @@ vector<string> CombineMgr::AvailableChannels() const
    return ans;
 }
 
-
-bool CombineMgr::InitCommands()
+void CombineMgr::MakeBasicPlots()
 {
-   if( 
-       !addCommand( new SetSelectionEfficiency ) ||
-       !addCommand( new SetSampleWideWeight    ) ||
-       !addCommand( new SetSampleInput         ) ||
-       !addCommand( new MakeBasicPlots         ) ||
-       !addCommand( new MakeDataBGPlot         ) ||
-       !addCommand( new MakeSignalPlot         ) ||
-       !addCommand( new MakeLimitRequirement   ) ||
-       !addCommand( new MakeLatexSummary       ) ||
-       !addCommand( new RunCombine             ) ||
-       !addCommand( new WaitCMD                ) ||
-       !addCommand( new MakeLimitPlot          )    ) {
-      cerr << "Error initializing command!" << endl;
-      return false;
-   }
-   return true;
+   for( auto& channel : _channelList ) { channel->MakeBasicPlots(); }
 }
 
-void CombineMgr::RunInterface()
-{
+void CombineMgr::MakeDataBGPlot( const string ch ,  const string pl )
+{ 
+   Channel(ch)->MakeDataBGPlot(pl); 
 }
 
-void CombineMgr::ParseCMDFile( const string& filename )
+void CombineMgr::HC_MakeRequirements( const string ch )
 {
-   ifstream input( filename );
-   string cmd;
-   string line;
-   vector<string> tokens;
-
-   while( getline( input, line ) ){
-      if( !BreakLineToWords( line, tokens ) ) { continue; }
-      
-      cmd = tokens[0];
-      tokens.erase( tokens.begin() );
-      const CombineCMD* thiscmd = command( cmd );
-      if( thiscmd != NULL ){
-         thiscmd->execute( tokens );
-      } else {
-         cerr << "Error! Unrecognised command \"" << cmd << "\"" << endl;
-         continue;
-      }
+   for( const auto& sample : availableSamples["Signal"] ){
+      cerr << "Making requirements for sample (" << sample.Name() << ")" << endl;
+      Channel(ch)->MakeLimitRequirement( sample.Name() );
    }
+}
+
+void CombineMgr::HC_RunCombine( const string ch, const string method )
+{
+   for( const auto& sample : availableSamples["Signal"] ){
+      Channel(ch)->RunCombine( sample.Name() , method );
+   }
+
+   // Waiting for commands to finish!
+   const string  user     = getenv( "USER" );
+   const string& checkcmd = "combine";
+   char runcmd[1024];
+   bool wait = true;
+   char buffer[128];
+   string result = "";
+   int  instance = 0 ;
+
+   sprintf( runcmd , "ps -u %s | grep %s | wc -l" , user.c_str() , checkcmd.c_str() );
+   while( wait ){
+      std::shared_ptr<FILE> pipe(popen(runcmd, "r"), pclose);
+      if (!pipe) { cerr << "Warning! Error during process checking" << endl;}
+
+      fgets(buffer, 128, pipe.get()); // Getting first line of output to string
+      result = buffer;
+      instance = StrToInt( result );
+      if( instance == 0 ){ wait = false;  break; }
+      cout << "\rStill " << instance << " instances of " << checkcmd << "running! " << currentDateTime() << flush; 
+      system("sleep 5");
+   }
+   cout << "\n All " << checkcmd << " finished at " << currentDateTime() << endl;
+}
+
+void CombineMgr::HC_PlotLimit( const string ch , const string method ) const
+{
+   Channel(ch)->MakeLimitPlot( method );
+}
+
+bool CombineMgr::HasChannel( const std::string& name ) const 
+{
+   for( const auto& channel : _channelList ){
+      if( channel->Name() == name ){
+         return true; }
+   }
+   return false;
 }
 
 
@@ -170,23 +189,5 @@ const ChannelMgr* CombineMgr::Channel( const string& x ) const
          return channel; }
    }
    return NULL;
-}
-
-const CombineCMD* CombineMgr::command( const string& x ) const
-{
-   for( const auto cmd : _cmdList ){
-      if( cmd->cmd() == x ) { return cmd; }
-   }
-   return NULL;
-
-}
-
-bool CombineMgr::addCommand( const CombineCMD* x )
-{
-   for( const auto cmd : _cmdList ){
-      if( x->cmd() == cmd->cmd() ) { return false; }
-   } 
-   _cmdList.push_back(x);
-   return true;
 }
 

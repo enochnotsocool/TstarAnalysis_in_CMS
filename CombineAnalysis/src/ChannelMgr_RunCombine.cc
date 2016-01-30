@@ -32,7 +32,7 @@ void ChannelMgr::RunCombine( const string& massPoint, const string& method )
    system( cmd );
 }
 
-void ChannelMgr::MakeLimitPlot() const
+void ChannelMgr::MakeLimitPlot( const string& method ) const
 {
    cout << "Making limit plots" << endl;
    const string savepath = PlotFilePath( "limit" );
@@ -51,8 +51,13 @@ void ChannelMgr::MakeLimitPlot() const
 
    //----- Getting Limits from file  ----------------------------------------------
    for( const auto& sample : _MCSampleTable["Signal"] ){
-      const string lim_file = StoreCombineOutput( sample.Name() , "Asymptotic" );
+      const string lim_file = StoreCombineOutput( sample.Name() , method );
       TFile* file = TFile::Open( lim_file.c_str() );
+      if( !file ) {
+         cerr << "Error! Cannot open file (" << lim_file 
+              << ")! Skipping over sample (" << sample.Name() << endl;
+         continue;
+      }
       TTree* tree = ((TTree*)file->Get("limit"));
       tree->SetBranchAddress( "limit"    , &temp1 );
       // tree->SetBranchAddress( "limitErr" , &temp2 );

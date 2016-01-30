@@ -102,7 +102,6 @@ bool ParseSampleLine( const string& line, string& x , Parameter& y )
 
    if( tokens.size() < 2 ) { return false; }
    x = tokens[0] ;
-   cout << "Reading " << tokens[0] << " to " << x << endl;
    centralValue = StrToFloat( tokens[1] );
    if( tokens.size() == 3 ){
       upperError = lowerError = StrToFloat( tokens[2] );

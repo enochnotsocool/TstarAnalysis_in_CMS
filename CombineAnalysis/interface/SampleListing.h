@@ -27,8 +27,8 @@ public:
    //----- Container like access functions  ---------------------------------------
    typedef std::vector<SampleMgr>::iterator        iterator;
    typedef std::vector<SampleMgr>::const_iterator  const_iterator;
-   iterator begin() { return _sampleList.begin(); }
-   iterator end()   { return _sampleList.end() ; }
+   iterator begin()             { return _sampleList.begin(); }
+   iterator end()               { return _sampleList.end() ; }
    const_iterator begin() const { return _sampleList.begin(); }
    const_iterator end()   const { return _sampleList.end();   }
    void AddSample( const SampleMgr& x ) { _sampleList.push_back(x); }
