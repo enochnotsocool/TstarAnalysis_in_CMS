@@ -90,7 +90,7 @@ bool MakeLimitRequirement::execute( const vector<string>& options ) const
    if( !HasExactOptionCount( options, 2 ) ) { return false; }
    ChannelMgr* channel = cmbMgr->Channel( options[0] );
    if( channel == NULL ){ return ChannelNotFound(options[0]); }
-   if( channel->HasSample("Signal",options[1]) ) { return PlotNotFound(options[1]); } 
+   if( !channel->HasSample("Signal",options[1]) ) { return PlotNotFound(options[1]); } 
    channel->MakeLimitRequirement( options[1] );
    return true;
 }

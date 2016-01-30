@@ -107,7 +107,7 @@ void ChannelMgr::MakeLimitPlot() const
    mg->SetTitle("Exclusion Limit");
    
    l->AddEntry( (TObject*)0 , "" , "" );
-   l->AddEntry( (TObject*)0 , "#sqrt{s} = 13TeV,   #int L dt = 2.2pb^{-1}  " , "" );
+   //l->AddEntry( (TObject*)0 , "#sqrt{s} = 13TeV,   #int L dt = 2.2fb^{-1}  " , "" );
    l->AddEntry( obs , "CL_{s} Observed" , "l" );
    l->AddEntry( exp , "CL_{s} Expected" , "l" );
    l->AddEntry( one_sig , "CL_{s} Expected #pm 1 #sigma" , "f" );

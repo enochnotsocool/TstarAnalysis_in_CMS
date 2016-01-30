@@ -35,7 +35,7 @@ public:
    const SampleMgr& Sample( const std::string& ) const;
    bool  HasSample(const std::string& ) const;
    bool  HasSample( const std::string&, const std::string& )const;
-   void SetLumi( const double x ){ _totalLumi = x; }
+   static void SetLumi( const double x ){ _totalLumi = x; }
    
    //----- Calling Sample Functions  ----------------------------------------------
    void MakeBasicPlots();

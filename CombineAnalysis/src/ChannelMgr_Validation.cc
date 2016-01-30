@@ -33,7 +33,7 @@ void ChannelMgr::MakeDataBGPlot( const string& target ) const
    const unsigned bins       = availablePlots[target].BinCount(); 
    const double   xmin       = availablePlots[target].XMin();
    const double   xmax       = availablePlots[target].XMax();
-   cout << "Making plot" << target.c_str() << endl;
+   cout << "Making plot" << target.c_str() << " " << bins << " " << xmax << " " << xmin << endl;
 
    // Declaring Plots entities 
    TCanvas* canvas        = new TCanvas( (target+"c").c_str() , target.c_str(), 1600,1000 );
@@ -42,7 +42,7 @@ void ChannelMgr::MakeDataBGPlot( const string& target ) const
    TH1F*    data          = (TH1F*)_dataSample.Hist(target)->Clone();
    TH1F*    relError      = NULL;//Generated in functions makeBGStack()
    TH1F*    dataRatio     = NULL;//Generating in function makeDataBGRatio()
-   TLegend* combineLegend = new TLegend( 0.75 , 0.75 , 0.95 , 0.95 );
+   TLegend* combineLegend = new TLegend( 0.75 , 0.55 , 0.95 , 0.95 );
    TLine*  l              = new TLine( xmin , 0.0 , xmax , 0.0 );
 
    //----- Preparing MC  -----------------------------------------------------------
@@ -134,11 +134,6 @@ void ChannelMgr::MakeBGStack( THStack*& stack, TH1F*& total, TH1F*& rel, const s
          stack->Add( tempHist );
          total->Add( tempHist );
          bgCount += sample.ExpectedYield( _totalLumi );
-
-         printf( "Plotting sample %s, scaling from %lf to %f events\n",
-               sample.Name().c_str() ,
-               sample.GetRawEventCount() ,
-               tempHist->Integral() );
       }
    }
 
@@ -177,6 +172,7 @@ void ChannelMgr::MakeDataBGRatio( TH1F*& ratio, const TH1F* data, const TH1F* bg
 
 void ChannelMgr::MakeCombinedLegend( TLegend* x, const TH1F* err, const std::string& target ) const
 {
+   x->AddEntry( (TObject*)NULL , "" , "" );
    for( const auto& list : _MCSampleTable ){
       if( list.Name() == "Signal" ) { continue; }
       x->AddEntry( list.front().Hist(target) , list.RootName().c_str() , "f" ); 

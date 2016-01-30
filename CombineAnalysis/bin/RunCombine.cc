@@ -32,9 +32,7 @@ int main( int argc, char* argv[] )
       delete cmbMgr;
       return 1;
    }
-   for( int i = 1 ; i < argc; ++i ){ 
-      cmbMgr->ParseCMDFile( argv[i] );
-   }
+   cmbMgr->RunInterface();
 
    delete cmbMgr;
    return 0;

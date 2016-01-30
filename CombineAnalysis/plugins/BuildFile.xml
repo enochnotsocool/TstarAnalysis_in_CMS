@@ -1,0 +1,5 @@
+<use name="boost_python" />
+<use name="TstarAnalysis/CombineAnalysis" />
+<library name="CombineMgr" file="CombineMgr_Boost.cc">
+</library>
+

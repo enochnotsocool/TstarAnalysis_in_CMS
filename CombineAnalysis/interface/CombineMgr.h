@@ -20,7 +20,7 @@ class CombineMgr;
 class CombineCMD;
 
 //------------------------------------------------------------------------------ 
-//   Combine command interface manager
+//   Combine command interface manager (boost python: don't use reference)
 //------------------------------------------------------------------------------
 class CombineMgr{
 public:
@@ -31,6 +31,20 @@ public:
    ChannelMgr* Channel( const std::string& );
    const ChannelMgr* Channel( const std::string& ) const;
 
+   void InitPlots( const std::string );
+   void InitSamples( const std::string );
+   void InitChannels( const std::string );
+
+   void SetChannelSelection( const std::string , const std::string );
+   void SetChannelFile( const std::string , const std::string );
+   void SetChannelWeights( const std::string, const std::string );
+   void SetChannelColors( const std::string, const std::string );
+
+   std::vector<std::string> AvailablePlots() const ;
+   std::vector<std::string> AvailableSamples() const ;
+   std::vector<std::string> AvailableChannels() const ;
+
+   void RunInterface();
    void ParseCMDFile( const std::string& );
 
 private:

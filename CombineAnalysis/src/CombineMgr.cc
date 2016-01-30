@@ -11,6 +11,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 using namespace std;
 
@@ -24,7 +26,6 @@ CombineMgr*  cmbMgr = NULL;
 //------------------------------------------------------------------------------
 CombineMgr::CombineMgr()
 {
-   _channelList.push_back( new ChannelMgr( "ggMuon" , "\\mu channel" ) );
 }
 
 CombineMgr::~CombineMgr()
@@ -36,6 +37,71 @@ CombineMgr::~CombineMgr()
       delete cmd;
    }
 }
+
+//------------------------------------------------------------------------------ 
+//   Corresponding Commands, Error parsing handled by python code
+//------------------------------------------------------------------------------
+void CombineMgr::InitPlots( const string filename )
+{
+   availablePlots.InitFromFile( filename );
+}
+void CombineMgr::InitSamples( const string filename )
+{
+   availableSamples.InitFromFile( filename );
+}
+
+void CombineMgr::InitChannels( const string filename )
+{
+   unsigned line_num = 0;
+   ifstream file( filename );
+   string line;
+   vector<string> tokens;
+   
+   cout << "Initializing plots from file (" << filename << ") ..." << endl; 
+   while( getline(file,line) ){
+      cout << "\rReading line " << ++line_num << flush;
+      if(!BreakLineToWords(line,tokens,"|")){ continue; }
+      for( auto& token : tokens ){ StripTrailingSpace(token); }
+
+      if( tokens.size() != 2 ){ continue; } 
+      const string& name      = tokens[0];
+      const string& latexname = tokens[1];
+      _channelList.push_back( new ChannelMgr(name,latexname) );
+   }
+}
+
+void CombineMgr::SetChannelSelection( const string ch , const string file ){
+   Channel(ch)->SetSelectionEfficiency(file); }
+void CombineMgr::SetChannelFile( const string ch , const string file ){
+   Channel(ch)->SetSampleInput(file); }
+void CombineMgr::SetChannelWeights( const string ch , const string file ){
+   Channel(ch)->SetSampleWeight(file); }
+void CombineMgr::SetChannelColors( const string ch, const string file ){
+   Channel(ch)->SetSampleColor(file); }
+
+
+vector<string> CombineMgr::AvailablePlots() const
+{
+   vector<string> ans;
+   for( const auto& plot : availablePlots ){
+      ans.push_back( plot.Name() ) ;}
+   return ans;
+}
+vector<string> CombineMgr::AvailableSamples() const 
+{
+   vector<string> ans;
+   for( const auto& sample : availableSamples ){
+      ans.push_back( sample.Name() ); }
+   return ans;
+}
+vector<string> CombineMgr::AvailableChannels() const 
+{
+   vector<string> ans;
+   for( const auto& channel : _channelList ){
+      ans.push_back(channel->Name()); }
+   return ans;
+}
+
 
 bool CombineMgr::InitCommands()
 {
@@ -57,6 +123,9 @@ bool CombineMgr::InitCommands()
    return true;
 }
 
+void CombineMgr::RunInterface()
+{
+}
 
 void CombineMgr::ParseCMDFile( const string& filename )
 {
