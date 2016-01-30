@@ -24,85 +24,54 @@ class CombineCmd( CmdParser ):
    #------------------------------------------------------------------------------- 
    #   Initialization commands
    #-------------------------------------------------------------------------------  
-   initfile_opts = argparse.ArgumentParser( description='Read single initialization file')
-   initfile_opts.add_argument('mode',help='Initialization mode', typestr
-   initfile_opts.add_argument('initfile',help='Initialization file to use',type=file )
+   def InitFileOpts(self):
+       initfile_opts = argparse.ArgumentParser( description='Read single initialization file')
+       initfile_opts.add_argument('mode', type=str, choices = self.CompleteCombineFunc('Init'),
+               help = "Setting to initialize" )
+       initfile_opts.add_argument('initfile', type=file,
+               help='Initialization file to use')
+       return initfile_opts
 
    def do_Initialize(self,line):
       try:
-         options = self.initfile_opts.parse_args(line.split())
+         options = self.InitFileOpts.parse_args(line.split())
       except:
          print "Error parsing arguments!", line
          return CmdExecStatus.OPTION_ERROR
-      self.my_Combine.InitPlots(options.initfile.name)
+      attr = getattr( my_Combine , "Init" + options.Mode );
+      attr(options.initfile.name)
       print "Done!"
       return CmdExecStatus.EXECUTE_SUCESS
 
-   #----- Initialize available plots -------------------------------------------------------------------
-   def do_InitPlots(self,line):
-      try:
-         options = self.initfile_opts.parse_args(line.split())
-      except:
-         print "Error parsing arguments!", line
-         return CmdExecStatus.OPTION_ERROR
-      self.my_Combine.InitPlots(options.initfile.name)
-      print "Done!"
-      return CmdExecStatus.EXECUTE_SUCESS
+   def help_Initialize(self):
+      self.InitFileOpts().print_help()
+      print "\nDefined Modes:"
+      for mode in self.CompleteCombineFunc('Init'):
+         print '\t', mode 
+      pass
 
-   def help_InitPlots(self):
-      print "Initialize the plots used in the analysis using input file"
-      self.initfile_opts.print_help()
+   def complete_Initialize(self,text,line,begidx,endidx):
+      wordidx = WordPositionAtIndex(line,begidx)
+      if wordidx == 0 :
+         return CompleteCombineFunc('Init',text)
+      else
+         return PathComplete(line,begidx,endidx)
 
-   def complete_InitPlots(self,text,line,begidx,endidx):
-      return self.PathComplete(line,begidx,endidx)
-
-   #----- Initialize available samples ----------------------------------------------------------------- 
-   def do_InitSamples(self,line):
-      try:
-         options = self.initfile_opts.parse_args(line.split())
-      except:
-         print "Error parsing arguments!" , line 
-         return CmdExecStatus.OPTION_ERROR
-      self.my_Combine.InitSamples(options.initfile.name)
-      print "Done!"
-      return CmdExecStatus.EXECUTE_SUCESS
-   
-   def help_InitSamples(self):
-      print "Initialize the samples used in the analysis using input files"
-      self.initfile_opts.print_help()
-   
-   def complete_InitSamples(self,text,line,begidx,endidx):
-      return self.PathComplete(line,begidx,endidx)
-
-   #----- Initializing available channels --------------------------------------------------------------
-   def do_InitChannels(self,line):
-      try:
-         options = self.initfile_opts.parse_args(line.split())
-      except:
-         print "Error parsing arguments", line
-         return CmdExecStatus.OPTION_ERROR
-      self.my_Combine.InitChannels(options.initfile.name)
-      print "Done!"
-      return CmdExecStatus.EXECUTE_SUCESS 
-
-   def help_InitChannels(self):
-      print "Defining the various channels used in the program"
-      self.initfile_opts.print_help()
-
-   def complete_InitChannels(self,text,line,begidx,endidx):
-      return self.PathComplete(line,begidx,endidx)
-   
    #------------------------------------------------------------------------------- 
    #   Channel initialization commands
-   #------------------------------------------------------------------------------- 
-   channel_init_opts = argparse.ArgumentParser( description = 'Passing single input file to channel for initialization' )
-   channel_init_opts.add_argument('Mode'    , help='Which initialization to run' , type=str  )
-   channel_init_opts.add_argument('Channel' , help='Channel to initialize'       , type=str  )
-   channel_init_opts.add_argument('file'    , help='File to use'                 , type=file )
+   #-------------------------------------------------------------------------------
+   def ChannelInitOpts(self):
+      channel_init_opts = argparse.ArgumentParser( description = 'Passing single input file to channel for initialization' )
+      channel_init_opts.add_argument('Mode'    , type=str  , choices = self.CompleteCombineFunc('SetChannel'),
+              help = "Initialization mode" )
+      channel_init_opts.add_argument('Channel' , type=str  , choices = self.CompleteChannel(),
+              help = "Channel to initialize" )
+      channel_init_opts.add_argument('file'    , type=file , help = 'Input file')
+      return channel_init_opts
 
    def do_SetChannel(self,line):
       try:
-         options = self.channel_init_opts.parse_args( line.split() )
+         options = self.ChannelInitOpts().parse_args( line.split() )
       except:
          print "Error parsing arguments!", line 
          return CmdExecStatus.OPTION_ERROR
@@ -113,12 +82,6 @@ class CombineCmd( CmdParser ):
    def help_SetChannel(self):
       print "Defining aspects of a channel from a input file"
       self.channel_init_opts.print_help()
-      print "\nDefined modes:"
-      for mode in self.CompleteCombineFunc( 'SetChannel' ):
-         print "\t", mode
-      print "\nDefined Channels: "
-      for channel in self.CompleteChannel(''):
-         print "\t", channel 
       pass
 
    def complete_SetChannel(self,text,line,begidx,endidx):
@@ -130,7 +93,6 @@ class CombineCmd( CmdParser ):
       else:
          return self.PathComplete(line,begidx,endidx)
        
-
 
    #------------------------------------------------------------------------------- 
    #   Listing commands 
@@ -159,7 +121,7 @@ class CombineCmd( CmdParser ):
 
    def CompleteChannel( self, text ):
       ans = [] 
-      for channel in self.y_Combine.AvailableChannels() :
+      for channel in self.my_Combine.AvailableChannels() :
          if channel.startswith(text):
             ans.append(text)
       return ans;
