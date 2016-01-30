@@ -8,7 +8,6 @@
 #ifndef __HC_PROCESS_H__
 #define __HC_PROCESS_H__
 
-#include "TstarAnalysis/CombineAnalysis/interface/Enums.h"
 #include "TstarAnalysis/CombineAnalysis/interface/NuisancePar.h"
 #include "TH1F.h"
 #include <string>

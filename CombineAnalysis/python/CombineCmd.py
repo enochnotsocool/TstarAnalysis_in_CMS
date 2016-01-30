@@ -17,13 +17,24 @@ from CMSSW_Utils.Utils_Types.CmdParser              import * ## For advanced cmd
 from CMSSW_Utils.Utils_Functions.utils_string       import * ## For additional string parsing
 from TstarAnalysis.CombineAnalysis.pluginCombineMgr import * ## For self written C++ objects
 
+class CombineStatus():
+   NONE            = 0
+   INIT_PLOT       = 1
+   INIT_SAMPLE     = 2
+   INIT_CHANNEL    = 3
+   MADE_BASE_PLOTS = 4
 
 
 class CombineCmd( CmdParser ):
    prompt = 'tstar> '
    intro  = 'Session for running the tstar combination analysis'
-   my_Combine = CombineMgr()
 
+   def __init__(self):
+      self.my_Combine = CombineMgr()
+      self.recommended_mode = ['Asymptotic']
+      self.state = CombineStatus.NONE 
+
+   
    #------------------------------------------------------------------------------- 
    #   Initialization commands
    #-------------------------------------------------------------------------------  
@@ -41,8 +52,23 @@ class CombineCmd( CmdParser ):
       except:
          print "Error parsing arguments!", line
          return CmdExecStatus.OPTION_ERROR
+
+      if options.mode == 'Samples' and self.state < CombineStatus.INIT_PLOT :
+         print "Error! Plot has not yet been initialized!"
+         return CmdExecStatus.EXECUTE_FAIL
+      elif options.mode == 'Channels' and self.state < CombineStatus.INIT_SAMPLE :
+         print "Error! Samples has not yet been initialized!"
+         return CmdExecStatus.EXECUTE_FAIL
+
       attr = getattr( self.my_Combine , "Init" + options.mode );
       attr(options.initfile.name)
+      if options.mode == 'Plots':
+         self.state = CombineStatus.INIT_PLOT 
+      elif options.mode == 'Samples':
+         self.state = CombineStatus.INIT_SAMPLE
+      else:
+         self.state = CombineStatus.INIT_CHANNEL 
+
       print "Done!"
       return CmdExecStatus.EXECUTE_SUCESS
 
@@ -70,6 +96,9 @@ class CombineCmd( CmdParser ):
       return channel_init_opts
 
    def do_SetChannel(self,line):
+      if self.state < CombineStatus.INIT_CHANNEL:
+         print "Error! You need to complete initialize the channels first!"
+         return CmdExecStatus.EXECUTE_SUCESS
       try:
          options = self.ChannelInitOpts().parse_args( line.split() )
       except:
@@ -98,7 +127,11 @@ class CombineCmd( CmdParser ):
    #   Validation plots making commands
    #------------------------------------------------------------------------------- 
    def do_MakeBasicPlots( self, line ):
+      if self.state < CombineStatus.INIT_CHANNEL:
+         print "Error! You need to initialize the channels first!"
+         return CmdExecStatus.EXECUTE_FAIL
       self.my_Combine.MakeBasicPlots()
+      self.state = CombineStatus.MADE_BASE_PLOTS 
       return CmdExecStatus.EXECUTE_SUCESS
 
    def DataBgOpts(self):
@@ -110,6 +143,9 @@ class CombineCmd( CmdParser ):
       return databg_opts 
 
    def do_MakeDataBGPlot( self, line ):
+      if self.state < CombineStatus.MADE_BASE_PLOTS :
+         print "Error! You need to run MakeBasicPlots first!"
+         return CmdExecStatus.EXECUTE_FAIL 
       try:
          options = self.DataBgOpts().parse_args( line.split() )
       except:
@@ -139,6 +175,9 @@ class CombineCmd( CmdParser ):
       return sigch_opts
 
    def do_HC_MakeRequirements(self,line):
+      if self.state < CombineStatus.MADE_BASE_PLOTS:
+         print "Error! You need to run MakeBasicPlots first!"
+         return CmdExecStatus.EXECUTE_FAIL 
       try:
          options = self.SingleChannelOpts().parse_args(line.split())
       except:
@@ -157,7 +196,6 @@ class CombineCmd( CmdParser ):
       else:
          return []
 
-   recommended_mode = ['Asymptotic']
    def RunCombineOpts(self):
       runcomb_opts = argparse.ArgumentParser(description = 'Receives channel and higg combine run options' )
       runcomb_opts.add_argument('channel',type=str, choices = self.my_Combine.AvailableChannels() ,
@@ -167,6 +205,9 @@ class CombineCmd( CmdParser ):
       return runcomb_opts 
 
    def do_HC_RunCombine(self,line):
+      if self.state < CombineStatus.INIT_CHANNEL :
+         print "Error! You need to initialized the channels first!"
+         return CmdExecStatus.EXECUTE_FAIL
       try:
          options = self.RunCombineOpts().parse_args( line.split() )
       except:
@@ -193,6 +234,9 @@ class CombineCmd( CmdParser ):
          return []
 
    def do_HC_PlotLimit(self,line):
+      if self.state < CombineStatus.INIT_CHANNEL :
+         print "Error! You need to initialized the channels first!"
+         return CmdExecStatus.EXECUTE_FAIL
       try:
          options = self.RunCombineOpts().parse_args( line.split() )
       except:
@@ -207,21 +251,22 @@ class CombineCmd( CmdParser ):
    def complete_HC_PlotLimit(self,text,line,begidx,endidx):
       return self.complete_HC_RunCombine(text,line,begidx,endidx)
 
-
-
    #------------------------------------------------------------------------------- 
    #   Listing commands 
    #------------------------------------------------------------------------------- 
-   def do_ListAvailablePlot(self,line):
-      plotlist = self.my_Combine.AvailablePlots();
-      for plot in plotlist:
+   def do_ListAvailablePlots(self,line):
+      for plot in self.my_Combine.AvailablePlots():
          print plot
       return CmdExecStatus.EXECUTE_SUCESS
 
    def do_ListAvailableSamples(self,line):
-      sampleList = self.my_Combine.AvailableSamples()
-      for sample in sampleList:
+      for sample in self.my_Combine.AvailableSamples():
          print sample
+      return CmdExecStatus.EXECUTE_SUCESS
+   
+   def do_ListAvailableChannels(self,line):
+      for channel in self.my_Combine.AvailableChannels():
+         print channel
       return CmdExecStatus.EXECUTE_SUCESS
 
    #------------------------------------------------------------------------------- 

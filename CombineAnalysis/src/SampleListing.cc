@@ -186,6 +186,7 @@ bool SampleTable::InitFromFile( const std::string&  cfgfile )
    string line;
    vector<string> tokens;
 
+   _table.clear(); // Clearing all existing 
    while( getline(file,line) ){
       if( !BreakLineToWords(line,tokens,"|" ) ) { continue; }
       for( auto& token : tokens ){

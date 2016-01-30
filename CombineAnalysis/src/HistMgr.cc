@@ -177,7 +177,8 @@ bool HistList::InitFromFile( const std::string& cfgfile )
    ifstream file( cfgfile );
    string line;
    vector<string> tokens;
-   
+  
+   _list.clear();
    while( getline(file,line) ){
       ++line_num;
       if(!BreakLineToWords(line,tokens,"|")){ continue; }

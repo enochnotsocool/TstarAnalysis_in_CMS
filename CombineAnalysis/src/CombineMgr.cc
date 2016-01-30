@@ -6,7 +6,6 @@
  *  
 *******************************************************************************/
 #include "TstarAnalysis/CombineAnalysis/interface/CombineMgr.h"
-#include "TstarAnalysis/CombineAnalysis/interface/CombineCommands.h"
 #include "CMSSW_Utils/Utils_Functions/interface/Utils.h"
 
 #include <fstream>
